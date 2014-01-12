@@ -1,6 +1,8 @@
 'use strict';
 
+var util = require('util');
 var Browser = require('./lib/browser.js');
+
 module.exports = getBrowser;
 
 /**
@@ -19,14 +21,14 @@ function getBrowser(remote, capabilities, options) {
         case 'method-call':
           var msg = event.target;
           if (event.selector) {
-            msg += '("' + event.selector + '")';
+            msg += '(' + util.inspect(event.selector, {colors: true}) + ')';
           }
           msg += '.' + event.name;
           msg += '(' + event.args.map(function (a) {
-            return require('util').inspect(a, {colors: true});
+            return util.inspect(a, {colors: true});
           }).join(', ') + ')';
           if (event.result && typeof event.result !== 'object') {
-            msg += ' => ' + require('util').inspect(event.result, {colors: true});
+            msg += ' => ' + util.inspect(event.result, {colors: true});
           }
           console.log('     - ' + msg);
           break;

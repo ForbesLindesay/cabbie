@@ -113,7 +113,10 @@ var browser = new Browser('http://localhost:9515/', {}, {mode: 'async'})
       msg += '(' + event.args.map(function (a) {
         return require('util').inspect(a, {colors: true});
       }).join(', ') + ')';
-      console.log(msg);
+      if (event.result && typeof event.result !== 'object') {
+        msg += ' => ' + require('util').inspect(event.result, {colors: true});
+      }
+      console.log('     - ' + msg);
       break;
     default:
       console.dir(event);
@@ -127,13 +130,27 @@ var browser = new Browser('http://localhost:9515/', {}, {mode: 'async'})
   console.log(require('util').inspect(res, {colors: true}));
 });
 */
+
 browser.navigateTo('http://www.example.com').then(function () {
   return browser.getElement('h1');
 }).then(function (el) {
   return el.text();
-}).done(function (text) {
-  console.dir(text);
-});
-setTimeout(function () {
-browser.dispose().done();
-}, 5000);
+}).then(function () {
+  return browser.dispose();
+}, function (ex) {
+  return browser.dispose().then(function () {
+    throw ex;
+  }, function () {
+    throw ex;
+  });
+}).done();
+/*
+try {
+  browser.navigateTo('http://www.example.com');
+  browser.getElement('h1').text();
+} catch (ex) {
+  browser.dispose();
+  throw ex;
+}
+browser.dispose();
+*/

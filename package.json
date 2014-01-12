@@ -1,0 +1,24 @@
+{
+  "name": "cabbie",
+  "version": "0.0.0",
+  "description": "A webdriver client",
+  "keywords": [],
+  "dependencies": {
+    "http-sync-win": "0.0.4",
+    "request": "~2.31.0",
+    "chromedriver": "~2.8.0",
+    "promise": "~3.2.0"
+  },
+  "devDependencies": {
+    "mocha": "*"
+  },
+  "scripts": {
+    "test": "mocha -R spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ForbesLindesay/cabbie.git"
+  },
+  "author": "ForbesLindesay",
+  "license": "MIT"
+}

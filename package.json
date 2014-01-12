@@ -4,16 +4,15 @@
   "description": "A webdriver client",
   "keywords": [],
   "dependencies": {
-    "http-sync-win": "0.0.4",
     "request": "~2.31.0",
-    "chromedriver": "~2.8.0",
+    "request-sync": "0.0.2",
     "promise": "~3.2.0"
   },
   "devDependencies": {
-    "mocha": "*"
+    "chromedriver": "~2.8.0"
   },
   "scripts": {
-    "test": "mocha -R spec"
+    "test": "node test/sync.js && node test/async.js"
   },
   "repository": {
     "type": "git",

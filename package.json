@@ -4,7 +4,7 @@
   "description": "A webdriver client",
   "keywords": [],
   "dependencies": {
-    "request": "~2.31.0",
+    "request": "~2.33.0",
     "request-sync": "0.0.4",
     "promise": "~3.2.0"
   },

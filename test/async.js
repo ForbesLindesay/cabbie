@@ -17,15 +17,11 @@ browser.sauceJobUpdate({name: 'asynchronous', build: process.env.TRAVIS_JOB_ID})
 }).then(function (text) {
   assert(text === 'Example Domain');
 }).then(function () {
-  return browser.sauceJobUpdate({passed: true});
+  return browser.dispose({passed: true});
 }, function (err) {
-  return browser.sauceJobUpdate({passed: false}).then(function () {
-    return browser.dispose();
-  }).then(function () {
+  return browser.dispose({passed: false}).then(function () {
     throw err;
   });
-}).then(function () {
-  return browser.dispose();
 }).done(function () {
   console.log();
 });

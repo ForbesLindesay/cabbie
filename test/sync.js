@@ -12,13 +12,10 @@ browser.sauceJobUpdate({name: 'synchronous', build: process.env.TRAVIS_JOB_ID});
 try {
   browser.navigateTo('http://www.example.com');
   assert(browser.getElement('h1').text() === 'Example Domain');
-  browser.sauceJobUpdate({passed: true});
+  browser.dispose({passed: true});
 } catch (ex) {
-  browser.sauceJobUpdate({passed: false});
-  browser.dispose();
+  browser.dispose({passed: false});
   throw ex;
 }
-
-browser.dispose();
 
 console.log();

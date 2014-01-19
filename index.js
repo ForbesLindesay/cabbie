@@ -16,25 +16,19 @@ module.exports = getBrowser;
 function getBrowser(remote, capabilities, options) {
   var browser = new Browser(remote, capabilities, options);
   if (options.debug) {
-    browser.debug(function (event) {
-      switch (event.type) {
-        case 'method-call':
-          var msg = event.target;
-          if (event.selector) {
-            msg += '(' + util.inspect(event.selector, {colors: true}) + ')';
-          }
-          msg += '.' + event.name;
-          msg += '(' + event.args.map(function (a) {
-            return util.inspect(a, {colors: true});
-          }).join(', ') + ')';
-          if (event.result && typeof event.result !== 'object') {
-            msg += ' => ' + util.inspect(event.result, {colors: true});
-          }
-          console.log('     - ' + msg);
-          break;
-        default:
-          console.dir(event);
+    browser.on('method-call', function (event) {
+      var msg = event.target;
+      if (event.selector) {
+        msg += '(' + util.inspect(event.selector, {colors: true}) + ')';
       }
+      msg += '.' + event.name;
+      msg += '(' + event.args.map(function (a) {
+        return util.inspect(a, {colors: true});
+      }).join(', ') + ')';
+      if (event.result && typeof event.result !== 'object') {
+        msg += ' => ' + util.inspect(event.result, {colors: true});
+      }
+      console.log('     - ' + msg);
     });
   }
   return browser;

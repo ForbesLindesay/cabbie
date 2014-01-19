@@ -4,12 +4,9 @@ console.log('# Test Async');
 console.log();
 
 var assert = require('assert');
-var getBrowser = require('../');
-var chromedriver = require('chromedriver');
+var getBrowser = require('./get-browser');
 
-chromedriver.start();
-
-var browser = getBrowser('http://localhost:9515/', {}, {mode: 'async', debug: true});
+var browser = getBrowser({mode: 'async', debug: true});
 
 browser.navigateTo('http://www.example.com').then(function () {
   return browser.getElement('h1');
@@ -19,6 +16,5 @@ browser.navigateTo('http://www.example.com').then(function () {
   assert(text === 'Example Domain');
   return browser.dispose();
 }).done(function () {
-  chromedriver.stop();
   console.log();
 });

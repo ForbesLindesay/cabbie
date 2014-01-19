@@ -10,6 +10,10 @@ var browser = getBrowser({mode: 'sync', debug: true});
 
 browser.sauceJobUpdate({name: 'synchronous', build: process.env.TRAVIS_JOB_ID});
 try {
+  browser.setTimeouts({
+    'implicit': '10s',
+    'async': '10s'
+  });
   browser.navigateTo('http://www.example.com');
   assert(browser.getElement('h1').text() === 'Example Domain');
   browser.dispose({passed: true});

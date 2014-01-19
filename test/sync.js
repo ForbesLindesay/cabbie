@@ -8,8 +8,16 @@ var getBrowser = require('./get-browser');
 
 var browser = getBrowser({mode: 'sync', debug: true});
 
-browser.navigateTo('http://www.example.com');
-assert(browser.getElement('h1').text() === 'Example Domain');
+browser.sauceJobUpdate({name: 'synchronous'});
+try {
+  browser.navigateTo('http://www.example.com');
+  assert(browser.getElement('h1').text() === 'Example Domain');
+  browser.sauceJobUpdate({passed: true});
+} catch (ex) {
+  browser.sauceJobUpdate({passed: false});
+  browser.dispose();
+  throw ex;
+}
 
 browser.dispose();
 

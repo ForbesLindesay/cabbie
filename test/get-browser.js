@@ -3,11 +3,11 @@
 var chromedriver = require('chromedriver');
 var getBrowser = require('../');
 
-var USE_CHROMEDRIVER = true;
+var LOCAL = !process.env.CI && process.argv[2] !== 'sauce';
 var browserCount = 0;
 
 module.exports = function (options) {
-  if (USE_CHROMEDRIVER) {
+  if (LOCAL) {
     if (browserCount === 0) {
       chromedriver.start();
     }
@@ -19,5 +19,7 @@ module.exports = function (options) {
       }
     });
     return browser;
+  } else {
+    return getBrowser('http://cabbie:6f1108e1-6b52-47e4-b686-95fa9eef2156@ondemand.saucelabs.com/wd/hub', {browserName: 'chrome'}, options);
   }
 };

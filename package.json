@@ -12,7 +12,8 @@
     "chromedriver": "~2.8.0"
   },
   "scripts": {
-    "test": "node test/sync.js && node test/async.js"
+    "test": "node test/sync.js && node test/async.js",
+    "test-sauce": "node test/sync.js sauce && node test/async.js sauce"
   },
   "repository": {
     "type": "git",

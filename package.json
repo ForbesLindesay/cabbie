@@ -5,7 +5,7 @@
   "keywords": [],
   "dependencies": {
     "request": "~2.31.0",
-    "request-sync": "0.0.3",
+    "request-sync": "0.0.4",
     "promise": "~3.2.0"
   },
   "devDependencies": {

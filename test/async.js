@@ -8,7 +8,7 @@ var getBrowser = require('./get-browser');
 
 var browser = getBrowser({mode: 'async', debug: true});
 
-browser.sauceJobUpdate({name: 'asynchronous'}).then(function () {
+browser.sauceJobUpdate({name: 'asynchronous', build: process.env.TRAVIS_JOB_ID}).then(function () {
   return browser.navigateTo('http://www.example.com')
 }).then(function () {
   return browser.getElement('h1');

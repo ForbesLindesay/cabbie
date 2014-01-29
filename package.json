@@ -1,6 +1,6 @@
 {
   "name": "cabbie",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A webdriver client",
   "keywords": [],
   "dependencies": {

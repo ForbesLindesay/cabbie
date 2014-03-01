@@ -10,11 +10,14 @@
     "ms": "~0.6.2"
   },
   "devDependencies": {
-    "chromedriver": "~2.8.0"
+    "chromedriver": "~2.8.0",
+    "istanbul": "~0.2.4",
+    "testit": "~1.2.0"
   },
   "scripts": {
-    "test": "node test/sync.js && node test/async.js",
-    "test-sauce": "node test/sync.js sauce && node test/async.js sauce"
+    "test": "istanbul cover test",
+    "test-sauce": "node test sauce",
+    "test-local": "node test local"
   },
   "repository": {
     "type": "git",

@@ -1,8 +1,5 @@
 'use strict';
 
-console.log('# Test Sync');
-console.log();
-
 var assert = require('assert');
 var test = require('testit');
 var Promise = require('promise');

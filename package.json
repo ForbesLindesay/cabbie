@@ -12,7 +12,8 @@
   "devDependencies": {
     "chromedriver": "~2.8.0",
     "istanbul": "~0.2.4",
-    "testit": "~1.2.0"
+    "testit": "~1.2.0",
+    "st": "~0.3.1"
   },
   "scripts": {
     "test": "istanbul cover test",

@@ -1,9 +1,19 @@
 'use strict';
 
+var cp = require('child_process');
 var assert = require('assert');
 var test = require('testit');
 var Promise = require('promise');
 var getBrowser = require('./get-browser');
+
+var LOCAL = !process.env.CI && process.argv[2] !== 'sauce';
+var location;
+if (LOCAL) {
+  LOCAL = cp.fork(require.resolve('./server.js'));
+  location = 'http://localhost:1338/demo-page.html';
+} else {
+  location = 'http://rawgithub.com/ForbesLindesay/cabbie/master/test/demo-page.html';
+}
 
 function delay(time) {
   return new Promise(function (resolve) {
@@ -34,25 +44,30 @@ function testBrowser(browser, promise) {
     }));
   });
   test('it lets you navigate to a domain', function () {
-    return promise(browser.navigateTo('http://www.google.com')).then(function () {
-      return promise(browser.getElement('[name="q"]'));
+    return promise(browser.navigateTo(location)).then(function () {
+      return promise(browser.getElement('h1'));
     });
   });
   test('you can get an element', function () {
-    return promise(browser.getElement('[name="q"]'));
+    return promise(browser.getElement('h1'));
   });
   test('you can test whether an element is visible', function () {
-    return promise(browser.getElement('[name="q"]')).then(function (element) {
+    return promise(browser.getElement('h1')).then(function (element) {
       return promise(element.isVisible());
     }).then(function (visible) {
       assert(visible === true);
+      return promise(browser.getElement('#hidden'));
+    }).then(function (element) {
+      return promise(element.isVisible());
+    }).then(function (visible) {
+      assert(visible === false);
     });
   });
   test('you can get an attribute of an element', function () {
-    return promise(browser.getElement('[name="q"]')).then(function (element) {
-      return promise(element.get('name'));
+    return promise(browser.getElement('#has-attribute')).then(function (element) {
+      return promise(element.get('data-attribute'));
     }).then(function (name) {
-      assert(name === 'q');
+      assert(name === 'value');
     });
   });
   test('you can type text into an element', function () {
@@ -72,9 +87,9 @@ function testBrowser(browser, promise) {
     });
   });
   test('you can get the text content of an element', function () {
-    return promise(browser.getElement('[name="q"]')).then(function (element) {
+    return promise(browser.getElement('#has-text')).then(function (element) {
       return promise(element.text()).then(function (text) {
-        assert(typeof text === 'string');
+        assert(text === 'test content');
       });
     });
   });
@@ -95,3 +110,9 @@ testBrowser(getBrowser({mode: 'async', debug: true}), function (value) {
          typeof value.then === 'function');
   return value;
 });
+
+if (LOCAL) {
+  test('Close server', function () {
+    LOCAL.kill();
+  });
+}

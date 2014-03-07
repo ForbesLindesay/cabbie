@@ -7,5 +7,11 @@
     <div id="has-attribute" data-attribute="value"></div>
     <input name="q">
     <div id="has-text">test content</div>
+    <button id="clickable">Click Me!</button>
+    <script>
+      document.getElementById('clickable').addEventListener('click', function () {
+        document.getElementById('clickable').textContent = 'clicked';
+      });
+    </script>
   </body>
 </html>

@@ -93,6 +93,15 @@ function testBrowser(browser, promise) {
       });
     });
   });
+  test('it lets you click on a button', function () {
+    return promise(browser.getElement('#clickable')).then(function (button) {
+      return promise(button.click()).then(function () {
+        return button.text();
+      }).then(function (text) {
+        assert(text === 'clicked');
+      });
+    });
+  });
   test('it lets you dispose the browser', function () {
     return promise(browser.dispose({passed: true}));
   });

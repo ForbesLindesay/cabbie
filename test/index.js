@@ -102,6 +102,39 @@ function testBrowser(browser, promise) {
       });
     });
   });
+  test('it lets you set cookies, read them back, and clear them', function() {
+    return promise(browser.setCookie({name: 'test-cookie0', value: 'test-cookie0-value'})).then(function () {
+      return browser.setCookie({name: 'test-cookie1', value: 'test-cookie1-value'});
+    }).then(function () {
+      return browser.setCookie({name: 'test-cookie2', value: 'test-cookie2-value'});
+    }).then(function () {
+      return browser.getCookie('test-cookie0');
+    }).then(function(cookie) {
+      assert(cookie.name === 'test-cookie0');
+      assert(cookie.value === 'test-cookie0-value');
+    }).then(function() {
+      return browser.getCookies();
+    }).then(function(cookies) {
+      assert(cookies.length === 3);
+    }).then(function() {
+      return browser.getCookie('no-such-cookie');
+    }).then(function(cookie) {
+      assert(cookie === null);
+    }).then(function() {
+      return browser.clearCookie('test-cookie2');
+    }).then(function() {
+      return browser.getCookies();
+    }).then(function(cookies) {
+      assert(cookies.length === 2);
+    }).then(function() {
+      return browser.clearCookies();
+    }).then(function() {
+      return browser.getCookies();
+    }).then(function(cookies) {
+      assert(cookies.length === 0);
+    });
+  });
+
   test('it lets you dispose the browser', function () {
     return promise(browser.dispose({passed: true}));
   });

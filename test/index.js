@@ -110,6 +110,7 @@ function testBrowser(browser, promise) {
     }).then(function () {
       return browser.getCookie('test-cookie0');
     }).then(function(cookie) {
+      assert(cookie !== null);
       assert(cookie.name === 'test-cookie0');
       assert(cookie.value === 'test-cookie0-value');
     }).then(function() {

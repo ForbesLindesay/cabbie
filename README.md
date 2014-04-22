@@ -2,10 +2,10 @@
 
 A webdriver client
 
-[![Build Status](https://travis-ci.org/ForbesLindesay/cabbie.png?branch=master)](https://travis-ci.org/ForbesLindesay/cabbie)
+[![Build Status](https://img.shields.io/travis/ForbesLindesay/cabbie/master.svg)](https://travis-ci.org/ForbesLindesay/cabbie)
 [![Selenium Test Status](https://saucelabs.com/buildstatus/cabbie)](https://saucelabs.com/u/cabbie)
-[![Dependency Status](https://gemnasium.com/ForbesLindesay/cabbie.png)](https://gemnasium.com/ForbesLindesay/cabbie)
-[![NPM version](https://badge.fury.io/js/cabbie.png)](http://badge.fury.io/js/cabbie)
+[![Dependency Status](https://img.shields.io/gemnasium/ForbesLindesay/cabbie.svg)](https://gemnasium.com/ForbesLindesay/cabbie)
+[![NPM version](https://img.shields.io/npm/v/cabbie.svg)](http://badge.fury.io/js/cabbie)
 
 ## Installation
 

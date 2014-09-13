@@ -9,7 +9,6 @@ var test = require('testit');
 var Promise = require('promise');
 var getDriver = require('./get-driver');
 var cabbie = require('../');
-var sleep = require('teddybear');
 
 var LOCAL = !process.env.CI && process.argv[2] !== 'sauce';
 var location;

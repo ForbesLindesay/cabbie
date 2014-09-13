@@ -11,4 +11,5 @@ logs
 results
 node_modules
 /coverage
+/docs
 .idea

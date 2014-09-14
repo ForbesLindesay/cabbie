@@ -1,6 +1,8 @@
-# cabbie
+![Cabbie](logo.png)
 
-A webdriver client
+# Cabbie
+
+A node web-driver client
 
 [![Build Status](https://img.shields.io/travis/ForbesLindesay/cabbie/master.svg)](https://travis-ci.org/ForbesLindesay/cabbie)
 [![Selenium Test Status](https://saucelabs.com/buildstatus/cabbie)](https://saucelabs.com/u/cabbie)
@@ -15,21 +17,37 @@ A webdriver client
 
 ```js
 var assert = require('assert');
-var getBrowser = require('cabbie');
-var chromedriver = require('chromedriver');
+var cabbie = require('cabbie');
 
-chromedriver.start();
+var driver = cabbie('http://localhost:4444/wd/hub', { browserName:'firefox' }, { mode: cabbie.Browser.MODE_SYNC });
+var browser = driver.browser();
+var activeWindow = browser.activeWindow();
 
-var browser = getBrowser('http://localhost:9515/', {}, {mode: 'sync', debug: true});
+// Set url and assert a header-text
+activeWindow.navigator().setUrl('http://www.example.com');
+assert.equal(activeWindow.getElement('h1').getText(), 'Example Domain');
 
-browser.navigateTo('http://www.example.com');
-assert(browser.getElement('h1').text() === 'Example Domain');
+// Click on element
+activeWindow.getElement('h1').mouse().click();
 
-browser.dispose();
+// Click on a specific coordinate
+activeWindow.mouse().clickAt(500, 200);
 
-chromedriver.stop();
+// Close active window
+activeWindow.close();
+
+driver.dispose();
 ```
+
+## Object Reference
+
+![Object Reference](objectReference.png)
+
 
 ## License
 
   MIT
+
+
+## Attribution
+<div>Icon made by <a href="http://www.icons8.com" title="Icons8">Icons8</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>

@@ -1,0 +1,12 @@
+{
+    "name": "Cabbie",
+    "description": "WebDriver for the masses",
+    "version": "0.0.10",
+    "url": "http://github.com/ForbesLindesay/cabbie",
+    "logo": "../logo.png",
+    "options": {
+        "outdir": "docs",
+        "linkNatives": true,
+        "exclude": "test"
+    }
+}

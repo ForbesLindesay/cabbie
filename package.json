@@ -1,6 +1,6 @@
 {
   "name": "cabbie",
-  "version": "0.0.9",
+  "version": "1.0.0",
   "description": "A webdriver client",
   "keywords": [],
   "dependencies": {
@@ -18,12 +18,19 @@
   "scripts": {
     "test": "istanbul cover test",
     "test-sauce": "node test sauce",
-    "test-local": "node test local"
+    "test-local": "node test local",
+    "docs": "yuidoc ."
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/ForbesLindesay/cabbie.git"
   },
   "author": "ForbesLindesay",
+  "contributors": [
+    {
+      "name": "Marcel Erz",
+      "email": "marcel.erz@gmail.com"
+    }
+  ],
   "license": "MIT"
 }

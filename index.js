@@ -1,7 +1,5 @@
 'use strict';
 
-var util = require('util');
-
 var Alert = require('./lib/alert');
 var ActiveWindow = require('./lib/activeWindow');
 var Browser = require('./lib/browser');
@@ -47,48 +45,7 @@ module.exports = Cabbie;
  * @param {Boolean} [options.httpDebug=false]
  */
 function Cabbie(remote, capabilities, options) {
-  var driver = new Driver(remote, capabilities, options),
-      indentation = 0;
-
-  function stringFill (filler, length) {
-    var buffer = new Buffer(length);
-    buffer.fill(filler);
-    return buffer.toString();
-  }
-
-  function getIndentation (add) {
-    return stringFill(' ', (indentation + add) * 2);
-  }
-
-  if (options.debug) {
-    if (options.httpDebug) {
-      driver.on('request', function (req) {
-        console.log(getIndentation(1) + "Request:  ", JSON.stringify(req).substr(0, 5000));
-      });
-      driver.on('response', function (res) {
-        console.log(getIndentation(1) + "Response: ", JSON.stringify(res).substr(0, 5000));
-      });
-    }
-    driver.on('method-call', function (event) {
-      var msg = event.target;
-      indentation = event.indentation;
-      if (event.selector) {
-        msg += '(' + util.inspect(event.selector, {colors: true}) + ')';
-      }
-      msg += '.' + event.name;
-      msg += '(' + event.args.map(function (a) {
-        return util.inspect(a, {colors: true});
-      }).join(', ') + ')';
-      if (event.result && typeof event.result !== 'object') {
-        msg += ' => ' + util.inspect(event.result, {colors: true});
-      }
-      console.log(getIndentation(0) + '[' + (event.state + stringFill(' ', 5)).substr(0, 5) + '] ' + msg);
-      if (event.state.toLowerCase() !== 'start') {
-        console.log(getIndentation(0) + stringFill('-', 50));
-      }
-    });
-  }
-  return driver;
+  return new Driver(remote, capabilities, options);
 }
 
 

@@ -87,11 +87,18 @@ test('throws an error if you try and get a driver with an invalid mode', functio
   }
 });
 
-function testBrowser(driver, promise) {
+function testBrowser(name, getDriver, promise) {
+  var driver;
+  test('init driver', function () {
+    console.log('');
+    console.log('begin ' + name + ' tests');
+    console.log('');
+    driver = getDriver();
+  });
   test('specify a sauce job name', function () {
     return promise(driver
                    .sauceJobUpdate({
-                     name: 'synchronous',
+                     name: name,
                      build: process.env.TRAVIS_JOB_ID
                    }));
   });
@@ -961,9 +968,10 @@ function testBrowser(driver, promise) {
       status.getBuildRevision();
       status.getBuildTime();
 
-      assert.equal(typeof status.getOSVersion(), "string");
-      assert.equal(typeof status.getOSArchitecture(), "string");
-      assert.equal(typeof status.getOSName(), "string");
+      // Sauce labs doesn't support these so we return undefined
+      status.getOSVersion();
+      status.getOSArchitecture();
+      status.getOSName();
     });
   });
 
@@ -1054,13 +1062,17 @@ var debug = process.argv.indexOf('--debug') !== -1 ||
             process.argv.indexOf('-d') !== -1;
 
 if (process.argv.indexOf('--async') === -1) {
-  testBrowser(getDriver({mode: 'sync', debug: debug, httpDebug: debug}), function (value) {
+  testBrowser('async', function () {
+    return getDriver({mode: 'sync', debug: debug, httpDebug: debug});
+  }, function (value) {
     assert(!value || (typeof value !== 'object' && typeof value !== 'function') || typeof value.then !== 'function');
     return Promise.resolve(value);
   });
 }
 if (process.argv.indexOf('--sync') === -1) {
-  testBrowser(getDriver({mode: 'async', debug: debug, httpDebug: debug}), function (value) {
+  testBrowser('sync', function () {
+    return getDriver({mode: 'async', debug: debug, httpDebug: debug});
+  }, function (value) {
     assert(value && (typeof value === 'object' || typeof value === 'function') && typeof value.then === 'function');
     return value;
   });

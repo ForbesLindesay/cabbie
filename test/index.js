@@ -1,14 +1,40 @@
 'use strict';
 
+if (process.argv.indexOf('--help') !== -1 || process.argv.indexOf('-h') !== -1) {
+  console.log('node test [options]');
+  console.log('');
+  console.log('  -h --help  This help text');
+  console.log('  -s --sauce Run tests in sauce labs');
+  console.log('             (default if CI env variable is present)');
+  console.log('  -l --local Run tests locally (default)');
+  process.exit(0);
+}
+
+/*
+setInterval(function () {
+  console.dir(process._getActiveHandles());
+  console.dir(process._getActiveRequests());
+}, 20000).unref();
+*/
+
 var fs = require('fs');
-var cp = require('child_process');
 var assert = require('assert');
-var test = require('testit');
+var testit = require('testit');
 var Promise = require('promise');
 var request = require('then-request');
 var getDriver = require('./get-driver');
 var cabbie = require('../');
 
+function test(name, fn) {
+  if (process.argv.indexOf('--grep') === -1) {
+    return testit.apply(this, arguments);
+  } else {
+    var grep = process.argv[process.argv.indexOf('--grep') + 1];
+    if (name.indexOf(grep) !== -1) {
+      return testit.apply(this, arguments);
+    }
+  }
+}
 function createPage(filename, replacements) {
   var html = fs.readFileSync(filename, 'utf8');
   Object.keys(replacements || {}).forEach(function (key) {
@@ -1024,13 +1050,18 @@ function testBrowser(driver, promise) {
   });
 }
 
-var debug = false;
+var debug = process.argv.indexOf('--debug') !== -1 ||
+            process.argv.indexOf('-d') !== -1;
 
-testBrowser(getDriver({mode: 'sync', debug: debug, httpDebug: debug}), function (value) {
-  assert(!value || (typeof value !== 'object' && typeof value !== 'function') || typeof value.then !== 'function');
-  return Promise.from(value);
-});
-testBrowser(getDriver({mode: 'async', debug: debug}), function (value) {
-  assert(value && (typeof value === 'object' || typeof value === 'function') && typeof value.then === 'function');
-  return value;
-});
+if (process.argv.indexOf('--async') === -1) {
+  testBrowser(getDriver({mode: 'sync', debug: debug, httpDebug: debug}), function (value) {
+    assert(!value || (typeof value !== 'object' && typeof value !== 'function') || typeof value.then !== 'function');
+    return Promise.resolve(value);
+  });
+}
+if (process.argv.indexOf('--sync') === -1) {
+  testBrowser(getDriver({mode: 'async', debug: debug, httpDebug: debug}), function (value) {
+    assert(value && (typeof value === 'object' || typeof value === 'function') && typeof value.then === 'function');
+    return value;
+  });
+}

@@ -3,7 +3,18 @@
 var chromedriver = require('chromedriver');
 var getDriver = require('../');
 
-var LOCAL = !process.env.CI && process.argv[2] !== 'sauce';
+var LOCAL_FLAG = (process.argv.indexOf('--local') !== -1 ||
+                  process.argv.indexOf('-l') !== -1);
+var SAUCE_FLAG = (process.argv.indexOf('--sauce') !== -1 ||
+                  process.argv.indexOf('-s') !== -1);
+
+if (LOCAL_FLAG && SAUCE_FLAG) {
+  console.error('You cannot use sauce and local in one test run.');
+  console.error('Run node test --help for help');
+  process.exit(1);
+}
+
+var LOCAL = LOCAL_FLAG || (!process.env.CI && !SAUCE_FLAG);
 var browserCount = 0;
 
 module.exports = function (options) {

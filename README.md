@@ -6,8 +6,8 @@ A node web-driver client
 
 [![Build Status](https://img.shields.io/travis/ForbesLindesay/cabbie/master.svg)](https://travis-ci.org/ForbesLindesay/cabbie)
 [![Selenium Test Status](https://saucelabs.com/buildstatus/cabbie)](https://saucelabs.com/u/cabbie)
-[![Dependency Status](https://img.shields.io/gemnasium/ForbesLindesay/cabbie.svg)](https://gemnasium.com/ForbesLindesay/cabbie)
-[![NPM version](https://img.shields.io/npm/v/cabbie.svg)](http://badge.fury.io/js/cabbie)
+[![Dependency Status](https://img.shields.io/david/ForbesLindesay/cabbie.svg)](https://david-dm.org/ForbesLindesay/cabbie)
+[![NPM version](https://img.shields.io/npm/v/cabbie.svg)](https://www.npmjs.com/package/cabbie)
 
 ## Installation
 

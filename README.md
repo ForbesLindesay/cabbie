@@ -15,6 +15,8 @@ A node web-driver client
 
 ## Usage
 
+See "docs/api" for full API reference.
+
 ```js
 var assert = require('assert');
 var cabbie = require('cabbie');

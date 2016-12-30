@@ -97,3 +97,9 @@ Direct-access. No need to wait.
 ### sauceJobUpdate(body: Object): Boolean
 
 Sauce Labs Methods
+
+### getSyncDriver(): Driver
+
+Get a synchronous cabbie driver from an async driver.
+
+N.B. this method will still return a Promise for the Driver.

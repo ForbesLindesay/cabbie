@@ -37,7 +37,15 @@ const modules = {
 
 // TODO: handle "Keys"
 
-const classes = {};
+const classes = {
+  Keys: {
+    meta: {tags: [], description: {full: 'A collection of keyboard keys'}},
+    properties: [],
+    methods: [],
+    staticProperties: [],
+    staticMethods: [],
+  }
+};
 fs.readdirSync(__dirname + '/../lib').forEach(filename => {
   if (!(filename.replace(/\.js$/, '') in modules)) {
     throw new Error(
@@ -79,6 +87,8 @@ fs.readdirSync(__dirname + '/../lib').forEach(filename => {
         classes[comment.ctx.receiver].staticProperties.push(comment);
       } else if (classes[comment.ctx.constructor]) {
         classes[comment.ctx.constructor].properties.push(comment);
+      } else if (filename === 'keys.js') {
+        classes.Keys.staticProperties.push(comment);
       } else {
         console.log('Failed to understand context');
         console.log(filename);

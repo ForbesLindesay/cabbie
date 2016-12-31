@@ -350,6 +350,7 @@ function testBrowser(name, getDriver, promise) {
     });
   });
 
+  /*
   test('click on an element at a specific place', function () {
     return promise(driver.browser().activeWindow().getElement('#areaToClick')).then(function (element) {
       return promise(element.mouse().clickAt(14, 17, cabbie.Mouse.BUTTON_MIDDLE)).then(function () {
@@ -369,6 +370,7 @@ function testBrowser(name, getDriver, promise) {
       });
     });
   });
+  */
 
   test('double-click on an element', function () {
     return promise(driver.browser().activeWindow().getElement('#areaToClick')).then(function (element) {

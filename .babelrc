@@ -1,0 +1,37 @@
+{
+  "plugins": [
+    "syntax-flow",
+    "syntax-trailing-function-commas",
+    "syntax-class-properties",
+    "./babel-plugin-flow-enum",
+  ],
+  "env": {
+    "sync": {
+      "plugins": [
+        "./babel-plugin-remove-async",
+        [
+          "module-alias",
+          [
+            {
+              "src": "./src/auto-request/sync",
+              "expose": "auto-request",
+            }
+          ]
+        ]
+      ]
+    },
+    "async": {
+      "plugins": [
+        [
+          "module-alias",
+          [
+            {
+              "src": "./src/auto-request/async",
+              "expose": "auto-request",
+            }
+          ]
+        ]
+      ]
+    }
+  }
+}

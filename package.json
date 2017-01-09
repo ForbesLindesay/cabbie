@@ -10,6 +10,10 @@
     "then-request": "^2.0.1"
   },
   "devDependencies": {
+    "babel-cli": "^6.18.0",
+    "babel-plugin-module-alias": "^1.6.0",
+    "babel-plugin-transform-flow-comments": "^6.21.0",
+    "babel-preset-forbeslindesay": "^2.1.0",
     "chromedriver": "^2.21.2",
     "dox": "^0.8.1",
     "istanbul": "^0.2.4",
@@ -17,15 +21,9 @@
     "yuidocjs": "^0.4.0"
   },
   "scripts": {
-    "test": "node test",
-    "test:debug": "node test --debug",
-    "test:sauce": "node test --sauce",
-    "test:local": "node test --local",
-    "coverage": "istanbul cover test --",
-    "coverage:sauce": "istanbul cover test -- --sauce",
-    "coverage:local": "istanbul cover test -- --local",
-    "precoveralls": "npm run coverage",
-    "coveralls": "cat ./coverage/lconv.info | coveralls"
+    "build": "npm run build:sync && npm run build:async",
+    "build:sync": "BABEL_ENV=sync babel src --out-dir packages/sync/src",
+    "build:async": "BABEL_ENV=async babel src --out-dir packages/async/src"
   },
   "repository": {
     "type": "git",

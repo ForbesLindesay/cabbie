@@ -1,0 +1,32 @@
+export type LogLevel = 'ALL' | 'DEBUG' | 'INFO' | 'WARNING' | 'SEVERE' | 'OFF';
+const LogLevelsEnum = {
+  /**
+   * Log level 'All'
+   */
+  ALL: ('ALL': 'ALL'),
+
+  /**
+   * Log level 'Debug'
+   */
+  DEBUG: ('DEBUG': 'DEBUG'),
+
+  /**
+   * Log level 'Info'
+   */
+  INFO: ('INFO': 'INFO'),
+
+  /**
+   * Log level 'Warning'
+   */
+  WARNING: ('WARNING': 'WARNING'),
+
+  /**
+   * Log level 'Severe'
+   */
+  SEVERE: ('SEVERE': 'SEVERE'),
+
+  /**
+   * Log level 'Off'. Nothing will be logged.
+   */
+  OFF: ('OFF': 'OFF')
+};

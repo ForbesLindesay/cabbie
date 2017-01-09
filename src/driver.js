@@ -1,22 +1,16 @@
 import type {ApplicationCacheStatus} from './enums/application-cache-status';
+import type {HttpMethod} from './flow-types/http-method';
 import {EventEmitter} from 'events';
 import util from "util";
 import url from "url";
-import logMethods from "./log";
-import JSON from "./json";
-import when from "./when";
-import errors from "./errors";
-import type from "./type";
+import {fromBody} from "./utils/errors";
 import Connection from "./connection";
 import Browser from "./browser";
-import TimeOut from "./timeOut";
+import TimeOut from "./time-out";
 import Session from "./session";
 import Status from "./status";
-import LogEntry from "./logEntry";
-import SessionStorage from "./sessionStorage";
-
-
-module.exports = Driver;
+import LogEntry from "./log-entry";
+import SessionStorage from "./session-storage";
 
 /**
  * Create a new Driver session, remember to call `.dispose()`
@@ -24,6 +18,7 @@ module.exports = Driver;
  */
 class Driver {
   session: Promise<Session>;
+  _connection: Connection;
 
   /**
    * @param {String} remote URL to selenium-server
@@ -42,12 +37,6 @@ class Driver {
     options.capabilities = capabilities;
     this._options = options;
     this._connection = new Connection(remote, options.mode);
-    this._connection.on('request', function (req) {
-      this.emit('request', req);
-    }.bind(this));
-    this._connection.on('response', function (res) {
-      this.emit('response', res);
-    }.bind(this));
 
     if (options.sessionID) {
       // TODO: fix this for sync mode
@@ -130,7 +119,6 @@ class Driver {
       await this.jobUpdate(status);
     }
     await this.requestJSON('DELETE', '');
-    this.emit('disposed');
   }
 
   /**
@@ -143,7 +131,7 @@ class Driver {
   /**
    * Sauce Labs Methods
    */
-  async sauceJobUpdate(body: Object): Promise<Boolean> {
+  async sauceJobUpdate(body: Object): Promise<boolean> {
     // TODO: make this method functional again
     var remote = this._connection._remote;
     var request = this._connection._request_internal.bind(this);
@@ -290,7 +278,7 @@ function extractSessionData(res: Object): {sessionId: String, capabilities: Obje
   if (body.status === 0) {
     return { sessionId: body.sessionId, capabilities: body.value };
   } else {
-    throw new Error(errors.fromBody(body));
+    throw new Error(fromBody(body));
   }
 }
 
@@ -342,3 +330,4 @@ async function setupDebug(driver: Driver, options: object) {
         });
     }
 }
+export default Driver;

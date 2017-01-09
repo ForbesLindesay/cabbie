@@ -44,7 +44,7 @@ class SessionStorage extends BaseClass {
   /**
    * Get the number of items in the storage
    */
-  async getSize(): Promise<Number> {
+  async getSize(): Promise<number> {
     return await this.requestJSON('GET', '/size');
   }
 }

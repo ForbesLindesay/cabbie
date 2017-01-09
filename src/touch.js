@@ -31,7 +31,7 @@ class Touch {
   /**
    * Finger down on the screen at an offset relative to the element
    */
-  async down(xOffset: Number, yOffset: Number): Promise<void> {
+  async down(xOffset: number, yOffset: number): Promise<void> {
     const location = await this._parent.getPosition();
     await this.driver.browser.activeWindow.touch.down(location.x + xOffset, location.y + yOffset);
   }
@@ -47,7 +47,7 @@ class Touch {
   /**
    * Finger up on the screen at an offset relative to the element
    */
-  async up(xOffset: Number, yOffset: Number): Promise<void> {
+  async up(xOffset: number, yOffset: number): Promise<void> {
     const location = await this._parent.getPosition();
     await this.driver.browser.activeWindow.touch.down(location.x + xOffset, location.y + yOffset);
   }
@@ -63,7 +63,7 @@ class Touch {
   /**
    * Move finger to an offset relative to the element
    */
-  async moveTo(xOffset: Number, yOffset: Number): Promise<void> {
+  async moveTo(xOffset: number, yOffset: number): Promise<void> {
     const location = await this._parent.getPosition();
     await this.driver.browser.activeWindow.touch.move(location.x + xOffset, location.y + yOffset);
   }

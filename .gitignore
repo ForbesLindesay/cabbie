@@ -12,3 +12,6 @@ results
 node_modules
 /coverage
 .idea
+
+packages/async/src
+packages/sync/src

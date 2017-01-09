@@ -83,3 +83,4 @@ class Browser extends BaseClass {
     return new LocalStorage(this.driver);
   };
 }
+export default Browser;

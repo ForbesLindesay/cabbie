@@ -145,52 +145,52 @@ const KeyboardKeysEnum = {
 
 
     /**
-     * Number 0 on number-pad
+     * number 0 on number-pad
      */
     NUMPAD0: '\uE01A',
 
     /**
-     * Number 1 on number-pad
+     * number 1 on number-pad
      */
     NUMPAD1: '\uE01B',
 
     /**
-     * Number 2 on number-pad
+     * number 2 on number-pad
      */
     NUMPAD2: '\uE01C',
 
     /**
-     * Number 3 on number-pad
+     * number 3 on number-pad
      */
     NUMPAD3: '\uE01D',
 
     /**
-     * Number 4 on number-pad
+     * number 4 on number-pad
      */
     NUMPAD4: '\uE01E',
 
     /**
-     * Number 5 on number-pad
+     * number 5 on number-pad
      */
     NUMPAD5: '\uE01F',
 
     /**
-     * Number 6 on number-pad
+     * number 6 on number-pad
      */
     NUMPAD6: '\uE020',
 
     /**
-     * Number 7 on number-pad
+     * number 7 on number-pad
      */
     NUMPAD7: '\uE021',
 
     /**
-     * Number 8 on number-pad
+     * number 8 on number-pad
      */
     NUMPAD8: '\uE022',
 
     /**
-     * Number 9 on number-pad
+     * number 9 on number-pad
      */
     NUMPAD9: '\uE023',
 

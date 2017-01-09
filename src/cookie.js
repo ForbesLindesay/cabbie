@@ -3,6 +3,9 @@ type CookieData = {
   value?: string,
   path?: string,
   domain?: string,
+  httpOnly?: boolean,
+  secure?: boolean,
+  expiry?: number,
 };
 
 /**
@@ -83,14 +86,14 @@ class Cookie {
   /**
    * (Optional) Whether the cookie is a secure cookie.
    */
-  isSecure(): Boolean | void {
+  isSecure(): boolean | void {
     return this._values.secure;
   }
 
   /**
    * Set whether the cookie is a secure cookie.
    */
-  setSecure(secure: Boolean) {
+  setSecure(secure: boolean) {
     this._values.secure = secure;
     this.validate();
   }
@@ -98,14 +101,14 @@ class Cookie {
   /**
    * (Optional) Whether the cookie is an httpOnly cookie.
    */
-  isHttpOnly(): Boolean | void {
+  isHttpOnly(): boolean | void {
     return this._values.httpOnly;
   }
 
   /**
    * Set whether the cookie is an httpOnly cookie.
    */
-  setHttpOnly(httpOnly: Boolean) {
+  setHttpOnly(httpOnly: boolean) {
     this._values.httpOnly = httpOnly;
     this.validate();
   }
@@ -113,14 +116,14 @@ class Cookie {
   /**
    * (Optional) When the cookie expires, specified in seconds since midnight, January 1, 1970 UTC.
    */
-  getExpiry(): Number | void {
+  getExpiry(): number | void {
     return this._values.expiry;
   }
 
   /**
    * Set when the cookie expires, specified in seconds since midnight, January 1, 1970 UTC.
    */
-  setExpiry(expiry: Number) {
+  setExpiry(expiry: number) {
     this._values.expiry = expiry;
     this.validate();
   }

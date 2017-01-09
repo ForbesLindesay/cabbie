@@ -69,7 +69,7 @@ class CookieStorage extends BaseClass {
   /**
    * Get the number of items in the storage
    */
-  async getSize(): Promise<Number> {
+  async getSize(): Promise<number> {
     const cookies = await this.getCookies();
     return cookies.length;
   }

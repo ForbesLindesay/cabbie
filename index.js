@@ -41,8 +41,8 @@ module.exports = Cabbie;
  * @param {String} options.mode Mode of web-driver requests (Browser.MODE_SYNC|Browser.MODE_ASYNC)
  * @param {String} [options.base] Base-url
  * @param {String} [options.sessionID]
- * @param {Boolean} [options.debug=false]
- * @param {Boolean} [options.httpDebug=false]
+ * @param {boolean} [options.debug=false]
+ * @param {boolean} [options.httpDebug=false]
  */
 function Cabbie(remote, capabilities, options) {
   return new Driver(remote, capabilities, options);

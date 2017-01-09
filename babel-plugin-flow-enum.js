@@ -42,7 +42,7 @@ module.exports = ({types: t}) => {
         });
         const exportType = t.exportNamedDeclaration(
           t.typeAlias( // declaration
-            t.identifier(declaration.node.id.name.replace(/s?Enum$/, '')),
+            t.identifier(declaration.node.id.name.replace(/Enum$/, '')),
             null, // type parameters
             t.unionTypeAnnotation( // right
               values // types

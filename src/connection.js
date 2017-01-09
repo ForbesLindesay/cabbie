@@ -1,3 +1,4 @@
+import type {HttpMethod} from './flow-types/http-method';
 import type {WebdriverResponse} from './flow-types/webdriver-response';
 import {EventEmitter} from 'events';
 import autoRequest from 'auto-request';

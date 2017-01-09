@@ -4,6 +4,13 @@
     "syntax-trailing-function-commas",
     "syntax-class-properties",
     "./babel-plugin-flow-enum",
+
+    ["add-header-comment", {
+      "header": [
+        "@flow",
+        "This file is generated automatically, run npm run build to re-generate."
+      ]
+    }]
   ],
   "env": {
     "sync": {

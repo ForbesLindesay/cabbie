@@ -11,11 +11,13 @@
   },
   "devDependencies": {
     "babel-cli": "^6.18.0",
+    "babel-plugin-flow-runtime": "0.0.3",
     "babel-plugin-module-alias": "^1.6.0",
     "babel-plugin-transform-flow-comments": "^6.21.0",
     "babel-preset-forbeslindesay": "^2.1.0",
     "chromedriver": "^2.21.2",
     "dox": "^0.8.1",
+    "flow-bin": "^0.37.4",
     "istanbul": "^0.2.4",
     "testit": "^2.0.5",
     "yuidocjs": "^0.4.0"
@@ -23,7 +25,8 @@
   "scripts": {
     "build": "npm run build:sync && npm run build:async",
     "build:sync": "BABEL_ENV=sync babel src --out-dir packages/sync/src",
-    "build:async": "BABEL_ENV=async babel src --out-dir packages/async/src"
+    "build:async": "BABEL_ENV=async babel src --out-dir packages/async/src",
+    "typecheck": "cd packages && flow"
   },
   "repository": {
     "type": "git",

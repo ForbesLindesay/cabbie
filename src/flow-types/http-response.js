@@ -1,7 +1,7 @@
 export type HttpResponse = {
   statusCode: number,
   headers: {[key: string]: string},
-  body: Buffer,
+  body: {getString: (format: 'utf8') => string},
   url: string,
   getBody: () => string,
 };

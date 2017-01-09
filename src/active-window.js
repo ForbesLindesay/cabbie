@@ -1,5 +1,6 @@
 import type {SelectorType} from './enums/selector-types';
 import Alert from './alert';
+import Element from './element';
 import Frame from './frame';
 import GlobalMouse from './global-mouse';
 import GlobalTouch from './global-touch';

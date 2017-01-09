@@ -7,6 +7,7 @@ mkdirp.sync(__dirname + '/../output/async');
 
 const FIELDS_TO_COPY = [
   'version',
+  'main',
   'keywords',
   'repository',
   'author',
@@ -41,7 +42,6 @@ const asyncPackage = getPackage(
   },
   ['flow-runtime', 'ms', 'then-request']
 );
-
 
 fs.writeFileSync(
   __dirname + '/../output/sync/package.json',

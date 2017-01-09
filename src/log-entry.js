@@ -4,6 +4,7 @@ import type {LogLevel} from './enums/log-levels';
  * Remote log-entry
  */
 class LogEntry {
+  _values: Object;
   constructor(values: Object) {
     this._values = values;
   }

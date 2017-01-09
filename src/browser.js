@@ -1,4 +1,10 @@
 import type {BrowserOrientation} from './enums/browser-orientations';
+import ActiveWindow from './active-window';
+import BaseClass from './base-class';
+import CookieStorage from './cookie-storage';
+import IME from './ime';
+import LocalStorage from './local-storage';
+import Window from './window';
 
 /**
  * Browser accessor class
@@ -9,7 +15,7 @@ class Browser extends BaseClass {
    */
   async activateWindow(window: Window): Promise<ActiveWindow> {
     const handle = await window.getID();
-    await this._requestJSON('POST', '/window', {name: handle});
+    await this.requestJSON('POST', '/window', {name: handle});
     return this.activeWindow;
   };
 
@@ -24,9 +30,9 @@ class Browser extends BaseClass {
    * Get an array of windows for all available windows
    */
   async getWindows(): Promise<Array<Window>> {
-    const windowHandles = await requestJSON('GET', '/window_handles');
+    const windowHandles = await this.requestJSON('GET', '/window_handles');
     return windowHandles.map(windowHandle => {
-      return new WindowHandler(this.driver, windowHandle);
+      return new Window(this.driver, windowHandle);
     });
   };
 

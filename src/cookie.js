@@ -63,7 +63,7 @@ class Cookie {
   /**
    * Set the cookie path.
    */
-  setPath(path: string): Promise<void> {
+  setPath(path: string) {
     this._values.path = path;
     this.validate();
   }

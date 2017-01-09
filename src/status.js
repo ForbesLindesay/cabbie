@@ -1,10 +1,9 @@
-module.exports = Status;
-
 /**
  * Selenium status
  */
 class Status {
-  constructor(values) {
+  _values: Object;
+  constructor(values: Object) {
     this._values = values;
   }
 
@@ -50,3 +49,5 @@ class Status {
     return this._values.os && this._values.os.version;
   }
 }
+
+export default Status;

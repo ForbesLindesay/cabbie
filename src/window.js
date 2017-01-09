@@ -1,3 +1,7 @@
+import type Driver from './driver';
+import type ActiveWindow from './active-window';
+import BaseClass from './base-class';
+
 /**
  * Window object
  */
@@ -33,6 +37,7 @@ class Window extends BaseClass {
     if (this.id !== 'current') {
       await this.driver.browser.activateWindow(this);
     }
+    return this.driver.browser.activeWindow;
   }
 
 
@@ -73,3 +78,4 @@ class Window extends BaseClass {
     await this.requestJSON('POST', '/position', { x: x, y: y });
   };
 }
+export default Window;

@@ -1,7 +1,15 @@
+import type {MouseButton} from './enums/mouse-buttons';
+import type {HttpMethod} from './flow-types/http-method';
+import type Driver from './driver';
+import type Element from './element';
+import MouseButtons from './enums/mouse-buttons';
+
 /**
  * Mouse commands relative to a DOM-element
  */
 class Mouse {
+  driver: Driver;
+  _parent: Element;
   constructor(driver: Driver, parent: Element) {
     this.driver = driver;
     this._parent = parent;
@@ -35,14 +43,14 @@ class Mouse {
    * Move the mouse by an offset of the element
    */
   async moveTo(xOffset: number, yOffset: number): Promise<void> {
-    await this.driver.browser.activeWindow.mouse._moveTo(this._parent.elementId(), xOffset, yOffset);
+    await this.driver.browser.activeWindow.mouse._moveTo(this._parent.elementID, xOffset, yOffset);
   }
 
   /**
    * Move the mouse to the center of the element
    */
   async moveToCenter(): Promise<void> {
-    await this.driver.browser().activeWindow().mouse()._moveTo(this._parent.elementID(), undefined, undefined);
+    await this.driver.browser.activeWindow.mouse._moveTo(this._parent.elementID, undefined, undefined);
   }
 
   /**

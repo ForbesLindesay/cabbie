@@ -21,7 +21,7 @@ class Alert extends BaseClass {
    * clicking on the 'OK' button in the dialog.
    */
   async accept(): Promise<void> {
-    await this.requestJSON('POST', '/alert_text', {text});
+    await this.requestJSON('POST', '/accept_alert');
   }
 
   /**
@@ -32,6 +32,8 @@ class Alert extends BaseClass {
    * Note: Never use this with an alert. Use accept() instead.
    */
   async dismiss(): Promise<void> {
-    await this._requestJSON('POST', '/dismiss_alert');
+    await this.requestJSON('POST', '/dismiss_alert');
   }
 }
+
+export default Alert;

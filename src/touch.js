@@ -1,8 +1,14 @@
+import type Driver from './driver';
+import type Element from './element';
+
 /**
  * Touch commands relative to a DOM-element
  */
 class Touch {
-  constructor(driver, parent) {
+  driver: Driver;
+  _parent: Element;
+
+  constructor(driver: Driver, parent: Element) {
     this.driver = driver;
     this._parent = parent;
   }
@@ -11,21 +17,21 @@ class Touch {
    * Tap with the finger on the element
    */
   async tap(): Promise<void> {
-    await this.driver.browser.activeWindow.touch._tap(this._parent.elementId());
+    await this.driver.browser.activeWindow.touch._tap(this._parent.elementID);
   }
 
   /**
    * Double tap with the finger on the element
    */
   async doubleTap(): Promise<void> {
-    await this.driver.browser.activeWindow.touch._doubleTap(this._parent.elementId());
+    await this.driver.browser.activeWindow.touch._doubleTap(this._parent.elementID);
   }
 
   /**
    * Long tap with the finger on the element
    */
   async longTap(): Promise<void> {
-    await this.driver.browser.activeWindow.touch._longTap(this._parent.elementId());
+    await this.driver.browser.activeWindow.touch._longTap(this._parent.elementID);
   }
 
   /**

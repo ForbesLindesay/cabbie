@@ -1,5 +1,9 @@
+import type Browser from './browser';
+import type Driver from './driver';
+import type {ElementHandle} from './flow-types/element-handle';
 import type {SelectorType} from './enums/selector-types';
 import BaseClass from './base-class';
+import Mouse from './mouse';
 import SelectorTypes from './enums/selector-types';
 
 class Element extends BaseClass {
@@ -7,6 +11,8 @@ class Element extends BaseClass {
    * The internal selenium handler object
    */
   elementHandle: ElementHandle;
+  _parent: Element | Browser;
+  _selector: string;
 
   constructor(driver: Driver, parent: Element | Browser, selector: string, id: ElementHandle) {
     const prefix = '/element/' + id.ELEMENT;
@@ -43,7 +49,7 @@ class Element extends BaseClass {
    */
   async hasClass(className: string): Promise<boolean> {
     const classNames = await this.getAttribute('class');
-    return !!classNames.match(new RegExp('\\b' + classStr + '\\b'));
+    return !!classNames.match(new RegExp('\\b' + className + '\\b'));
   }
 
   /**
@@ -192,32 +198,29 @@ class Element extends BaseClass {
       using: selectorType,
       value: selector,
     });
-    return new Element(this._driver, this, [this._selector, selector].join(' '), elementHandle);
+    return new Element(this.driver, this, [this._selector, selector].join(' '), elementHandle);
   }
 
   /**
    * Get elements via a selector.
-   *
-   * @method getElements
-   * @param {String} selector
-   * @param {String} [selectorType='css selector']
-   * @return {Array.<Element>}
    */
   async getElements(selector: string, selectorType: SelectorType = SelectorTypes.CSS): Promise<Array<Element>> {
     const elementHandles = await this.requestJSON('POST', '/elements', {
-      using: selectorType || Element.SELECTOR_CSS,
+      using: selectorType,
       value: selector
     });
     return elementHandles.map(elementHandle => {
-      return new Element(this._driver, this, [this._selector, selector].join(' '), elementHandle);
+      return new Element(this.driver, this, [this._selector, selector].join(' '), elementHandle);
     });
   }
 
   /**
    * Does a specific element exist?
    */
-  async hasElement(selector, selectorType): Promise<boolean> {
+  async hasElement(selector: string, selectorType: SelectorType = SelectorTypes.CSS): Promise<boolean> {
     const elements = await this.getElements(selector, selectorType);
     return elements.length > 0;
   }
 }
+
+export default Element;

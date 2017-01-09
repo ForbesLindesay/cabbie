@@ -298,4 +298,4 @@ const KeyboardKeysEnum = {
     COMMAND: '\uE03D'
 };
 
-module.exports = Keys;
+export default KeyboardKeysEnum;

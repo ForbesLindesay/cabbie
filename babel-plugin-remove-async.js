@@ -1,6 +1,11 @@
 module.exports = ({types: t}) => {
   return {
     visitor: {
+      StringLiteral(path) {
+        if (path.node.value === 'then-request') {
+          path.replaceWith(t.stringLiteral('sync-request'));
+        }
+      },
       Function(path) {
         if (path.node.async) {
           const newFn = {};
@@ -23,6 +28,16 @@ module.exports = ({types: t}) => {
             throw path.get('typeParameters').buildCodeFrameError('Promise must specify a type.', SyntaxError);
           }
           path.replaceWith(path.node.typeParameters.params[0]);
+        }
+      },
+      CallExpression(path) {
+        if (
+          t.isMemberExpression(path.node.callee) &&
+          t.isIdentifier(path.node.callee.object, {name: 'Promise'}) &&
+          t.isIdentifier(path.node.callee.property, {name: 'all'}) &&
+          path.node.arguments.length === 1
+        ) {
+          path.replaceWith(path.node.arguments[0]);
         }
       },
     },

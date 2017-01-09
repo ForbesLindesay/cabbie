@@ -1,4 +1,4 @@
-const LogLevelsEnum = {
+const LogLevelEnum = {
   /**
    * Log level 'All'
    */

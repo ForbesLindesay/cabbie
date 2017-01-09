@@ -1,3 +1,4 @@
+import type Driver from './driver';
 import BaseClass from './base-class';
 
 /**

@@ -1,5 +1,5 @@
 /**
- * Session entry
+ * Selenium session
  */
 class Session {
   _values: Object;
@@ -21,4 +21,5 @@ class Session {
     return this._values.capabilities;
   }
 }
+
 export default Session;

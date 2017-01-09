@@ -1,3 +1,6 @@
+import type Driver from './driver';
+import BaseClass from './base-class';
+
 /**
  * Managing session-storage
  */
@@ -48,3 +51,4 @@ class SessionStorage extends BaseClass {
     return await this.requestJSON('GET', '/size');
   }
 }
+export default SessionStorage;

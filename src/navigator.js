@@ -1,3 +1,4 @@
+import url from 'url';
 import BaseClass from './base-class';
 
 /**
@@ -41,6 +42,7 @@ class Navigator extends BaseClass {
    */
   async navigateTo(path: string): Promise<void> {
     if (path[0] === '/') {
+      // $FlowFixMe: WTF!
       path = this._options.base.replace(/\/$/, '') + path;
     } else if (path.indexOf('http') !== 0) {
       const base = await this.getUrl();
@@ -60,4 +62,6 @@ class Navigator extends BaseClass {
  * @method setUrl
  * @param {String} path
  */
-Navigator.prototype.setUrl = Navigator.prototype.navigateTo;
+(Navigator.prototype: any).setUrl = Navigator.prototype.navigateTo;
+
+export default Navigator;

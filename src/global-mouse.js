@@ -1,4 +1,5 @@
 import type {MouseButton} from './enums/mouse-buttons';
+import BaseClass from './base-class';
 import MouseButtons from './enums/mouse-buttons';
 import Mouse from './mouse';
 
@@ -84,7 +85,7 @@ class GlobalMouse extends BaseClass {
   /**
    * Releases the mouse button previously held at the current location of the mouse cursor
    */
-  async buttonUpAt(xOffset: number, yOffset: number, button: MouseButton = MouseButtons.BUTTON_LEFT): Promise<void> {
+  async buttonUpAt(xOffset: number, yOffset: number, button: MouseButton = MouseButtons.LEFT): Promise<void> {
     await this.moveTo(xOffset, yOffset);
     await this.buttonUp(button);
   }

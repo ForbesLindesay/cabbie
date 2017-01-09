@@ -1,3 +1,4 @@
+import type Driver from './driver';
 import url from 'url';
 import Cookie from './cookie';
 import BaseClass from './base-class';
@@ -29,7 +30,7 @@ class CookieStorage extends BaseClass {
   /**
    * Retrieve a specific cookie by name that is visible to the current page.
    */
-  async getCookie(name: string): Promise<Cookie | undefined> {
+  async getCookie(name: string): Promise<Cookie | void> {
     let cookies = await this.getCookies();
     cookies = cookies.filter(function (cookie) {
       return cookie.getName() == name;
@@ -47,7 +48,9 @@ class CookieStorage extends BaseClass {
       await this.requestJSON('POST', '', { cookie: cookie.toObject() });
     } else {
       const base = await this.driver.browser.activeWindow.navigator.getUrl();
-      cookie.setDomain(url.parse(base).hostname);
+      // $FlowFixMe: hostname should never be undefined
+      const hostname: string = url.parse(base).hostname;
+      cookie.setDomain(hostname);
       await this.requestJSON('POST', '', { cookie: cookie.toObject() });
     }
   }

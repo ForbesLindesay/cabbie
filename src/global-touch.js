@@ -1,4 +1,6 @@
+import type Driver from './driver';
 import BaseClass from './base-class';
+
 /**
  * Global touch object handling global touch commands
  */

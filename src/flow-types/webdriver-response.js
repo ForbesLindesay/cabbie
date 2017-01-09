@@ -1,1 +1,1 @@
-export type WebdriverResponse  = Object;
+export type WebdriverResponse = any;

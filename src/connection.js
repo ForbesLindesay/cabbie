@@ -1,27 +1,25 @@
 import type {HttpMethod} from './flow-types/http-method';
 import type {WebdriverResponse} from './flow-types/webdriver-response';
-import {EventEmitter} from 'events';
-import autoRequest from 'auto-request';
+import type {HttpResponse} from './flow-types/http-response';
+import type Session from './session';
+import autoRequest from 'then-request';
 import parseResponse from './utils/parse-response';
 
-class Connection extends EventEmitter {
-  _remote: string;
+class Connection {
+  remote: string;
 
   constructor(remote: string) {
-    super();
-    this._remote = remote;
+    this.remote = remote;
   }
   /**
    * Session request with automatic parsing for errors
    */
   async requestWithSession(
-    sessionPromise: Session,
+    session: Session,
     method: HttpMethod,
     uri: string,
     options?: Object,
   ): Promise<WebdriverResponse> {
-    const session = await sessionPromise;
-
     if (!/^https?\:\:\/\//.test(uri)) {
       uri = '/session/' + session.id() + uri;
     }
@@ -32,12 +30,10 @@ class Connection extends EventEmitter {
 
   async request(method: HttpMethod, uri: string, options?: Object): Promise<HttpResponse> {
     if (!/^https?\:\:\/\//.test(uri)) {
-      uri = this._remote + uri;
+      uri = this.remote + uri;
     }
 
-    this.emit('request', {method, uri, options});
     const response = await autoRequest(method, uri, options);
-    this.emit('response', response);
 
     return response;
   }

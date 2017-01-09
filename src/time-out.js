@@ -1,4 +1,5 @@
 import type {TimeOutType} from './enums/time-out-types';
+import type Driver from './driver';
 import url from "url";
 import ms from "ms";
 import BaseClass from './base-class';
@@ -36,6 +37,7 @@ class TimeOut extends BaseClass {
    */
   async setTimeOuts(timeOuts: {[key: TimeOutType]: number}): Promise<void> {
     for (const key of Object.keys(timeOuts)) {
+      // $FlowFixMe: flow cannot tell that this key is in timeOuts
       await this.setTimeOut(key, timeOuts[key]);
     }
   }
@@ -76,3 +78,5 @@ class TimeOut extends BaseClass {
     await this.requestJSON('POST', '', { type: TimeOutTypes.IMPLICIT, ms: timeout });
   }
 }
+
+export default TimeOut;

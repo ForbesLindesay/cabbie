@@ -1,13 +1,15 @@
 {
   "name": "cabbie",
-  "version": "0.2.3",
+  "private": true,
+  "version": "0.2.4",
   "description": "A webdriver client",
-  "keywords": [],
+  "keywords": [
+    "cabbie",
+    "webdriver"
+  ],
   "dependencies": {
-    "ms": "^0.7.0",
-    "promise": "^7.1.1",
-    "sync-request": "^3.0.1",
-    "then-request": "^2.0.1"
+    "babel-runtime": "^6.20.0",
+    "flow-runtime": "0.0.3"
   },
   "devDependencies": {
     "babel-cli": "^6.18.0",
@@ -19,14 +21,32 @@
     "dox": "^0.8.1",
     "flow-bin": "^0.37.4",
     "istanbul": "^0.2.4",
+    "mkdirp": "^0.5.1",
+    "ms": "^0.7.2",
+    "promise": "^7.1.1",
+    "sync-request": "^3.0.1",
     "testit": "^2.0.5",
+    "then-request": "^2.0.1",
     "yuidocjs": "^0.4.0"
   },
   "scripts": {
-    "build": "npm run build:sync && npm run build:async",
-    "build:sync": "BABEL_ENV=sync babel src --out-dir packages/sync/src",
-    "build:async": "BABEL_ENV=async babel src --out-dir packages/async/src",
-    "typecheck": "cd packages && flow"
+    "prerelease": "rm -rf output && npm run build && npm run typecheck",
+    "release": "npm run release:sync & npm run release:async",
+    "release:sync": "cd output/sync && npm publish",
+    "release:async": "cd output/async && npm publish",
+    "build": "node packages/copy-package-info && npm run build:parallel",
+    "build:parallel": "npm run build:sync & npm run build:async",
+    "build:sync": "npm run build:sync:src && npm run build:sync:lib && npm run install:sync",
+    "build:sync:src": "BABEL_ENV=sync babel src --out-dir output/sync/src",
+    "build:sync:lib": "babel output/sync/src --out-dir output/sync/lib",
+    "build:async": "npm run build:async:src && npm run build:async:lib && npm run install:async",
+    "build:async:src": "BABEL_ENV=async babel src --out-dir output/async/src",
+    "build:async:lib": "babel output/async/src --out-dir output/async/lib",
+    "install:async": "cd output/async && npm install",
+    "install:sync": "cd output/sync && npm install",
+    "typecheck": "npm run typecheck:sync & npm run typecheck:async",
+    "typecheck:async": "cd output/async && flow stop && flow",
+    "typecheck:sync": "cd output/sync && flow stop && flow"
   },
   "repository": {
     "type": "git",

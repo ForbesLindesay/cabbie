@@ -1,6 +1,12 @@
 import type {SelectorType} from './enums/selector-types';
+import Alert from './alert';
+import Frame from './frame';
+import GlobalMouse from './global-mouse';
+import GlobalTouch from './global-touch';
+import Navigator from './navigator';
 import SelectorTypes from './enums/selector-types';
 import Window from './window';
+
 /**
  * Active window object
  */
@@ -46,7 +52,7 @@ class ActiveWindow extends Window {
    */
   async takeScreenshot(): Promise<Buffer> {
     const base64data = await this.driver.requestJSON('GET', '/screenshot');
-    return new Buffer(base64Data, 'base64');
+    return new Buffer(base64data, 'base64');
   }
 
 
@@ -155,7 +161,10 @@ class ActiveWindow extends Window {
  */
 function codeToString(code: string | Function): string {
   if (typeof code === 'function') {
-    code = 'return (' + code + ').apply(null, arguments);';
+    // $FlowFixMe: intentionally concatenating string onto end of code
+    return 'return (' + code + ').apply(null, arguments);';
+  } else {
+    return code;
   }
-  return code;
 }
+export default ActiveWindow;

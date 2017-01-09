@@ -20,3 +20,4 @@ const TimeOutTypeEnum = {
    */
   IMPLICIT: 'implicit'
 };
+export default TimeOutTypeEnum;

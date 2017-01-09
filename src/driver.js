@@ -1,8 +1,8 @@
 import type {ApplicationCacheStatus} from './enums/application-cache-status';
 import type {HttpMethod} from './flow-types/http-method';
-import {EventEmitter} from 'events';
 import util from "util";
 import url from "url";
+import autoRequest from 'then-request';
 import {fromBody} from "./utils/errors";
 import Connection from "./connection";
 import Browser from "./browser";
@@ -11,14 +11,38 @@ import Session from "./session";
 import Status from "./status";
 import LogEntry from "./log-entry";
 import SessionStorage from "./session-storage";
+import parseResponse from './utils/parse-response';
 
 /**
  * Create a new Driver session, remember to call `.dispose()`
  * at the end to terminate the session.
  */
 class Driver {
+  /**
+   * Returns a list of the currently active sessions
+   *
+   * Note: Appears not to be supported by the selenium-standalone-server!}
+   */
+  static async getSessions(remote: string): Promise<Array<Session>> {
+    const connection = new Connection(remote);
+    const rawSessions = await connection.request('GET', '/sessions');
+    const sessions = parseResponse(rawSessions);
+    return sessions.map(session => new Session(session));
+  };
+
+  /**
+   * Gets the selenium-system status
+   */
+  static async getStatus(remote: string): Promise<Status> {
+    const connection = new Connection(remote);
+    const rawResponse = await connection.request('GET', '/status');
+    const response = parseResponse(rawResponse);
+    return new Status(response);
+  };
+
   session: Promise<Session>;
   _connection: Connection;
+  _options: Object;
 
   /**
    * @param {String} remote URL to selenium-server
@@ -29,10 +53,6 @@ class Driver {
    * @param {String} [options.sessionID]
    */
   constructor(remote: string, capabilities: Object, options: Object) {
-    EventEmitter.call(this);
-
-    setupDebug(this, options);
-
     options.remote = remote;
     options.capabilities = capabilities;
     this._options = options;
@@ -46,12 +66,12 @@ class Driver {
     }
   }
 
-  async _createSessionFromExistingID(seesionId: string, capabilities: Object): Promise<Session> {
+  async _createSessionFromExistingID(sessionId: string, capabilities: Object): Promise<Session> {
     return new Session({sessionId, capabilities});
   }
   async _createSession(desiredCapabilities: Object, requiredCapabilities?: Object): Promise<Session> {
-    const capabilities = {desiredCapabilities};
-
+    const capabilities = {};
+    capabilities.desiredCapabilities = desiredCapabilities;
     if (requiredCapabilities) {
       capabilities.requiredCapabilities = requiredCapabilities;
     }
@@ -69,7 +89,7 @@ class Driver {
    */
   async requestJSON(method: HttpMethod, path: string, body?: Object): Promise<any> {
     const session = await this.session;
-    return this._connection.requsetWithSession(session, method, path, {json: body});
+    return this._connection.requestWithSession(session, method, path, {json: body});
   }
 
   /**
@@ -116,7 +136,7 @@ class Driver {
    */
   async dispose(status?: Object): Promise<void> {
     if (status) {
-      await this.jobUpdate(status);
+      await this.sauceJobUpdate(status);
     }
     await this.requestJSON('DELETE', '');
   }
@@ -132,48 +152,29 @@ class Driver {
    * Sauce Labs Methods
    */
   async sauceJobUpdate(body: Object): Promise<boolean> {
-    // TODO: make this method functional again
-    var remote = this._connection._remote;
-    var request = this._connection._request_internal.bind(this);
+    const remote: string = this._connection.remote;
 
-    const sessioin = await this.session;
+    const session = await this.session;
 
-    if (typeof remote !== 'string') {
-      remote = remote.base;
-    }
     if (remote.indexOf('saucelabs') === -1) {
       return false;
     }
     if (body === undefined) {
       return true;
     }
-    var auth = url.parse(remote).auth;
+    const auth = url.parse(remote).auth;
+    if (typeof auth !== 'string') {
+      throw new Error('Could not find sauce labs authentication in remote');
+    }
 
-    await request('PUT', 'http://' + auth + '@saucelabs.com/rest/v1/' + auth.split(':')[0] + '/jobs/' + session.id(), {
+    await autoRequest('PUT', 'http://' + auth + '@saucelabs.com/rest/v1/' + auth.split(':')[0] + '/jobs/' + session.id(), {
       json: body
     });
 
     return true;
   }
 
-  /**
-   * Get a synchronous cabbie driver from an async driver.
-   *
-   * N.B. this method will still return a Promise for the Driver.
-   */
-  async getSyncDriver(): Promise<Driver> {
-    const session = await this.session;
-    const oldOptions = this._options;
-    const newOptions = {};
-    Object.keys(oldOptions).forEach(function (option) {
-      if (option !== 'remote' && option !== 'capabilities') {
-        newOptions[option] = oldOptions[option];
-      }
-    });
-    newOptions.mode = Modes.sync;
-    newOptions.sessionID = session.id();
-    return new Driver(oldOptions.remote, oldOptions.capabilities, newOptions);
-  }
+  // TODO: provide instructions for converting async driver to sync driver and visa versersa
 }
 
 
@@ -209,54 +210,13 @@ class Driver {
  */
 
 
-////////////////////
-// Static Methods //
-////////////////////
-
-/**
- * Gets the selenium-system status
- *
- * @method getStatus
- * @param {String} remote
- * @param {String} mode
- * @return {Status}
- */
-Driver.getStatus = async function (remote: string, mode) {
-  var request = new Connection(remote, mode);
-
-  const response = await when(request.request('GET', '/status'), Connection._parseResponse);
-  return new Status(response);
-};
-
-/**
- * Returns a list of the currently active sessions
- *
- * Note: Appears not to be supported by the selenium-standalone-server!
- *
- * @method getSessions
- * @param {String} remote
- * @param {string} mode
- * @return {Array.<Session>}
- */
-Driver.getSessions = async function (remote, mode) {
-  var request = new Connection(remote, mode);
-
-  const rawSessions = await request.request('GET', '/sessions');
-  const sessions = Connection._parseResponse(rawSessions);
-  return sessions.map(session => new Session(session));
-};
-
-
 /**
  * End this Driver session
  *
  * Alias for `dispose`
  * @method quit
  */
-Driver.prototype.quit = Driver.prototype.dispose;
-
-
-logMethods(Driver.prototype);
+(Driver.prototype: any).quit = Driver.prototype.dispose;
 
 
 ///////////////
@@ -285,6 +245,7 @@ function extractSessionData(res: Object): {sessionId: String, capabilities: Obje
 /**
  * Setup debug output
  */
+ /*
 async function setupDebug(driver: Driver, options: object) {
     var indentation = 0;
 
@@ -330,4 +291,5 @@ async function setupDebug(driver: Driver, options: object) {
         });
     }
 }
+*/
 export default Driver;

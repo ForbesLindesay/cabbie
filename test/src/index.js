@@ -55,13 +55,13 @@ async function run() {
   }
   const remote = (
     LOCAL
-    ? 'http://localhost:9515/'
+    ? 'http://localhost:9515'
     : 'http://cabbie:6f1108e1-6b52-47e4-b686-95fa9eef2156@ondemand.saucelabs.com/wd/hub'
   );
   const options = (
     LOCAL
-    ? {}
-    : {browserName: 'chrome'}
+    ? {httpDebug: true}
+    : {httpDebug: true, browserName: 'chrome'}
   );
   let driver;
   try {

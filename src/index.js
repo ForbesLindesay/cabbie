@@ -4,6 +4,7 @@ import Connection from './connection';
 import Driver from './driver';
 import Status from './status';
 import parseResponse from './utils/parse-response';
+import Debug from './debug';
 
 export {Driver};
 export default function createCabbieDriver(remote: string, options: Options = {}): Driver {
@@ -15,8 +16,8 @@ export default function createCabbieDriver(remote: string, options: Options = {}
  *
  * Note: Appears not to be supported by the selenium-standalone-server!}
  */
-export async function getSessions(remote: string): Promise<Array<SessionData>> {
-  const connection = new Connection(remote);
+export async function getSessions(remote: string, options: Options = {}): Promise<Array<SessionData>> {
+  const connection = new Connection(remote, new Debug(options));
   const rawSessions = await connection.request('GET', '/sessions');
   const sessions = parseResponse(rawSessions);
   return sessions.map(session => ({sessionID: session.sessionId, capabilities: session.capabilities}));
@@ -25,8 +26,8 @@ export async function getSessions(remote: string): Promise<Array<SessionData>> {
 /**
  * Gets the selenium-system status
  */
-export async function getStatus(remote: string): Promise<Status> {
-  const connection = new Connection(remote);
+export async function getStatus(remote: string, options: Options = {}): Promise<Status> {
+  const connection = new Connection(remote, new Debug(options));
   const rawResponse = await connection.request('GET', '/status');
   const response = parseResponse(rawResponse);
   return new Status(response);

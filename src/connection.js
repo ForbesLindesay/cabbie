@@ -2,14 +2,16 @@ import type {HttpMethod} from './flow-types/http-method';
 import type {WebdriverResponse} from './flow-types/webdriver-response';
 import type {HttpResponse} from './flow-types/http-response';
 import type {SessionData} from './flow-types/session-data';
+import type Debug from './debug';
 import autoRequest from 'then-request';
 import parseResponse from './utils/parse-response';
 
 class Connection {
   remote: string;
-
-  constructor(remote: string) {
-    this.remote = remote;
+  debug: Debug;
+  constructor(remote: string, debug: Debug) {
+    this.remote = remote.replace(/\/$/, '');
+    this.debug = debug;
   }
   /**
    * Session request with automatic parsing for errors
@@ -24,7 +26,7 @@ class Connection {
       uri = '/session/' + session.sessionID + uri;
     }
 
-    const response = this.request(method, uri, options);
+    const response = await this.request(method, uri, options);
     return parseResponse(response);
   }
 
@@ -33,8 +35,9 @@ class Connection {
       uri = this.remote + uri;
     }
 
+    this.debug.onRequest({method, uri, options});
     const response = await autoRequest(method, uri, options);
-    console.dir(response);
+    this.debug.onResponse(response);
 
     return response;
   }

@@ -8,6 +8,7 @@ import autoRequest from 'then-request';
 import {fromBody} from "./utils/errors";
 import Connection from "./connection";
 import Browser from "./browser";
+import Debug from './debug';
 import TimeOut from "./time-out";
 import Status from "./status";
 import LogEntry from "./log-entry";
@@ -20,6 +21,7 @@ import parseResponse from './utils/parse-response';
  */
 class Driver {
   session: Promise<SessionData>;
+  debug: Debug;
   _connection: Connection;
   _options: Object;
 
@@ -40,7 +42,8 @@ class Driver {
 
   constructor(remote: string, options: Options) {
     this._options = options;
-    this._connection = new Connection(remote);
+    this.debug = new Debug(options);
+    this._connection = new Connection(remote, this.debug);
     this.session = createSession(this._connection, options);
 
     this.browser = new Browser(this);
@@ -174,7 +177,7 @@ async function createSession(connection: Connection, options: Options): Promise<
     return options.session;
   }
   const capabilities = {};
-  capabilities.desiredCapabilities = options.desiredCapabilities;
+  capabilities.desiredCapabilities = options.desiredCapabilities || {};
   if (options.requiredCapabilities) {
     capabilities.requiredCapabilities = options.requiredCapabilities;
   }

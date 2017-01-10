@@ -25,12 +25,12 @@ export type Options = {
   /**
    * Desired capabilities are passed to selenium when setting up the session
    */
-  desiredCapabilities: {[key: string]: string},
+  desiredCapabilities?: {[key: string]: string},
 
   /**
    * Required capabilities are passed to selenium when setting up the session
    */
-  requiredCapabilities: {[key: string]: string},
+  requiredCapabilities?: {[key: string]: string},
 
   /**
    * Optionally provide a session if you have already started the selenium session.

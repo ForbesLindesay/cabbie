@@ -1,5 +1,7 @@
 import type {ApplicationCacheStatus} from './enums/application-cache-status';
 import type {HttpMethod} from './flow-types/http-method';
+import type {Options} from './flow-types/options';
+import type {SessionData} from './flow-types/session-data';
 import util from "util";
 import url from "url";
 import autoRequest from 'then-request';
@@ -7,7 +9,6 @@ import {fromBody} from "./utils/errors";
 import Connection from "./connection";
 import Browser from "./browser";
 import TimeOut from "./time-out";
-import Session from "./session";
 import Status from "./status";
 import LogEntry from "./log-entry";
 import SessionStorage from "./session-storage";
@@ -18,47 +19,15 @@ import parseResponse from './utils/parse-response';
  * at the end to terminate the session.
  */
 class Driver {
-  session: Promise<Session>;
+  session: Promise<SessionData>;
   _connection: Connection;
   _options: Object;
 
-  /**
-   * @param {String} remote URL to selenium-server
-   * @param {Object} capabilities See capabilities in {{#crossLink "Session"}}{{/crossLink}}
-   * @param {Object} options
-   * @param {String} options.mode Mode of web-driver requests (Driver.MODE_SYNC|Driver.MODE_ASYNC)
-   * @param {String} [options.base] Base-url
-   * @param {String} [options.sessionID]
-   */
-  constructor(remote: string, capabilities: Object, options: Object) {
-    options.remote = remote;
-    options.capabilities = capabilities;
+  constructor(remote: string, options: Options) {
     this._options = options;
-    this._connection = new Connection(remote, options.mode);
+    this._connection = new Connection(remote);
 
-    if (options.sessionID) {
-      // TODO: fix this for sync mode
-      this.session = this._createSessionFromExistingID(options.sessionID, capabilities);
-    } else {
-      this.session = this._createSession(capabilities);
-    }
-  }
-
-  async _createSessionFromExistingID(sessionId: string, capabilities: Object): Promise<Session> {
-    return new Session({sessionId, capabilities});
-  }
-  async _createSession(desiredCapabilities: Object, requiredCapabilities?: Object): Promise<Session> {
-    const capabilities = {};
-    capabilities.desiredCapabilities = desiredCapabilities;
-    if (requiredCapabilities) {
-      capabilities.requiredCapabilities = requiredCapabilities;
-    }
-
-    const res = await this._connection.request('POST', '/session', {
-      json: capabilities
-    });
-
-    return new Session(extractSessionData(res));
+    this.session = createSession(this._connection, options);
   }
 
   /**
@@ -145,9 +114,11 @@ class Driver {
       throw new Error('Could not find sauce labs authentication in remote');
     }
 
-    await autoRequest('PUT', 'http://' + auth + '@saucelabs.com/rest/v1/' + auth.split(':')[0] + '/jobs/' + session.id(), {
-      json: body
-    });
+    await autoRequest(
+      'PUT',
+      'http://' + auth + '@saucelabs.com/rest/v1/' + auth.split(':')[0] + '/jobs/' + session.sessionID,
+      {json: body},
+    );
 
     return true;
   }
@@ -201,20 +172,31 @@ class Driver {
 // Utilities //
 ///////////////
 
-/**
- * Extract a session ID and the accepted capabilities from a server response
- */
-function extractSessionData(res: Object): {sessionId: String, capabilities: Object} {
-  var body;
+async function createSession(connection: Connection, options: Options): Promise<SessionData> {
+  if (options.session !== undefined) {
+    return options.session;
+  }
+  const capabilities = {};
+  capabilities.desiredCapabilities = options.desiredCapabilities;
+  if (options.requiredCapabilities) {
+    capabilities.requiredCapabilities = options.requiredCapabilities;
+  }
+
+  const res = await connection.request('POST', '/session', {
+    json: capabilities
+  });
 
   if (res.statusCode !== 200) {
     console.dir(res.headers);
-    throw new Error('Failed to start a Selenium session. Server responded with status code ' + res.statusCode + ':\n' + res.body);
+    throw new Error(
+      'Failed to start a Selenium session. Server responded with status code ' + res.statusCode + ':\n' +
+      res.body.toString('utf8')
+    );
   }
 
-  body = JSON.parse(res.body);
+  const body = JSON.parse(res.body.toString('utf8'));
   if (body.status === 0) {
-    return { sessionId: body.sessionId, capabilities: body.value };
+    return {sessionID: body.sessionId, capabilities: body.value};
   } else {
     throw new Error(fromBody(body));
   }

@@ -1,11 +1,12 @@
-import Connection from "./connection";
+import type {Options} from './flow-types/options';
+import type {SessionData} from './flow-types/session-data';
+import Connection from './connection';
 import Driver from './driver';
-import Session from "./session";
-import Status from "./status";
+import Status from './status';
 import parseResponse from './utils/parse-response';
 
-export default function createCabbieDriver(remote: string, capabilities: Object, options: Object): Driver {
-  return new Driver(remote, capabilities, options);
+export default function createCabbieDriver(remote: string, options: Options = {}): Driver {
+  return new Driver(remote, options);
 }
 
 /**
@@ -13,11 +14,11 @@ export default function createCabbieDriver(remote: string, capabilities: Object,
  *
  * Note: Appears not to be supported by the selenium-standalone-server!}
  */
-export async function getSessions(remote: string): Promise<Array<Session>> {
+export async function getSessions(remote: string): Promise<Array<SessionData>> {
   const connection = new Connection(remote);
   const rawSessions = await connection.request('GET', '/sessions');
   const sessions = parseResponse(rawSessions);
-  return sessions.map(session => new Session(session));
+  return sessions.map(session => ({sessionID: session.sessionId, capabilities: session.capabilities}));
 };
 
 /**

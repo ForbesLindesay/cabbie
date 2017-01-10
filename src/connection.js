@@ -1,7 +1,7 @@
 import type {HttpMethod} from './flow-types/http-method';
 import type {WebdriverResponse} from './flow-types/webdriver-response';
 import type {HttpResponse} from './flow-types/http-response';
-import type Session from './session';
+import type {SessionData} from './flow-types/session-data';
 import autoRequest from 'then-request';
 import parseResponse from './utils/parse-response';
 
@@ -15,13 +15,13 @@ class Connection {
    * Session request with automatic parsing for errors
    */
   async requestWithSession(
-    session: Session,
+    session: SessionData,
     method: HttpMethod,
     uri: string,
     options?: Object,
   ): Promise<WebdriverResponse> {
     if (!/^https?\:\:\/\//.test(uri)) {
-      uri = '/session/' + session.id() + uri;
+      uri = '/session/' + session.sessionID + uri;
     }
 
     const response = this.request(method, uri, options);

@@ -12,7 +12,7 @@ type TimeoutValue = number | string;
  */
 class TimeOut extends BaseClass {
   constructor(driver: Driver) {
-    super(driver, '/timesouts');
+    super(driver, '/timeouts');
   }
 
   /**

@@ -68,8 +68,8 @@ async function run() {
   try {
     console.log('creating driver');
     driver = createCabbie(remote, options);
-    const location = createPage(__dirname + '/../demoPage.html', {
-      '{{linked-page}}': createPage(__dirname + '/../linkedTo.html'),
+    const location = createPage(__dirname + '/../../demoPage.html', {
+      '{{linked-page}}': createPage(__dirname + '/../../linkedTo.html'),
     });
     await runTest(driver, location);
   } finally {

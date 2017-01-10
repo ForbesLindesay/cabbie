@@ -142,23 +142,27 @@ async function buildTest(mode) {
   "typecheck:test:sync": "cd test/sync && flow stop && flow",
   */
 async function run() {
-  if (process.argv.indexOf('--only-tests') === -1) {
+  const isOnlyTests = process.argv.indexOf('--only-tests') !== -1;
+  const isAll = process.argv.indexOf('--all') !== -1;
+  if (!isOnlyTests) {
     rimraf.sync(__dirname + '/../output');
     await Promise.all([
       build('sync'),
       build('async'),
     ]);
   }
-  rimraf.sync(__dirname + '/../test/sync');
-  rimraf.sync(__dirname + '/../test/async');
-  await execute(
-    `babel-node test/copy-output-packages`,
-    'babel-node', ['test/copy-output-packages'],
-  );
-  await Promise.all([
-    buildTest('sync'),
-    buildTest('async'),
-  ]);
+  if (isOnlyTests || isAll) {
+    rimraf.sync(__dirname + '/../test/sync');
+    rimraf.sync(__dirname + '/../test/async');
+    await execute(
+      `babel-node test/copy-output-packages`,
+      'babel-node', ['test/copy-output-packages'],
+    );
+    await Promise.all([
+      buildTest('sync'),
+      buildTest('async'),
+    ]);
+  }
 }
 run().catch(ex => {
   setTimeout(() => { throw ex; }, 0);

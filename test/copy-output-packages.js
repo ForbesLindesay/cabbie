@@ -16,11 +16,26 @@ function copy(name) {
       fs.writeFileSync(path, fs.readFileSync(entry.fullPath));
     }
   });
-  function copyFile(filename) {
-    const src  = fs.readFileSync(__dirname + '/../scripts/' + filename, 'utf8');
+  function addModule(moduleName) {
+    mkdir.sync(__dirname + '/' + name + '/node_modules/' + moduleName);
+    lsr.sync(__dirname + '/../node_modules/' + moduleName).forEach(entry => {
+      const path = (
+        __dirname + '/' + name + '/node_modules/' + moduleName + entry.path.substr(1)
+      );
+      if (entry.isDirectory()) {
+        mkdir.sync(path);
+      } else {
+        fs.writeFileSync(path, fs.readFileSync(entry.fullPath));
+      }
+    });
+  }
+  addModule('testit');
+  addModule('sync-request');
+  function copyFile(filename, from = filename) {
+    const src  = fs.readFileSync(__dirname + '/../scripts/' + from, 'utf8');
     fs.writeFileSync(__dirname + '/' + name + '/' + filename, src);
   }
-  copyFile('.flowconfig');
+  copyFile('.flowconfig', 'test-flowconfig');
   copyFile('.babelrc');
   fs.writeFileSync(__dirname + '/' + name + '/package.json', JSON.stringify({
     name: 'cabbie-test',

@@ -106,10 +106,6 @@ function install(directory) {
   );
 }
 
-rimraf.sync(__dirname + '/../output');
-rimraf.sync(__dirname + '/../test/sync');
-rimraf.sync(__dirname + '/../test/async');
-
 async function build(mode) {
   await babel(['src', '--out-dir', 'output/' + mode + '/src'], mode);
   copyFiles(mode);
@@ -145,19 +141,25 @@ async function buildTest(mode) {
   "typecheck:test": "npm run typecheck:test:sync",
   "typecheck:test:sync": "cd test/sync && flow stop && flow",
   */
-Promise.all([
-  build('sync'),
-  build('async'),
-]).then(() => {
-  return execute(
+async function run() {
+  if (process.argv.indexOf('--only-tests') === -1) {
+    rimraf.sync(__dirname + '/../output');
+    await Promise.all([
+      build('sync'),
+      build('async'),
+    ]);
+  }
+  rimraf.sync(__dirname + '/../test/sync');
+  rimraf.sync(__dirname + '/../test/async');
+  await execute(
     `babel-node test/copy-output-packages`,
     'babel-node', ['test/copy-output-packages'],
   );
-}).then(() => {
-  return Promise.all([
+  await Promise.all([
     buildTest('sync'),
     buildTest('async'),
   ]);
-}).catch(ex => {
+}
+run().catch(ex => {
   setTimeout(() => { throw ex; }, 0);
 });

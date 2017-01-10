@@ -23,11 +23,29 @@ class Driver {
   _connection: Connection;
   _options: Object;
 
+  /**
+   * The browser object.
+   */
+  browser: Browser;
+
+  /**
+   * Configuration timeouts
+   */
+  timeOut: TimeOut;
+
+  /**
+   * Get the Session-Storage object.
+   */
+  sessionStorage: SessionStorage;
+
   constructor(remote: string, options: Options) {
     this._options = options;
     this._connection = new Connection(remote);
-
     this.session = createSession(this._connection, options);
+
+    this.browser = new Browser(this);
+    this.timeOut = new TimeOut(this);
+    this.sessionStorage = new SessionStorage(this);
   }
 
   /**
@@ -37,20 +55,6 @@ class Driver {
   async requestJSON(method: HttpMethod, path: string, body?: Object): Promise<any> {
     const session = await this.session;
     return this._connection.requestWithSession(session, method, path, {json: body});
-  }
-
-  /**
-   * Gets the browser object.
-   */
-  get browser(): Browser {
-    return new Browser(this);
-  }
-
-  /**
-   * Get the time-out object.
-   */
-  get timeOut(): TimeOut {
-    return new TimeOut(this);
   }
 
   /**
@@ -86,13 +90,6 @@ class Driver {
       await this.sauceJobUpdate(status);
     }
     await this.requestJSON('DELETE', '');
-  }
-
-  /**
-   * Get the Session-Storage object.
-   */
-  get sessionStorage(): SessionStorage {
-    return new SessionStorage(this);
   }
 
   /**

@@ -5,6 +5,7 @@ import Driver from './driver';
 import Status from './status';
 import parseResponse from './utils/parse-response';
 
+export {Driver};
 export default function createCabbieDriver(remote: string, options: Options = {}): Driver {
   return new Driver(remote, options);
 }

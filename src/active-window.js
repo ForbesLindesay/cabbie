@@ -1,4 +1,5 @@
 import type {SelectorType} from './enums/selector-types';
+import type Driver from './driver';
 import Alert from './alert';
 import Element from './element';
 import Frame from './frame';
@@ -12,6 +13,39 @@ import Window from './window';
  * Active window object
  */
 class ActiveWindow extends Window {
+  /**
+   * The global-touch object.
+   */
+  touch: GlobalTouch;
+
+  /**
+   * Get the global-mouse object.
+   */
+  mouse: GlobalMouse;
+
+  /**
+   * Get the Navigator object.
+   */
+  navigator: Navigator;
+
+  /**
+   * Get the Frame object.
+   */
+  frame: Frame;
+
+  /**
+   * Get the Alert object.
+   */
+  alert: Alert;
+  constructor(driver: Driver, id: string) {
+    super(driver, id);
+
+    this.touch = new GlobalTouch(this.driver);
+    this.mouse = new GlobalMouse(this.driver);
+    this.navigator = new Navigator(this.driver);
+    this.frame = new Frame(this.driver);
+    this.alert = new Alert(this.driver);
+  }
 
   /**
    * Execute a script on the browser and return the result.
@@ -119,42 +153,6 @@ class ActiveWindow extends Window {
    */
   async getSource(): Promise<string> {
     return await this.driver.requestJSON('GET', '/source');
-  }
-
-
-  /**
-   * The global-touch object.
-   */
-  get touch(): GlobalTouch {
-    return new GlobalTouch(this.driver);
-  }
-
-  /**
-   * Get the global-mouse object.
-   */
-  get mouse(): GlobalMouse {
-    return new GlobalMouse(this.driver);
-  }
-
-  /**
-   * Get the Navigator object.
-   */
-  get navigator(): Navigator {
-    return new Navigator(this.driver);
-  }
-
-  /**
-   * Get the Frame object.
-   */
-  get frame(): Frame {
-    return new Frame(this.driver);
-  }
-
-  /**
-   * Get the Alert object.
-   */
-  get alert(): Alert {
-    return new Alert(this.driver);
   }
 }
 /**

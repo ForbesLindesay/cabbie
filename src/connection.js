@@ -34,6 +34,7 @@ class Connection {
     }
 
     const response = await autoRequest(method, uri, options);
+    console.dir(response);
 
     return response;
   }

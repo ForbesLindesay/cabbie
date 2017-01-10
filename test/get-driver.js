@@ -23,7 +23,7 @@ module.exports = function (options) {
       chromedriver.start();
     }
     browserCount++;
-    var browser = getDriver('http://localhost:9515/', {}, options);
+    var browser = getDriver('http://localhost:9515/', options);
     browser.on('disposed', function () {
       if (0 === --browserCount) {
         chromedriver.stop();
@@ -31,6 +31,10 @@ module.exports = function (options) {
     });
     return browser;
   } else {
-    return getDriver('http://cabbie:6f1108e1-6b52-47e4-b686-95fa9eef2156@ondemand.saucelabs.com/wd/hub', {browserName: 'chrome'}, options);
+    options.capabilities = {browserName: 'chrome'}
+    return getDriver(
+      'http://cabbie:6f1108e1-6b52-47e4-b686-95fa9eef2156@ondemand.saucelabs.com/wd/hub',
+      options,
+    );
   }
 };

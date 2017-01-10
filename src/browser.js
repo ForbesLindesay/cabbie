@@ -1,4 +1,5 @@
 import type {BrowserOrientation} from './enums/browser-orientations';
+import type Driver from './driver';
 import ActiveWindow from './active-window';
 import BaseClass from './base-class';
 import CookieStorage from './cookie-storage';
@@ -10,6 +11,32 @@ import Window from './window';
  * Browser accessor class
  */
 class Browser extends BaseClass {
+  activeWindow: ActiveWindow;
+
+  /**
+   * Get the IME object.
+   */
+  ime: IME;
+
+
+  /**
+   * Get the Cookie-Storage object.
+   */
+  cookieStorage: CookieStorage;
+
+  /**
+   * Get the Local-Storage object.
+   */
+  localStorage: LocalStorage;
+
+  constructor(driver: Driver) {
+    super(driver);
+
+    this.activeWindow = new ActiveWindow(this.driver, 'current');
+    this.ime = new IME(this.driver);
+    this.cookieStorage = new CookieStorage(this.driver);
+    this.localStorage = new LocalStorage(this.driver);
+  }
   /**
    * Change focus to another window
    */
@@ -17,13 +44,6 @@ class Browser extends BaseClass {
     const handle = await window.getID();
     await this.requestJSON('POST', '/window', {name: handle});
     return this.activeWindow;
-  };
-
-  /**
-   * Get the currently active window.
-   */
-  get activeWindow(): ActiveWindow {
-    return new ActiveWindow(this.driver, 'current');
   };
 
   /**
@@ -64,29 +84,6 @@ class Browser extends BaseClass {
    */
   async setGeoLocation(loc: {latitude: number, longitude: number, altitude: number}): Promise<void> {
     await this.requestJSON('POST', '/location', loc);
-  };
-
-
-  /**
-   * Get the IME object.
-   */
-  get ime(): IME{
-    return new IME(this.driver);
-  };
-
-
-  /**
-   * Get the Cookie-Storage object.
-   */
-  get cookieStorage(): CookieStorage {
-    return new CookieStorage(this.driver);
-  };
-
-  /**
-   * Get the Local-Storage object.
-   */
-  get localStorage(): LocalStorage {
-    return new LocalStorage(this.driver);
   };
 }
 export default Browser;

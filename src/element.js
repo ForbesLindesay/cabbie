@@ -14,27 +14,22 @@ class Element extends BaseClass {
   _parent: Element | Browser;
   _selector: string;
 
+  /**
+   * The selenium id of the element
+   */
+  elementID: string;
+  mouse: Mouse;
+  touch: Touch;
   constructor(driver: Driver, parent: Element | Browser, selector: string, id: ElementHandle) {
     const prefix = '/element/' + id.ELEMENT;
     super(driver, prefix);
     this._parent = parent;
     this._selector = selector;
     this.elementHandle = id;
-  }
 
-  get mouse(): Mouse {
-    return new Mouse(this.driver, this);
-  }
-
-  get touch(): Touch {
-    return new Touch(this.driver, this);
-  }
-
-  /**
-   * The selenium id of the element
-   */
-  get elementID(): string {
-    return this.elementHandle.ELEMENT;
+    this.elementID = this.elementHandle.ELEMENT;
+    this.mouse = new Mouse(this.driver, this);
+    this.touch = new Touch(this.driver, this);
   }
 
   /**

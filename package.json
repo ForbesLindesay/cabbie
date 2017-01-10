@@ -31,13 +31,15 @@
     "promise": "^7.1.1",
     "rimraf": "^2.5.4",
     "sync-request": "^3.0.1",
-    "testit": "^2.0.5",
+    "testit": "^2.1.3",
     "then-request": "^2.0.1",
     "throat": "^3.0.0",
     "yuidocjs": "^0.4.0"
   },
   "scripts": {
-    "build": "babel-node scripts/build"
+    "build": "babel-node scripts/build",
+    "pretest": "babel-node scripts/build --only-tests",
+    "test": "babel-node test/async && babel-node test/sync"
   },
   "repository": {
     "type": "git",

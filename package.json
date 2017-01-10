@@ -39,7 +39,7 @@
   "scripts": {
     "build": "babel-node scripts/build",
     "pretest": "babel-node scripts/build --only-tests",
-    "test": "babel-node test/async && babel-node test/sync"
+    "test": "babel-node test/async/src && babel-node test/sync/src"
   },
   "repository": {
     "type": "git",

@@ -127,7 +127,7 @@ async function build(mode) {
   rimraf.sync(__dirname + '/../output/' + mode + '/src');
 }
 async function buildTest(mode) {
-  await babel(['test/src', '--out-dir', 'test/' + mode + ''], mode);
+  await babel(['test/src/src', '--out-dir', 'test/' + mode + '/src'], mode);
   await flow(__dirname + '/../test/' + mode, ['stop']);
   await flow(__dirname + '/../test/' + mode);
 }

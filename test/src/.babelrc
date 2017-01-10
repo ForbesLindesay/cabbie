@@ -1,15 +1,9 @@
 {
+  "ignore": ["node_modules"],
   "plugins": [
     "syntax-flow",
     "syntax-trailing-function-commas",
     "syntax-class-properties",
-
-    ["add-header-comment", {
-      "header": [
-        "@flow",
-        "This file is generated automatically, run npm run build:test to re-generate."
-      ]
-    }]
   ],
   "env": {
     "sync": {

@@ -1,3 +1,4 @@
+// @flow
 import fs from 'fs';
 import assert from 'assert';
 import test from 'testit';
@@ -92,22 +93,6 @@ async function run() {
 //   });
 // }
 //
-// function clickElement(driver, promise, elementSelector) {
-//   return promise(driver.browser().activeWindow().getElement(elementSelector)).then(function (element) {
-//     return promise(element.mouse().click()).then(function () {
-//       return element;
-//     });
-//   });
-// }
-//
-// function checkText(driver, promise, elementSelector, expectedText) {
-//   return promise(driver.browser().activeWindow().getElement(elementSelector)).then(function (element) {
-//     return promise(element.getText()).then(function (actualText) {
-//       assert.equal(actualText, expectedText);
-//       return element;
-//     });
-//   });
-// }
 //
 //
 // test('throws an error if you try and get a driver with an invalid mode', function () {
@@ -132,13 +117,6 @@ async function run() {
 //                      name: name,
 //                      build: process.env.TRAVIS_JOB_ID
 //                    }));
-//   });
-//
-//   test('set timeouts', function () {
-//     return promise(driver.timeOut().setTimeOuts({
-//       'implicit': '1s',
-//       'async': '10s'
-//     }));
 //   });
 //
 //

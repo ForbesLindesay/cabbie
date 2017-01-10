@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const rimraf = require('rimraf');
+const throat = require('throat');
 const spawn = require('cross-spawn');
 const chalk = require('chalk');
 const ms = require('ms');
@@ -24,14 +25,16 @@ function execute(description, name, args, options = {}) {
         console.log();
       }
       let stdout = '';
-      result.forEach(v => {
-        if (exitCode || !getStdout) {
-          process[v.n].write(v.buf);
-        } else if (v.n === 'stdout') {
-          stdout += v.buf.toString('utf8');
-        }
-      });
-      console.log();
+      if (exitCode || getStdout) {
+        result.forEach(v => {
+          if (exitCode || !getStdout) {
+            process[v.n].write(v.buf);
+          } else if (v.n === 'stdout') {
+            stdout += v.buf.toString('utf8');
+          }
+        });
+        console.log();
+      }
       if (exitCode) reject(new Error('exit code ' + exitCode));
       else resolve(stdout);
     });
@@ -42,13 +45,6 @@ function execute(description, name, args, options = {}) {
   "release": "npm run release:sync & npm run release:async",
   "release:sync": "cd output/sync && npm publish",
   "release:async": "cd output/async && npm publish",
-
-  "prebuild:test": "babel-node test/copy-output-packages",
-  "build:test": "npm run build:test:sync & npm run build:test:async",
-  "build:test:sync": "BABEL_ENV=sync babel test/src --out-dir test/sync",
-  "build:test:async": "BABEL_ENV=async babel test/src --out-dir test/async",
-  "typecheck:test": "npm run typecheck:test:sync",
-  "typecheck:test:sync": "cd test/sync && flow stop && flow",
   */
 
 function babel(args, BABEL_ENV) {
@@ -75,18 +71,33 @@ function generateFlow(directory, args = []) {
 }
 function generateFlowFiles(mode) {
   const failedPaths = [];
+  const successPaths = [];
   return Promise.all(
-    lsr.sync(__dirname + '/../output/' + mode + '/src').filter(e => e.isFile()).map(entry => {
+    lsr.sync(__dirname + '/../output/' + mode + '/src').filter(e => e.isFile()).map(throat(1, entry => {
+      /*
       return generateFlow(__dirname + '/../output/' + mode, ['gen-flow-files', entry.fullPath, '--retries', '100']).then(
         result => {
-          console.log(chalk.green(entry.path));
-          fs.writeFileSync(__dirname + '/../output/' + mode + '/lib' + entry.path.substr(1) + '.flow', result);
+          return result;
         }, () => {
           failedPaths.push(entry.path);
+          return fs.readFileSync(entry.fullPath);
         },
-      );
-    }),
-  ).then(() => failedPaths);
+      ).then(result => {
+        successPaths.push({
+          path: entry.path,
+          fullPath: __dirname + '/../output/' + mode + '/lib' + entry.path.substr(1) + '.flow',
+          src: result,
+        });
+      });
+      */
+      const result = fs.readFileSync(entry.fullPath);
+      successPaths.push({
+        path: entry.path,
+        fullPath: __dirname + '/../output/' + mode + '/lib' + entry.path.substr(1) + '.flow',
+        src: result,
+      });
+    })),
+  ).then(() => ({successPaths, failedPaths}));
 }
 function install(directory) {
   return execute(
@@ -96,6 +107,8 @@ function install(directory) {
 }
 
 rimraf.sync(__dirname + '/../output');
+rimraf.sync(__dirname + '/../test/sync');
+rimraf.sync(__dirname + '/../test/async');
 
 async function build(mode) {
   await babel(['src', '--out-dir', 'output/' + mode + '/src'], mode);
@@ -103,13 +116,48 @@ async function build(mode) {
   await install(__dirname + '/../output/' + mode);
   await flow(__dirname + '/../output/' + mode, ['stop']);
   await flow(__dirname + '/../output/' + mode);
+  const flowFiles = await generateFlowFiles(mode);
   await babel(['output/' + mode + '/src', '--out-dir', 'output/' + mode + '/lib'], mode);
-  const failedPaths = await generateFlowFiles(mode);
-  failedPaths.forEach(path => console.log(chalk.red(path)));
+  lsr.sync(__dirname + '/../output/' + mode + '/lib').forEach(entry => {
+    if (entry.isFile()) {
+      fs.writeFileSync(entry.fullPath, fs.readFileSync(entry.fullPath, 'utf8').replace(/\@flow/g, ''));
+    }
+  });
+  flowFiles.successPaths.forEach(file => {
+    console.log(chalk.green(file.path))
+    fs.writeFileSync(file.fullPath, file.src);
+  });
+  flowFiles.failedPaths.forEach(path => console.log(chalk.red(path)));
+  rimraf.sync(__dirname + '/../output/' + mode + '/src');
 }
+async function buildTest(mode) {
+  await babel(['test/src', '--out-dir', 'test/' + mode + ''], mode);
+  await flow(__dirname + '/../test/' + mode, ['stop']);
+  await flow(__dirname + '/../test/' + mode);
+}
+
+
+/*
+  "prebuild:test": "babel-node test/copy-output-packages",
+  "build:test": "npm run build:test:sync & npm run build:test:async",
+  "build:test:sync": "BABEL_ENV=sync babel test/src --out-dir test/sync",
+  "build:test:async": "BABEL_ENV=async babel test/src --out-dir test/async",
+  "typecheck:test": "npm run typecheck:test:sync",
+  "typecheck:test:sync": "cd test/sync && flow stop && flow",
+  */
 Promise.all([
   build('sync'),
   build('async'),
-]).catch(ex => {
+]).then(() => {
+  return execute(
+    `babel-node test/copy-output-packages`,
+    'babel-node', ['test/copy-output-packages'],
+  );
+}).then(() => {
+  return Promise.all([
+    buildTest('sync'),
+    buildTest('async'),
+  ]);
+}).catch(ex => {
   setTimeout(() => { throw ex; }, 0);
 });

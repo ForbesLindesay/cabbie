@@ -18,28 +18,6 @@ import parseResponse from './utils/parse-response';
  * at the end to terminate the session.
  */
 class Driver {
-  /**
-   * Returns a list of the currently active sessions
-   *
-   * Note: Appears not to be supported by the selenium-standalone-server!}
-   */
-  static async getSessions(remote: string): Promise<Array<Session>> {
-    const connection = new Connection(remote);
-    const rawSessions = await connection.request('GET', '/sessions');
-    const sessions = parseResponse(rawSessions);
-    return sessions.map(session => new Session(session));
-  };
-
-  /**
-   * Gets the selenium-system status
-   */
-  static async getStatus(remote: string): Promise<Status> {
-    const connection = new Connection(remote);
-    const rawResponse = await connection.request('GET', '/status');
-    const response = parseResponse(rawResponse);
-    return new Status(response);
-  };
-
   session: Promise<Session>;
   _connection: Connection;
   _options: Object;

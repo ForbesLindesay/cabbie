@@ -3,6 +3,7 @@ const lsr = require('lsr');
 const mkdir = require('mkdirp');
 
 function copy(name) {
+  mkdir.sync(__dirname + '/' + name + '/node_modules/cabbie-' + name);
   lsr.sync(__dirname + '/../output/' + name).forEach(entry => {
     const path = (
       entry.path.startsWith('./node_modules/')
@@ -16,7 +17,7 @@ function copy(name) {
     }
   });
   function copyFile(filename) {
-    const src  = fs.readFileSync(__dirname + '/../packages/' + filename, 'utf8');
+    const src  = fs.readFileSync(__dirname + '/../scripts/' + filename, 'utf8');
     fs.writeFileSync(__dirname + '/' + name + '/' + filename, src);
   }
   copyFile('.flowconfig');

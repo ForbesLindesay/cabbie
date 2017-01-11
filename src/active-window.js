@@ -7,12 +7,13 @@ import GlobalMouse from './global-mouse';
 import GlobalTouch from './global-touch';
 import Navigator from './navigator';
 import SelectorTypes from './enums/selector-types';
-import Window from './window';
+import BaseWindow from './base-window';
+import WindowHandle from './window-handle';
 
 /**
  * Active window object
  */
-class ActiveWindow extends Window {
+class ActiveWindow extends BaseWindow {
   /**
    * The global-touch object.
    */
@@ -37,14 +38,24 @@ class ActiveWindow extends Window {
    * Get the Alert object.
    */
   alert: Alert;
-  constructor(driver: Driver, id: string) {
-    super(driver, id);
+
+  constructor(driver: Driver) {
+    super(driver, 'current');
 
     this.touch = new GlobalTouch(this.driver);
     this.mouse = new GlobalMouse(this.driver);
     this.navigator = new Navigator(this.driver);
     this.frame = new Frame(this.driver);
     this.alert = new Alert(this.driver);
+  }
+
+
+  /**
+   * Get a handle for the current window
+   */
+  async getWindowHandle(): Promise<WindowHandle> {
+    const windowHandle = await this.requestJSON('GET', '/window_handle');
+    return new WindowHandle(this.driver, windowHandle);
   }
 
   /**

@@ -5,7 +5,7 @@ import BaseClass from './base-class';
 import CookieStorage from './cookie-storage';
 import IME from './ime';
 import LocalStorage from './local-storage';
-import Window from './window';
+import WindowHandle from './window-handle';
 
 /**
  * Browser accessor class
@@ -32,29 +32,21 @@ class Browser extends BaseClass {
   constructor(driver: Driver) {
     super(driver);
 
-    this.activeWindow = new ActiveWindow(this.driver, 'current');
+    this.activeWindow = new ActiveWindow(this.driver);
     this.ime = new IME(this.driver);
     this.cookieStorage = new CookieStorage(this.driver);
     this.localStorage = new LocalStorage(this.driver);
   }
-  /**
-   * Change focus to another window
-   */
-  async activateWindow(window: Window): Promise<ActiveWindow> {
-    const handle = await window.getID();
-    await this.requestJSON('POST', '/window', {name: handle});
-    return this.activeWindow;
-  };
 
   /**
    * Get an array of windows for all available windows
    */
-  async getWindows(): Promise<Array<Window>> {
+  async getWindows(): Promise<Array<WindowHandle>> {
     const windowHandles = await this.requestJSON('GET', '/window_handles');
     return windowHandles.map(windowHandle => {
-      return new Window(this.driver, windowHandle);
+      return new WindowHandle(this.driver, windowHandle);
     });
-  };
+  }
 
 
   /**
@@ -62,14 +54,14 @@ class Browser extends BaseClass {
    */
   async getOrientation(): Promise<BrowserOrientation> {
     return this.requestJSON('GET', '/orientation');
-  };
+  }
 
   /**
    * Get the current browser orientation
    */
   async setOrientation(orientation: BrowserOrientation): Promise<void> {
     await this.requestJSON('POST', '/orientation', {orientation});
-  };
+  }
 
 
   /**
@@ -84,6 +76,6 @@ class Browser extends BaseClass {
    */
   async setGeoLocation(loc: {latitude: number, longitude: number, altitude: number}): Promise<void> {
     await this.requestJSON('POST', '/location', loc);
-  };
+  }
 }
 export default Browser;

@@ -5,41 +5,11 @@ import BaseClass from './base-class';
 /**
  * Window object
  */
-class Window extends BaseClass {
-
-  /**
-   * The internal selenium id
-   */
-  id: string;
+class BaseWindow extends BaseClass {
 
   constructor(driver: Driver, id: string) {
     super(driver, '/window/' + id);
-    this.id = id;
   }
-
-  /**
-   * Get the inernal selenium id.
-   * Should the id resolve to 'current', then it will request the actual id.
-   */
-   async getID(): Promise<string> {
-    if (this.id === 'current') {
-      return await this.driver.requestJSON('GET', '/window_handle');
-    } else {
-      return this.id;
-    }
-  }
-
-
-  /**
-   * Activate the current window
-   */
-  async activate(): Promise<ActiveWindow> {
-    if (this.id !== 'current') {
-      await this.driver.browser.activateWindow(this);
-    }
-    return this.driver.browser.activeWindow;
-  }
-
 
   /**
    * Get the size of a window
@@ -78,4 +48,4 @@ class Window extends BaseClass {
     await this.requestJSON('POST', '/position', { x: x, y: y });
   };
 }
-export default Window;
+export default BaseWindow;

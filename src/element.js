@@ -5,12 +5,9 @@ import type {SelectorType} from './enums/selector-types';
 import BaseClass from './base-class';
 import Mouse from './mouse';
 import SelectorTypes from './enums/selector-types';
+import Touch from './touch';
 
 class Element extends BaseClass {
-  /**
-   * The internal selenium handler object
-   */
-  elementHandle: ElementHandle;
   _parent: Element | Browser;
   _selector: string;
 
@@ -20,14 +17,13 @@ class Element extends BaseClass {
   elementID: string;
   mouse: Mouse;
   touch: Touch;
-  constructor(driver: Driver, parent: Element | Browser, selector: string, id: ElementHandle) {
-    const prefix = '/element/' + id.ELEMENT;
+  constructor(driver: Driver, parent: Element | Browser, selector: string, elementHandle: ElementHandle) {
+    const prefix = '/element/' + elementHandle.ELEMENT;
     super(driver, prefix);
     this._parent = parent;
     this._selector = selector;
-    this.elementHandle = id;
 
-    this.elementID = this.elementHandle.ELEMENT;
+    this.elementID = elementHandle.ELEMENT;
     this.mouse = new Mouse(this.driver, this);
     this.touch = new Touch(this.driver, this);
   }

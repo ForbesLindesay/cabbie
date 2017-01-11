@@ -1,4 +1,4 @@
-import type {ApplicationCacheStatus} from './enums/application-cache-status';
+import type {ApplicationCacheStatus} from './enums/application-cache-statuses';
 import type {HttpMethod} from './flow-types/http-method';
 import type {Options} from './flow-types/options';
 import type {SessionData} from './flow-types/session-data';
@@ -198,7 +198,7 @@ async function createSession(connection: Connection, options: Options): Promise<
   if (body.status === 0) {
     return {sessionID: body.sessionId, capabilities: body.value};
   } else {
-    throw new Error(fromBody(body));
+    throw fromBody(body);
   }
 }
 

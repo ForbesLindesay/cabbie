@@ -29,7 +29,7 @@ function parseResponse(res: HttpResponse): WebdriverResponse {
       if (body.status === 0) {
         return body.value;
       } else {
-        throw new Error(fromBody(body));
+        throw fromBody(body);
       }
     }
 

@@ -49,9 +49,14 @@ export const names = {
 /**
  * Extracts the error message from a response body
  */
-export function fromBody(body: Object): string {
-  var msg = (names[body.status] || 'UnknownError') + '(' + body.status + '): ';
-  if (body.value && body.value.message) msg += body.value.message;
-  else msg += body.value;
-  return msg;
+export function fromBody(body: Object): Error {
+  const msg = (
+    (body.value && body.value.message)
+    ? body.value.message
+    : body.value
+  );
+  const err = new Error(msg);
+  err.name = (names[body.status] || 'UnknownSeleniumError');
+  (err: any).code = (names[body.status] || 'UnknownSeleniumError');
+  return err;
 }

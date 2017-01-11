@@ -1,6 +1,7 @@
 // @flow
 
 import type {Driver} from 'cabbie-async';
+import {SelectorTypes} from 'cabbie-async';
 import assert from 'assert';
 
 async function run(driver: Driver, location: string) {
@@ -17,179 +18,84 @@ async function run(driver: Driver, location: string) {
   }
 
   console.log('test timeouts');
-
   driver.timeOut.setTimeOuts({
     'implicit': '1s',
     'async': '10s',
   });
 
+  console.log('get the active window handle');
+  const originalWindow = await driver.browser.activeWindow.getWindowHandle();
+  assert.notEqual(originalWindow.id, 'current');
+  assert.equal(typeof originalWindow.id, 'string');
+
+  console.log('get the position of the active window');
+  const position = await driver.browser.activeWindow.getPosition();
+  assert.equal(typeof position, 'object');
+  assert.equal(typeof position.x, 'number');
+  assert.equal(typeof position.y, 'number');
+
+  console.log('get the size of the active window');
+  const size = await driver.browser.activeWindow.getSize();
+  assert.equal(typeof size, 'object');
+  assert.equal(typeof size.width, 'number');
+  assert.equal(typeof size.height, 'number');
+
+  console.log('resize the active window');
+  await driver.browser.activeWindow.resize(500, 300);
+  assert.deepEqual(await driver.browser.activeWindow.getSize(), {width: 500, height: 300});
+
+  console.log('position the active window');
+  await driver.browser.activeWindow.position(160, 163);
+  assert.deepEqual(await driver.browser.activeWindow.getPosition(), {x: 160, y: 163});
+
+  console.log('maximize the active window');
+  await driver.browser.activeWindow.maximize();
+
+  console.log('navigate to a domain');
+  await driver.browser.activeWindow.navigator.navigateTo(location);
+
+  console.log('get the url of the active window');
+  assert.equal(await driver.browser.activeWindow.navigator.getUrl(), location);
+
+  console.log('select a single element');
+  const alertButton = await driver.browser.activeWindow.getElement('#alert_button');
+  assert(alertButton && typeof alertButton === 'object');
+
+  console.log('selecting an element that does not exist throws an exception');
+  await (async () => {
+    try {
+      await driver.browser.activeWindow.getElement('#does_not_exist');
+      assert(false, 'Expected getting a non-existent element to throw an error')
+    } catch (ex) {
+      assert.equal(ex.code, 'NoSuchElement');
+      return;
+    }
+  })();
+
+  console.log('select a single element\'s id');
+  const elementID = alertButton.elementID;
+  assert(elementID.length > 0);
+
+  console.log('select a single element by name');
+  await driver.browser.activeWindow.getElement('q', SelectorTypes.NAME);
+
+  console.log('select a single element by id and check tag name');
+  const inputField = await driver.browser.activeWindow.getElement('inputField', SelectorTypes.ID);
+  assert.equal(await inputField.getTagName(), 'input');
+
+  console.log('get the computed css value of a single element');
+  const areaToClick = await driver.browser.activeWindow.getElement('#areaToClick');
+  assert.equal(await areaToClick.getCssValue('width'), '500px');
+
+  console.log('check an element class existence');
+  assert(await inputField.hasClass('hasThisClass'));
+  assert(await inputField.hasClass('andAnotherClass'));
+  assert(!(await inputField.hasClass('doesNotHaveClass')));
 }
 
+// TODO: sauce job info
 export default run;
 
-// function delay(time) {
-//   return new Promise(function (resolve) {
-//     setTimeout(resolve, require('ms')(time + ''));
-//   });
-// }
-//
-//
-//
-// test('throws an error if you try and get a driver with an invalid mode', function () {
-//   try {
-//     var driver = getDriver({mode: 'foo'});
-//   } catch (ex) {
-//     assert(ex instanceof Error);
-//   }
-// });
-//
-// function testBrowser(name, getDriver, promise) {
-//   var driver;
-//   test('init driver', function () {
-//     console.log('');
-//     console.log('begin ' + name + ' tests');
-//     console.log('');
-//     driver = getDriver();
-//   });
-//   test('specify a sauce job name', function () {
-//     return promise(driver
-//                    .sauceJobUpdate({
-//                      name: name,
-//                      build: process.env.TRAVIS_JOB_ID
-//                    }));
-//   });
-//
-//
-//   test('get the active window', function () {
-//     assert(driver.browser().activeWindow() instanceof cabbie.ActiveWindow);
-//   });
-//
-//   test('get the active window id as current', function () {
-//     assert.equal(driver.browser().activeWindow().id(), "current");
-//   });
-//
-//   test('get the active window id as current', function () {
-//     return promise(driver.browser().activeWindow().getId()).then(function (id) {
-//       assert.notEqual(id, "current");
-//       assert.equal(typeof id, "string");
-//     });
-//   });
-//
-//
-//   test('get the position of the active window', function () {
-//     return promise(driver.browser().activeWindow().getPosition()).then(function (position) {
-//       assert.equal(typeof position, "object");
-//       assert(position.hasOwnProperty("x"));
-//       assert(position.hasOwnProperty("y"));
-//     });
-//   });
-//
-//   test('get the size of the active window', function () {
-//     return promise(driver.browser().activeWindow().getSize()).then(function (size) {
-//       assert.equal(typeof size, "object");
-//       assert(size.hasOwnProperty("width"));
-//       assert(size.hasOwnProperty("height"));
-//     });
-//   });
-//
-//   test('resize the active window', function () {
-//     return promise(driver.browser().activeWindow().resize(500, 300)).then(function () {
-//       return promise(driver.browser().activeWindow().getSize()).then(function (size) {
-//         assert.equal(size.width, 500);
-//         assert.equal(size.height, 300);
-//       });
-//     });
-//   });
-//
-//   test('position the active window', function () {
-//     return promise(driver.browser().activeWindow().position(160, 163)).then(function () {
-//       return promise(driver.browser().activeWindow().getPosition()).then(function (position) {
-//         assert.equal(position.x, 160);
-//         assert.equal(position.y, 163);
-//       });
-//     });
-//   });
-//
-//   test('activate the already active window', function () {
-//     return promise(driver.browser().activeWindow().activate());
-//   });
-//
-//   test('maximize the active window', function () {
-//     return promise(driver.browser().activeWindow().maximize());
-//   });
-//
-//
-//   test('navigate to a domain', function () {
-//     return location.then(function (location) {
-//       return promise(driver.browser().activeWindow().navigator().navigateTo(location));
-//     });
-//   });
-//
-//   test('get the url of the active window', function () {
-//     return location.then(function (location) {
-//       return promise(driver.browser().activeWindow().navigator().getUrl())
-//       .then(function (url) {
-//         assert.equal(url, location);
-//       });
-//     });
-//   });
-//
-//
-//
-//   test('select a single element', function () {
-//     return promise(driver.browser().activeWindow().getElement('#alert_button')).then(function (element) {
-//       assert(element instanceof cabbie.Element);
-//     });
-//   });
-//
-//   test('select a single element handler', function () {
-//     return promise(driver.browser().activeWindow().getElement('#alert_button')).then(function (element) {
-//       assert.equal(typeof element.elementHandler(), "object");
-//     });
-//   });
-//
-//   test('select a single element id', function () {
-//     return promise(driver.browser().activeWindow().getElement('#alert_button')).then(function (element) {
-//       assert(element.elementId().length > 0);
-//     });
-//   });
-//
-//   test('select a single element by name', function () {
-//     return promise(driver.browser().activeWindow().getElement('q', cabbie.Element.SELECTOR_NAME)).then(function (element) {
-//       assert(element instanceof cabbie.Element);
-//     });
-//   });
-//
-//   test('select a single element by id and check name', function () {
-//     return promise(driver.browser().activeWindow().getElement('inputField', cabbie.Element.SELECTOR_ID)).then(function (element) {
-//       return promise(element.getTagName());
-//     }).then(function (name) {
-//       assert.equal(name, "input");
-//     });
-//   });
-//
-//   test('get the computer css value of a single element', function () {
-//     return promise(driver.browser().activeWindow().getElement('#areaToClick')).then(function (element) {
-//       return promise(element.getCssValue("width"));
-//     }).then(function (value) {
-//       assert.equal(value, "500px");
-//     });
-//   });
-//
-//   test('check an element class existence', function () {
-//     return promise(driver.browser().activeWindow().getElement('#inputField')).then(function (element) {
-//       return promise(element.hasClass("hasThisClass")).then(function (exists) {
-//         assert(exists);
-//         return promise(element.hasClass("andAnotherClass"));
-//       }).then(function (exists) {
-//         assert(exists);
-//         return promise(element.hasClass("doesnotHaveClass"));
-//       }).then(function (exists) {
-//         assert(!exists);
-//       });
-//     });
-//   });
-//
 //   test('compare elements', function () {
 //     return promise(driver.browser().activeWindow().getElement('#inputField')).then(function (element1) {
 //       return promise(driver.browser().activeWindow().getElement('#confirm_button')).then(function (element2) {

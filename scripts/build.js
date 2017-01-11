@@ -106,8 +106,37 @@ function install(directory) {
   );
 }
 
+function exposeAllTypes(mode) {
+  const filename = 'output/' + mode + '/src/index.js';
+  const enums = fs.readdirSync('src/enums');
+  const imports = [];
+  const exports = [];
+  const typeExports = [];
+  enums.forEach(enumFileName => {
+    const name = (
+      enumFileName[0].toUpperCase() +
+      enumFileName.substr(1).replace(/\-([a-z])/g, (_, l) => l.toUpperCase()).replace(/\.js$/, '')
+    );
+    const enumSrc = fs.readFileSync(`output/${mode}/src/enums/${enumFileName}`, 'utf8');
+    const typeName = /^export type ([A-Za-z]+) =/m.exec(enumSrc)[1];
+    imports.push(`import ${name} from './enums/${enumFileName}';`);
+    imports.push(`import type ${typeName} from './enums/${enumFileName}';`)
+    exports.push(name);
+    typeExports.push(typeName);
+  });
+  const src = fs.readFileSync(filename, 'utf8');
+  fs.writeFileSync(
+    filename,
+    src.split('import')[0] + imports.join('\n') + '\nimport' +
+    src.split('import').slice(1).join('import') + '\n' +
+    'export {' + exports.join(', ') + '};\n' +
+    'export type {' + typeExports.join(', ') + '};\n'
+  );
+}
+
 async function build(mode) {
   await babel(['src', '--out-dir', 'output/' + mode + '/src'], mode);
+  exposeAllTypes(mode);
   copyFiles(mode);
   await install(__dirname + '/../output/' + mode);
   await flow(__dirname + '/../output/' + mode, ['stop']);

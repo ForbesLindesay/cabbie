@@ -1,7 +1,7 @@
 /**
  * Web-driver keys
  */
-const KeyboardKeysEnum = {
+const KeyboardKeyEnum = {
 
     /**
      * NULL key
@@ -298,4 +298,4 @@ const KeyboardKeysEnum = {
     COMMAND: '\uE03D'
 };
 
-export default KeyboardKeysEnum;
+export default KeyboardKeyEnum;

@@ -54,7 +54,7 @@ class ActiveWindow extends BaseWindow {
    * Get a handle for the current window
    */
   async getWindowHandle(): Promise<WindowHandle> {
-    const windowHandle = await this.requestJSON('GET', '/window_handle');
+    const windowHandle = await this.driver.requestJSON('GET', '/window_handle');
     return new WindowHandle(this.driver, windowHandle);
   }
 

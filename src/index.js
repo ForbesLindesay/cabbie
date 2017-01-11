@@ -11,6 +11,7 @@ export default function createCabbieDriver(remote: string, options: Options = {}
   return new Driver(remote, options);
 }
 
+export type {Options};
 /**
  * Returns a list of the currently active sessions
  *

@@ -1,4 +1,4 @@
-const LogSourcesEnum = {
+const LogSourceEnum = {
 
   /**
    * Source type of the log-entry - 'client'
@@ -21,4 +21,4 @@ const LogSourcesEnum = {
   SERVER: 'server'
 };
 
-export default LogSourcesEnum;
+export default LogSourceEnum;

@@ -35,11 +35,6 @@ class Driver {
    */
   timeOut: TimeOut;
 
-  /**
-   * Get the Session-Storage object.
-   */
-  sessionStorage: SessionStorage;
-
   constructor(remote: string, options: Options) {
     this._options = options;
     this.debug = new Debug(options);
@@ -48,7 +43,6 @@ class Driver {
 
     this.browser = new Browser(this);
     this.timeOut = new TimeOut(this);
-    this.sessionStorage = new SessionStorage(this);
   }
 
   /**

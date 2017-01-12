@@ -1,12 +1,12 @@
 import type {Options} from './flow-types/options';
 import type {SessionData} from './flow-types/session-data';
 import Connection from './connection';
-import Driver from './driver';
-import Status from './status';
-import parseResponse from './utils/parse-response';
 import Debug from './debug';
+import Driver from './driver';
+import parseResponse from './utils/parse-response';
+import Status from './status';
 
-export {Driver};
+export {Connection, Debug, Driver, Status};
 export default function createCabbieDriver(remote: string, options: Options = {}): Driver {
   return new Driver(remote, options);
 }

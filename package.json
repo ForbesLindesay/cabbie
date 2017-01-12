@@ -30,7 +30,7 @@
     "ms": "^0.7.2",
     "promise": "^7.1.1",
     "rimraf": "^2.5.4",
-    "sync-request": "^3.0.1",
+    "sync-request": "^4.0.1",
     "testit": "^2.1.3",
     "then-request": "^2.0.1",
     "throat": "^3.0.0",
@@ -39,7 +39,7 @@
   "scripts": {
     "build": "babel-node scripts/build",
     "pretest": "babel-node scripts/build --only-tests",
-    "test": "babel-node test/async/src && babel-node test/sync/src"
+    "test": "babel-node test/sync/src && babel-node test/async/src"
   },
   "repository": {
     "type": "git",

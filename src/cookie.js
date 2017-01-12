@@ -14,8 +14,8 @@ type CookieData = {
 class Cookie {
   _values: CookieData;
 
-  constructor(values: CookieData) {
-    this._values = values || {};
+  constructor(values: CookieData = {}) {
+    this._values = values;
     this.validate();
   }
 

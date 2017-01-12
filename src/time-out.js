@@ -19,18 +19,24 @@ class TimeOut extends BaseClass {
    * Set a time-out
    */
   async setTimeOut(timeOutType: TimeOutType, ms: TimeoutValue): Promise<void> {
-
     switch (timeOutType) {
       case TimeOutTypes.SCRIPT:
-        return this.setScriptTimeOut(ms);
+        await this.setScriptTimeOut(ms);
+        break;
       case TimeOutTypes.ASYNC_SCRIPT:
-        return this.setAsyncScriptTimeOut(ms);
+        await this.setAsyncScriptTimeOut(ms);
+        break;
       case TimeOutTypes.PAGE_LOAD:
-        return this.setPageLoadTimeOut(ms);
+        await this.setPageLoadTimeOut(ms);
+        break;
       case TimeOutTypes.IMPLICIT:
-        return this.setImplicitTimeOut(ms);
+        await this.setImplicitTimeOut(ms);
+        break;
       default:
-        throw new Error('Invalid timeout type' + JSON.stringify(timeOutType) + ', expected "script", "page load", "implicit" or "async"');
+        throw new Error(
+          'Invalid timeout type ' + JSON.stringify(timeOutType) +
+          ', expected "script", "page load", "implicit" or "async"'
+        );
     }
   }
 

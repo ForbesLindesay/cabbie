@@ -148,7 +148,8 @@ class Element extends BaseClass {
    * Get the frame of an element
    */
   async getFrame(): Promise<{x: number, y: number, width: number, height: number}> {
-    const [position, size] = await Promise.all([this.getPosition(), this.getSize()]);
+    const position = await this.getPosition();
+    const size = await this.getSize();
     return {
       x: position.x,
       y: position.y,

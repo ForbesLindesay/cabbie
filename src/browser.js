@@ -29,6 +29,12 @@ class Browser extends BaseClass {
    */
   localStorage: LocalStorage;
 
+
+  /**
+   * Get the Session-Storage object.
+   */
+  sessionStorage: SessionStorage;
+
   constructor(driver: Driver) {
     super(driver);
 
@@ -36,6 +42,7 @@ class Browser extends BaseClass {
     this.ime = new IME(this.driver);
     this.cookieStorage = new CookieStorage(this.driver);
     this.localStorage = new LocalStorage(this.driver);
+    this.sessionStorage = new SessionStorage(this);
   }
 
   /**

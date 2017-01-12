@@ -10,13 +10,6 @@ class LocalStorage extends BaseClass {
   }
 
   /**
-   * Gets the driver object.
-   */
-  getDriver(): Driver {
-    return this.driver;
-  }
-
-  /**
    * Get all keys of the storage
    */
   async getKeys(): Promise<Array<string>> {

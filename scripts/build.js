@@ -108,6 +108,7 @@ function install(directory) {
 
 function exposeAllTypes(mode) {
   const filename = 'output/' + mode + '/src/index.js';
+  const src = fs.readFileSync(filename, 'utf8');
   const enums = fs.readdirSync('src/enums');
   const imports = [];
   const exports = [];
@@ -124,7 +125,21 @@ function exposeAllTypes(mode) {
     exports.push(name);
     typeExports.push(typeName);
   });
-  const src = fs.readFileSync(filename, 'utf8');
+  fs.readdirSync('src').forEach(classFileName => {
+    if (!/\.js$/.test(classFileName)) {
+      return;
+    }
+    const classSource = fs.readFileSync('src/' + classFileName, 'utf8');
+    const nameMatch = /^class ([A-Z][A-Za-z]+) /m.exec(classSource);
+    const name = nameMatch && nameMatch[1];
+    if (name && src.indexOf('\nimport ' + name) !== -1) {
+      return;
+    }
+    if (name && !/^Base/.test(name) && name !== 'Driver') {
+      imports.push(`import ${name} from './${classFileName}';`);
+      exports.push(name);
+    }
+  });
   fs.writeFileSync(
     filename,
     src.split('import')[0] + imports.join('\n') + '\nimport' +
@@ -141,6 +156,7 @@ async function build(mode) {
   await install(__dirname + '/../output/' + mode);
   await flow(__dirname + '/../output/' + mode, ['stop']);
   await flow(__dirname + '/../output/' + mode);
+  await flow(__dirname + '/../output/' + mode, ['stop']);
   const flowFiles = await generateFlowFiles(mode);
   await babel(['output/' + mode + '/src', '--out-dir', 'output/' + mode + '/lib'], mode);
   lsr.sync(__dirname + '/../output/' + mode + '/lib').forEach(entry => {
@@ -159,6 +175,7 @@ async function buildTest(mode) {
   await babel(['test/src/src', '--out-dir', 'test/' + mode + '/src'], mode);
   await flow(__dirname + '/../test/' + mode, ['stop']);
   await flow(__dirname + '/../test/' + mode);
+  await flow(__dirname + '/../test/' + mode, ['stop']);
 }
 
 

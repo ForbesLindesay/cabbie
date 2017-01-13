@@ -61,7 +61,7 @@ async function run() {
   const options = (
     LOCAL
     ? {debug: true, httpDebug: false}
-    : {debug: true, httpDebug: true, capabilities: {browserName: 'chrome'}}
+    : {debug: true, httpDebug: false, capabilities: {browserName: 'chrome'}}
   );
   let driver;
   try {

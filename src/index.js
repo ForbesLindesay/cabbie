@@ -7,6 +7,10 @@ import parseResponse from './utils/parse-response';
 import Status from './status';
 
 export {Connection, Debug, Driver, Status};
+
+/**
+ * Create a new cabbie Driver
+ */
 export default function createCabbieDriver(remote: string, options: Options = {}): Driver {
   return new Driver(remote, options);
 }
@@ -22,7 +26,7 @@ export async function getSessions(remote: string, options: Options = {}): Promis
   const rawSessions = await connection.request('GET', '/sessions');
   const sessions = parseResponse(rawSessions);
   return sessions.map(session => ({sessionID: session.id, capabilities: session.capabilities}));
-};
+}
 
 /**
  * Gets the selenium-system status
@@ -32,4 +36,4 @@ export async function getStatus(remote: string, options: Options = {}): Promise<
   const rawResponse = await connection.request('GET', '/status');
   const response = parseResponse(rawResponse);
   return new Status(response);
-};
+}

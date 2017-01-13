@@ -25,7 +25,7 @@ export type Options = {
   /**
    * Desired capabilities are passed to selenium when setting up the session
    */
-  desiredCapabilities?: {[key: string]: string},
+  capabilities?: {[key: string]: string},
 
   /**
    * Required capabilities are passed to selenium when setting up the session
@@ -62,4 +62,11 @@ export type Options = {
    * A hook for you to provide custom logging
    */
   onResponse?: (res: Object) => mixed,
+
+  /**
+   * This field is ignored unless you are using the combined async/sync cabbie
+   */
+  mode?: 'sync' | 'async',
+
+  [key: string]: void,
 };

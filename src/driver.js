@@ -173,7 +173,7 @@ async function createSession(connection: Connection, options: Options): Promise<
     return options.session;
   }
   const capabilities = {};
-  capabilities.desiredCapabilities = options.desiredCapabilities || {};
+  capabilities.desiredCapabilities = options.capabilities || {};
   if (options.requiredCapabilities) {
     capabilities.requiredCapabilities = options.requiredCapabilities;
   }

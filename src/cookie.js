@@ -10,7 +10,7 @@ type CookieData = {
   expiry?: number,
 };
 
-/**
+/*
  * Cookie data-structure
  */
 class Cookie {
@@ -24,15 +24,14 @@ class Cookie {
   ////////////////////
   // Public Methods //
   ////////////////////
-
-  /**
+  /*
    * The name of the cookie.
    */
   getName(): string | void {
     return this._values.name;
   }
 
-  /**
+  /*
    * The name of the cookie.
    */
   setName(name: string) {
@@ -40,14 +39,14 @@ class Cookie {
     this.validate();
   }
 
-  /**
+  /*
    * The cookie value.
    */
   getValue(): string | void {
     return this._values.value;
   }
 
-  /**
+  /*
    * The cookie value.
    */
   setValue(value: string) {
@@ -55,14 +54,14 @@ class Cookie {
     this.validate();
   }
 
-  /**
+  /*
    * (Optional) The cookie path.
    */
   getPath(): string | void {
     return this._values.path;
   }
 
-  /**
+  /*
    * Set the cookie path.
    */
   setPath(path: string) {
@@ -70,14 +69,14 @@ class Cookie {
     this.validate();
   }
 
-  /**
+  /*
    * (Optional) The domain the cookie is visible to.
    */
   getDomain(): string | void {
     return this._values.domain;
   }
 
-  /**
+  /*
    * Set the domain the cookie is visible to.
    */
   setDomain(domain: string) {
@@ -85,14 +84,14 @@ class Cookie {
     this.validate();
   }
 
-  /**
+  /*
    * (Optional) Whether the cookie is a secure cookie.
    */
   isSecure(): boolean | void {
     return this._values.secure;
   }
 
-  /**
+  /*
    * Set whether the cookie is a secure cookie.
    */
   setSecure(secure: boolean) {
@@ -100,14 +99,14 @@ class Cookie {
     this.validate();
   }
 
-  /**
+  /*
    * (Optional) Whether the cookie is an httpOnly cookie.
    */
   isHttpOnly(): boolean | void {
     return this._values.httpOnly;
   }
 
-  /**
+  /*
    * Set whether the cookie is an httpOnly cookie.
    */
   setHttpOnly(httpOnly: boolean) {
@@ -115,14 +114,14 @@ class Cookie {
     this.validate();
   }
 
-  /**
+  /*
    * (Optional) When the cookie expires, specified in seconds since midnight, January 1, 1970 UTC.
    */
   getExpiry(): number | void {
     return this._values.expiry;
   }
 
-  /**
+  /*
    * Set when the cookie expires, specified in seconds since midnight, January 1, 1970 UTC.
    */
   setExpiry(expiry: number) {
@@ -130,14 +129,14 @@ class Cookie {
     this.validate();
   }
 
-  /**
+  /*
    * Get cookie data-structure
    */
   toObject(): CookieData {
     return this._values;
   }
 
-  /**
+  /*
    * Validate the cookie data
    */
   validate(completed: boolean = false) {
@@ -155,7 +154,8 @@ class Cookie {
     }
 
     // localhost is a special case, the domain must be ""
-    if (this._values.domain === 'localhost') this._values.domain = '';
+    if (this._values.domain === 'localhost')
+      this._values.domain = '';
   }
 
   inspect(depth: number, options: Object) {

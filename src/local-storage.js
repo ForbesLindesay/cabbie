@@ -2,7 +2,7 @@ import type Driver from './driver';
 import addDebugging from './add-debugging';
 import BaseStorage from './base-storage';
 
-/**
+/*
  * Managing local-storage
  */
 class LocalStorage extends BaseStorage {

@@ -1,6 +1,1 @@
-export type HttpResponse = {
-  statusCode: number,
-  headers: {[key: string]: string},
-  body: Buffer,
-  getBody: () => string,
-};
+export type HttpResponse = {statusCode: number, headers: {[key: string]: string}, body: Buffer, getBody(): string};

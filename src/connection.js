@@ -7,7 +7,7 @@ import autoRequest from 'then-request';
 import parseResponse from './utils/parse-response';
 
 class Connection {
-  /**
+  /*
    * The url of the selenium web-driver server
    */
   remote: string;
@@ -16,7 +16,7 @@ class Connection {
     this.remote = remote.replace(/\/$/, '');
     this.debug = debug;
   }
-  /**
+  /*
    * Session request with automatic parsing for errors
    */
   async requestWithSession(

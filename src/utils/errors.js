@@ -1,16 +1,14 @@
 'use strict';
-
 // This file lists the status values that can be returned
 // along with their name/meaning.
 //
 // source: https://code.google.com/p/selenium/wiki/JsonWireProtocol#Response_Status_Codes
 
-
 //////////////////
 // Enumerations //
 //////////////////
 
-/**
+/*
  * List of errors
  *
  * @type {Object}
@@ -38,25 +36,19 @@ export const names = {
   '31': 'IMEEngineActivationFailed',
   '32': 'InvalidSelector',
   '33': 'SessionNotCreatedException',
-  '34': 'MoveTargetOutOfBounds'
+  '34': 'MoveTargetOutOfBounds',
 };
-
 
 ////////////////////
 // Public Methods //
 ////////////////////
-
-/**
+/*
  * Extracts the error message from a response body
  */
 export function fromBody(body: Object): Error {
-  const msg = (
-    (body.value && body.value.message)
-    ? body.value.message
-    : body.value
-  );
+  const msg = body.value && body.value.message ? body.value.message : body.value;
   const err = new Error(msg);
-  err.name = (names[body.status] || 'UnknownSeleniumError');
-  (err: any).code = (names[body.status] || 'UnknownSeleniumError');
+  err.name = names[body.status] || 'UnknownSeleniumError';
+  (err: any).code = names[body.status] || 'UnknownSeleniumError';
   return err;
 }

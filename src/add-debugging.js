@@ -8,7 +8,7 @@ function addLogging(cls: Object, options: {baseClass: boolean} = {baseClass: fal
       return;
     }
     const fun = proto[name];
-    proto[name] = async function (...args) {
+    proto[name] = async function(...args) {
       const start = Date.now();
       let result;
       try {

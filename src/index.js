@@ -8,7 +8,7 @@ import Status from './status';
 
 export {Connection, Debug, Driver, Status};
 
-/**
+/*
  * Create a new cabbie Driver
  */
 export default function createCabbieDriver(remote: string, options: Options = {}): Driver {
@@ -16,7 +16,7 @@ export default function createCabbieDriver(remote: string, options: Options = {}
 }
 
 export type {Options};
-/**
+/*
  * Returns a list of the currently active sessions
  *
  * Note: Appears not to be supported by the selenium-standalone-server!}
@@ -28,7 +28,7 @@ export async function getSessions(remote: string, options: Options = {}): Promis
   return sessions.map(session => ({sessionID: session.id, capabilities: session.capabilities}));
 }
 
-/**
+/*
  * Gets the selenium-system status
  */
 export async function getStatus(remote: string, options: Options = {}): Promise<Status> {

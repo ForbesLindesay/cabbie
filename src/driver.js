@@ -12,7 +12,6 @@ import Debug from './debug';
 import TimeOut from "./time-out";
 import Status from "./status";
 import LogEntry from "./log-entry";
-import SessionStorage from "./session-storage";
 import parseResponse from './utils/parse-response';
 
 /**
@@ -23,7 +22,8 @@ class Driver {
   session: Promise<SessionData>;
   debug: Debug;
   _connection: Connection;
-  _options: Object;
+  remote: string;
+  options: Options;
 
   /**
    * The browser object.
@@ -36,7 +36,8 @@ class Driver {
   timeOut: TimeOut;
 
   constructor(remote: string, options: Options) {
-    this._options = options;
+    this.remote = remote;
+    this.options = options;
     this.debug = new Debug(options);
     this._connection = new Connection(remote, this.debug);
     this.session = createSession(this._connection, options);

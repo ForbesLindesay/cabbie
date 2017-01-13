@@ -1,7 +1,7 @@
 // @flow
 
 import type {Driver} from 'cabbie-async';
-import {MouseButtons, SelectorTypes, Cookie} from 'cabbie-async';
+import {getStatus, MouseButtons, SelectorTypes, Cookie} from 'cabbie-async';
 import chalk from 'chalk';
 import assert from 'assert';
 
@@ -616,7 +616,7 @@ async function run(driver: Driver, location: string) {
       1,
     );
     assert.deepEqual(
-      driver.browser.localStorage.getKeys(),
+      await driver.browser.localStorage.getKeys(),
       ["testKeySecond"],
     );
   });
@@ -662,7 +662,7 @@ async function run(driver: Driver, location: string) {
       1,
     );
     assert.deepEqual(
-      driver.browser.sessionStorage.getKeys(),
+      await driver.browser.sessionStorage.getKeys(),
       ["testKeySecond"],
     );
   });
@@ -674,203 +674,112 @@ async function run(driver: Driver, location: string) {
       0,
     );
   });
-//   await test('set a value in session-storage', async () => {
-//     return promise(driver.sessionStorage().setItem("testKey", "2468")).then(function () {
-//       return promise(driver.sessionStorage().setItem("testKeySecond", "hello"))
-//     });
-//   });
-//   await test('get a value in session-storage', async () => {
-//     return promise(driver.sessionStorage().getItem("testKey")).then(function (value) {
-//       assert.equal(value, "2468");
-//     });
-//   });
-//   await test('get the size of session-storage', async () => {
-//     return promise(driver.sessionStorage().getSize()).then(function (size) {
-//       assert.equal(size, 2);
-//     });
-//   });
-//   await test('get all keys in session-storage', async () => {
-//     return promise(driver.sessionStorage().getKeys()).then(function (keys) {
-//       assert.deepEqual(keys, ["testKey", "testKeySecond"]);
-//     });
-//   });
-//   await test('remove a key from session-storage', async () => {
-//     return promise(driver.sessionStorage().removeItem("testKey")).then(function () {
-//       return promise(driver.sessionStorage().getSize());
-//     }).then(function (size) {
-//       assert.equal(size, 1);
-//       return promise(driver.sessionStorage().getKeys());
-//     }).then(function (keys) {
-//       assert.deepEqual(keys, ["testKeySecond"]);
-//     });
-//   });
-//   await test('clear the session-storage', async () => {
-//     return promise(driver.sessionStorage().clear()).then(function () {
-//       return promise(driver.sessionStorage().getSize());
-//     }).then(function (size) {
-//       assert.equal(size, 0);
-//     });
-//   });
-//
-//
-//   await test('get the IME object', async () => {
-//     assert(driver.browser().ime() instanceof cabbie.IME);
-//   });
-//
-//
-//   await test('get the text of an element', async () => {
-//     return promise(driver.browser.activeWindow.getElement("q", cabbie.Element.SELECTOR_NAME)).then(function (element) {
-//       return promise(element.getAttribute('value'));
-//     }).then(function (text) {
-//       assert.equal(text, '1357');
-//     });
-//   });
-//
-//   await test('clear the text of an input element', async () => {
-//     return promise(driver.browser.activeWindow.getElement("q", cabbie.Element.SELECTOR_NAME)).then(function (element) {
-//       return promise(element.clear()).then(function () {
-//         return promise(element.getAttribute('value'));
-//       }).then(function (text) {
-//         assert.equal(text, '');
-//       });
-//     });
-//   });
-//
-//   await test('write text into an input element', async () => {
-//     return promise(driver.browser.activeWindow.getElement("q", cabbie.Element.SELECTOR_NAME)).then(function (element) {
-//       return promise(element.sendKeys("test-45")).then(function () {
-//         return promise(element.getAttribute('value'));
-//       }).then(function (text) {
-//         assert.equal(text, 'test-45');
-//       });
-//     });
-//   });
-//
-//
-//
-//
-//   await test("get a server status", async () => {
-//     return promise(cabbie.Driver.getStatus(driver._options.remote, driver._options.mode)).then(function (status) {
-//       assert(status instanceof cabbie.Status);
-//
-//       // Not required, but still execute and see if fails
-//       status.getBuildVersion();
-//       status.getBuildRevision();
-//       status.getBuildTime();
-//
-//       // Sauce labs doesn't support these so we return undefined
-//       status.getOSVersion();
-//       status.getOSArchitecture();
-//       status.getOSName();
-//     });
-//   });
-//
-// //  test("get a session list", async () => {
-// //    return promise(cabbie.Driver.getSessions(driver._options.remote, driver._options.mode)).then(function (result) {
-// //      console.log(result);
-// //    });
-// //  });
-//
-//
-//   await test("get capabilities information", async () => {
-//     return promise(driver.session()).then(function (session) {
-//       return session.capabilities();
-//     });
-//   });
-//
-//
-//   await test('get an element', async () => {
-//     return promise(driver.browser.activeWindow.getElement('h1'));
-//   });
-//   await test('test whether an element is displayed', async () => {
-//     return promise(driver.browser.activeWindow.getElement('h1')).then(function (element) {
-//       return promise(element.isDisplayed());
-//     }).then(function (displayed) {
-//       assert(displayed);
-//       return promise(driver.browser.activeWindow.getElement('#hidden'));
-//     }).then(function (element) {
-//       return promise(element.isDisplayed());
-//     }).then(function (displayed) {
-//       assert(!displayed);
-//     });
-//   });
-//   await test('get an attribute of an element', async () => {
-//     return promise(driver.browser.activeWindow.getElement('#has-attribute')).then(function (element) {
-//       return promise(element.getAttribute('data-attribute'));
-//     }).then(function (name) {
-//       assert.equal(name, 'value');
-//     });
-//   });
-//
-//
-//
-//   await test('type text into an element', async () => {
-//     return promise(driver.browser.activeWindow.getElement('[name="q"]')).then(function (element) {
-//       return promise(element.clear()).then(function () {
-//         return promise(element.sendKeys('hello'));
-//       }).then(function () {
-//         return promise(element.sendKeys([' ', 'world']));
-//       }).then(function () {
-//         return promise(element.getAttribute('value'));
-//       }).then(function (value) {
-//         assert.equal(value, 'hello world');
-//         return promise(element.clear());
-//       }).then(function () {
-//         return promise(element.getAttribute('value'));
-//       }).then(function (value) {
-//         assert.equal(value, '');
-//       });
-//     });
-//   });
-//   await test('get the text content of an element', async () => {
-//     return promise(driver.browser.activeWindow.getElement('#has-text')).then(function (element) {
-//       return promise(element.getText()).then(function (text) {
-//         assert(text === 'test content');
-//       });
-//     });
-//   });
-//   await test('click on a button', async () => {
-//     return promise(driver.browser.activeWindow.getElement('#clickable')).then(function (button) {
-//       return promise(button.mouse().click()).then(function () {
-//         return button.getText();
-//       }).then(function (text) {
-//         assert(text === 'clicked');
-//       });
-//     });
-//   });
-//
-//   await test('close the active window', async () => {
-//     return promise(driver.browser.activeWindow.close());
-//   });
+
+  await test('get the text of an element', async () => {
+    const element = await driver.browser.activeWindow.getElement("q", SelectorTypes.NAME);
+    assert.equal(
+      await element.getAttribute('value'),
+      '1357',
+    );
+  });
+
+  await test('clear the text of an input element', async () => {
+    const element = await driver.browser.activeWindow.getElement('[name="q"]');
+    await element.clear();
+    assert.equal(
+      await element.getAttribute('value'),
+      '',
+    );
+  });
+
+  await test('write text into an input element', async () => {
+    const element = await driver.browser.activeWindow.getElement("q", SelectorTypes.NAME);
+    await element.sendKeys("test-45");
+    assert.equal(
+      await element.getAttribute('value'),
+      'test-45',
+    );
+  });
+
+  await test("get a server status", async () => {
+    const status = await getStatus(driver.remote, driver.options);
+
+    // Not required, but still execute and see if fails
+    status.getBuildVersion();
+    status.getBuildRevision();
+    status.getBuildTime();
+
+    // Sauce labs doesn't support these so we return undefined
+    status.getOSVersion();
+    status.getOSArchitecture();
+    status.getOSName();
+  });
+  test("get a session list", async () => {
+    const sessions = await getSessions(driver.remote, driver.options);
+    console.log(result);
+  });
+
+  await test("get capabilities information", async () => {
+    const session = await driver.session;
+    console.dir(session.capabilities);
+  });
+
+  await test('get an element', async () => {
+    const element = await driver.browser.activeWindow.getElement('h1');
+  });
+  await test('test whether an element is displayed', async () => {
+    const element = await driver.browser.activeWindow.getElement('h1');
+    assert(await element.isDisabled());
+    const hiddenElement = await driver.browser.activeWindow.getElement('#hidden');
+    assert(!(await hiddenElement.isDisabled()));
+  });
+
+  await test('get an attribute of an element', async () => {
+    const element = await driver.browser.activeWindow.getElement('#has-attribute');
+    assert.equal(
+      await element.getAttribute('data-attribute'),
+      'value'
+    );
+  });
+
+  await test('type text into an element', async () => {
+    const element = await driver.browser.activeWindow.getElement('[name="q"]');
+    await element.clear();
+    await element.sendKeys('hello');
+    await element.sendKeys([' ', 'world']);
+    assert.equal(
+      await element.getAttribute('value'),
+      'hello world'
+    );
+    await element.clear();
+    assert.equal(
+      await element.getAttribute('value'),
+      ''
+    );
+  });
+
+  await test('get the text content of an element', async () => {
+    const element = await driver.browser.activeWindow.getElement('#has-text');
+    assert.equal(
+      await element.getText(),
+      'test content',
+    );
+  });
+
+  await test('click on a button', async () => {
+    const button = await driver.browser.activeWindow.getElement('#clickable');
+    await button.mouse.click();
+    assert.equal(
+      await button.getText(),
+      'clicked',
+    );
+  });
+
+  await test('close the active window', async () => {
+    await driver.browser.activeWindow.close();
+  });
 }
 
 // TODO: sauce job info
 // TODO: test touch interface
 export default run;
-
-
-//
-//   await test('dispose the driver', async () => {
-//     return promise(driver.dispose({passed: true}));
-//   });
-// }
-//
-// var debug = process.argv.indexOf('--debug') !== -1 ||
-//             process.argv.indexOf('-d') !== -1;
-//
-// if (process.argv.indexOf('--async') === -1) {
-//   await testBrowser('async', async () => {
-//     return getDriver({mode: 'sync', debug: debug, httpDebug: debug});
-//   }, function (value) {
-//     assert(!value || (typeof value !== 'object' && typeof value !== 'function') || typeof value.then !== 'function');
-//     return Promise.resolve(value);
-//   });
-// }
-// if (process.argv.indexOf('--sync') === -1) {
-//   await testBrowser('sync', async () => {
-//     return getDriver({mode: 'async', debug: debug, httpDebug: debug});
-//   }, function (value) {
-//     assert(value && (typeof value === 'object' || typeof value === 'function') && typeof value.then === 'function');
-//     return value;
-//   });
-// }

@@ -170,6 +170,7 @@ async function build(mode) {
   });
   flowFiles.failedPaths.forEach(path => console.log(chalk.red(path)));
   rimraf.sync(__dirname + '/../output/' + mode + '/src');
+  rimraf.sync(__dirname + '/../output/' + mode + '/.babelrc');
 }
 async function buildTest(mode) {
   await babel(['test/src/src', '--out-dir', 'test/' + mode + '/src'], mode);

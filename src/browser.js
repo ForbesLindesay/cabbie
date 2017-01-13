@@ -5,6 +5,7 @@ import BaseClass from './base-class';
 import CookieStorage from './cookie-storage';
 import IME from './ime';
 import LocalStorage from './local-storage';
+import SessionStorage from "./session-storage";
 import WindowHandle from './window-handle';
 
 /**
@@ -42,7 +43,7 @@ class Browser extends BaseClass {
     this.ime = new IME(this.driver);
     this.cookieStorage = new CookieStorage(this.driver);
     this.localStorage = new LocalStorage(this.driver);
-    this.sessionStorage = new SessionStorage(this);
+    this.sessionStorage = new SessionStorage(this.driver);
   }
 
   /**

@@ -111,7 +111,8 @@ async function run(driver: Driver, location: string) {
   await test('submit a form', async () => {
     const formToSubmit = await driver.browser.activeWindow.getElement('#formToSubmit');
     await formToSubmit.submit();
-    assert.equal(await driver.browser.activeWindow.navigator.getUrl().substr(-7), '?q=1357');
+    const url = await driver.browser.activeWindow.navigator.getUrl();
+    assert.equal(url.substr(-7), '?q=1357');
   });
 
   await test('click on an element', async () => {

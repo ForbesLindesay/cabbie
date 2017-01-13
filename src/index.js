@@ -21,7 +21,7 @@ export async function getSessions(remote: string, options: Options = {}): Promis
   const connection = new Connection(remote, new Debug(options));
   const rawSessions = await connection.request('GET', '/sessions');
   const sessions = parseResponse(rawSessions);
-  return sessions.map(session => ({sessionID: session.sessionId, capabilities: session.capabilities}));
+  return sessions.map(session => ({sessionID: session.id, capabilities: session.capabilities}));
 };
 
 /**

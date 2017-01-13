@@ -1,4 +1,5 @@
 import type Driver from './driver';
+import addDebugging from './add-debugging';
 import BaseClass from './base-class';
 
 /**
@@ -50,5 +51,5 @@ class IME extends BaseClass {
     await this.requestJSON('POST', '/deactivate');
   }
 }
-
+addDebugging(IME);
 export default IME;

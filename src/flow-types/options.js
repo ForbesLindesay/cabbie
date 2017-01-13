@@ -47,4 +47,19 @@ export type Options = {
    * Use this when you are really struggling to debug something.
    */
   httpDebug?: boolean,
+
+  /**
+   * A hook for you to provide custom logging
+   */
+  onCall?: (event: Object) => mixed,
+
+  /**
+   * A hook for you to provide custom logging
+   */
+  onRequest?: (req: Object) => mixed,
+
+  /**
+   * A hook for you to provide custom logging
+   */
+  onResponse?: (res: Object) => mixed,
 };

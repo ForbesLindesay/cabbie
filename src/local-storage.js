@@ -1,4 +1,5 @@
 import type Driver from './driver';
+import addDebugging from './add-debugging';
 import BaseStorage from './base-storage';
 
 /**
@@ -9,5 +10,5 @@ class LocalStorage extends BaseStorage {
     super(driver, '/local_storage');
   }
 }
-
+addDebugging(LocalStorage);
 export default LocalStorage;

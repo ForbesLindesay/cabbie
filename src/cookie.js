@@ -1,3 +1,5 @@
+import {inspect} from 'util';
+
 type CookieData = {
   name?: string,
   value?: string,
@@ -154,6 +156,10 @@ class Cookie {
 
     // localhost is a special case, the domain must be ""
     if (this._values.domain === 'localhost') this._values.domain = '';
+  }
+
+  inspect(depth: number, options: Object) {
+    return 'Cookie(' + inspect(this._values, options) + ')';
   }
 }
 

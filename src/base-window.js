@@ -1,5 +1,6 @@
 import type Driver from './driver';
 import type ActiveWindow from './active-window';
+import addDebugging from './add-debugging';
 import BaseClass from './base-class';
 
 /**
@@ -48,4 +49,5 @@ class BaseWindow extends BaseClass {
     await this.requestJSON('POST', '/position', { x: x, y: y });
   };
 }
+addDebugging(BaseWindow, {baseClass: true});
 export default BaseWindow;

@@ -43,22 +43,3 @@ class Connection {
   }
 }
 export default Connection;
-
-
-////////////
-// Events //
-////////////
-
-/**
- * Fired when a request is made
- *
- * @event request
- * @param {Object} request Request options
- */
-
-/**
- * Fired when a response is received
- *
- * @event response
- * @param {Object} response Response data
- */

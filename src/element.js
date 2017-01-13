@@ -1,7 +1,9 @@
+import {inspect} from 'util';
 import type Browser from './browser';
 import type Driver from './driver';
 import type {ElementHandle} from './flow-types/element-handle';
 import type {SelectorType} from './enums/selector-types';
+import addDebugging from './add-debugging';
 import BaseClass from './base-class';
 import Mouse from './mouse';
 import SelectorTypes from './enums/selector-types';
@@ -134,14 +136,16 @@ class Element extends BaseClass {
    * Get the size of an element
    */
   async getSize(): Promise<{width: number, height: number}> {
-    return await this.requestJSON('GET', '/size');
+    const size = await this.requestJSON('GET', '/size');
+    return {width: size.width, height: size.height};
   }
 
   /**
    * Get the position of an element
    */
   async getPosition(): Promise<{x: number, y: number}> {
-    return await this.requestJSON('GET', '/location');
+    const position = await this.requestJSON('GET', '/location');
+    return {x: position.x, y: position.y};
   }
 
   /**
@@ -213,6 +217,10 @@ class Element extends BaseClass {
     const elements = await this.getElements(selector, selectorType);
     return elements.length > 0;
   }
-}
 
+  inspect(depth: number, options: Object) {
+    return 'Element(' + inspect(this._selector, options) + ')';
+  }
+}
+addDebugging(Element);
 export default Element;

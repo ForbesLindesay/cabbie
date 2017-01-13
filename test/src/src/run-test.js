@@ -1,7 +1,7 @@
 // @flow
 
 import type {Driver} from 'cabbie-async';
-import {getStatus, MouseButtons, SelectorTypes, Cookie} from 'cabbie-async';
+import {getSessions, getStatus, MouseButtons, SelectorTypes, Cookie} from 'cabbie-async';
 import chalk from 'chalk';
 import assert from 'assert';
 
@@ -716,7 +716,7 @@ async function run(driver: Driver, location: string) {
   });
   test("get a session list", async () => {
     const sessions = await getSessions(driver.remote, driver.options);
-    console.log(result);
+    console.log(sessions);
   });
 
   await test("get capabilities information", async () => {
@@ -729,9 +729,9 @@ async function run(driver: Driver, location: string) {
   });
   await test('test whether an element is displayed', async () => {
     const element = await driver.browser.activeWindow.getElement('h1');
-    assert(await element.isDisabled());
+    assert(await element.isDisplayed());
     const hiddenElement = await driver.browser.activeWindow.getElement('#hidden');
-    assert(!(await hiddenElement.isDisabled()));
+    assert(!(await hiddenElement.isDisplayed()));
   });
 
   await test('get an attribute of an element', async () => {

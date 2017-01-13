@@ -1,4 +1,5 @@
 import url from 'url';
+import addDebugging from './add-debugging';
 import BaseClass from './base-class';
 
 /**
@@ -63,5 +64,5 @@ class Navigator extends BaseClass {
  * @param {String} path
  */
 (Navigator.prototype: any).setUrl = Navigator.prototype.navigateTo;
-
+addDebugging(Navigator);
 export default Navigator;

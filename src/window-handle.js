@@ -1,5 +1,6 @@
 import type Driver from './driver';
 import type ActiveWindow from './active-window';
+import addDebugging from './add-debugging';
 import BaseWindow from './base-window';
 
 /**
@@ -25,4 +26,5 @@ class WindowHandle extends BaseWindow {
     return this.driver.browser.activeWindow;
   }
 }
+addDebugging(WindowHandle);
 export default WindowHandle;

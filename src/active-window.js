@@ -1,6 +1,7 @@
 import type {SelectorType} from './enums/selector-types';
 import type Driver from './driver';
 import Alert from './alert';
+import addDebugging from './add-debugging';
 import Element from './element';
 import Frame from './frame';
 import GlobalMouse from './global-mouse';
@@ -177,4 +178,5 @@ function codeToString(code: string | Function): string {
     return code;
   }
 }
+addDebugging(ActiveWindow);
 export default ActiveWindow;

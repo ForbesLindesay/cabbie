@@ -1,4 +1,5 @@
 import type {MouseButton} from './enums/mouse-buttons';
+import addDebugging from './add-debugging';
 import BaseClass from './base-class';
 import MouseButtons from './enums/mouse-buttons';
 import Mouse from './mouse';
@@ -90,5 +91,5 @@ class GlobalMouse extends BaseClass {
     await this.buttonUp(button);
   }
 }
-
+addDebugging(GlobalMouse);
 export default GlobalMouse;

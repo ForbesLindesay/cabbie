@@ -1,4 +1,5 @@
 import type Driver from './driver';
+import addDebugging from './add-debugging';
 import BaseClass from './base-class';
 
 /**
@@ -47,5 +48,5 @@ class BaseStorage extends BaseClass {
     return await this.requestJSON('GET', '/size');
   }
 }
-
+addDebugging(BaseStorage, {baseClass: true});
 export default BaseStorage;

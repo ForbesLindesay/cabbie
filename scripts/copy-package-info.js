@@ -19,7 +19,7 @@ export default function copyFiles(mode) {
       options[field] = pkg[field];
     });
     options.dependencies = {};
-    dependencies.forEach(dependency => {
+    dependencies.sort().forEach(dependency => {
       options.dependencies[dependency] = pkg.devDependencies[dependency] || pkg.dependencies[dependency];
     });
 
@@ -33,14 +33,14 @@ export default function copyFiles(mode) {
       name: 'cabbie-sync',
       description: 'A synchronous webdriver client',
     },
-    ['flow-runtime', 'ms', 'sync-request']
+    ['chalk', 'flow-runtime', 'ms', 'sync-request', 'babel-runtime']
   );
   const asyncPackage = getPackage(
     {
       name: 'cabbie-async',
       description: 'An asynchronous webdriver client',
     },
-    ['flow-runtime', 'ms', 'then-request']
+    ['chalk', 'flow-runtime', 'ms', 'then-request', 'babel-runtime']
   );
 
   fs.writeFileSync(

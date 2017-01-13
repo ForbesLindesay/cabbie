@@ -1,3 +1,4 @@
+import addDebugging from './add-debugging';
 import BaseClass from './base-class';
 
 class Alert extends BaseClass {
@@ -35,5 +36,5 @@ class Alert extends BaseClass {
     await this.requestJSON('POST', '/dismiss_alert');
   }
 }
-
+addDebugging(Alert);
 export default Alert;

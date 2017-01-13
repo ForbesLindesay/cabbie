@@ -1,4 +1,5 @@
 import type Driver from './driver';
+import addDebugging from './add-debugging';
 import BaseStorage from './base-storage';
 
 /**
@@ -9,4 +10,5 @@ class SessionStorage extends BaseStorage {
     super(driver, '/session_storage');
   }
 }
+addDebugging(SessionStorage);
 export default SessionStorage;

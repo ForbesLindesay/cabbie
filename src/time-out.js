@@ -1,5 +1,6 @@
 import type {TimeOutType} from './enums/time-out-types';
 import type Driver from './driver';
+import addDebugging from './add-debugging';
 import url from "url";
 import ms from "ms";
 import BaseClass from './base-class';
@@ -86,5 +87,5 @@ class TimeOut extends BaseClass {
     await this.requestJSON('POST', '', { type: TimeOutTypes.IMPLICIT, ms: timeout });
   }
 }
-
+addDebugging(TimeOut);
 export default TimeOut;

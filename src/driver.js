@@ -4,6 +4,7 @@ import type {Options} from './flow-types/options';
 import type {SessionData} from './flow-types/session-data';
 import util from "util";
 import url from "url";
+import addDebugging from './add-debugging';
 import autoRequest from 'then-request';
 import {fromBody} from "./utils/errors";
 import Connection from "./connection";
@@ -197,54 +198,6 @@ async function createSession(connection: Connection, options: Options): Promise<
   }
 }
 
-/**
- * Setup debug output
- */
- /*
-async function setupDebug(driver: Driver, options: object) {
-    var indentation = 0;
+addDebugging(Driver);
 
-    function stringFill (filler, length) {
-        var buffer = new Buffer(length);
-        buffer.fill(filler);
-        return buffer.toString();
-    }
-
-    function getIndentation (add) {
-        return stringFill(' ', (indentation + add) * 2);
-    }
-
-    if (options.debug) {
-        if (options.httpDebug) {
-            driver.on('request', function (req) {
-                console.log(getIndentation(1) + "Request:  ", JSON.stringify(req).substr(0, 5000));
-            });
-            driver.on('response', function (res) {
-                var copy = {};
-                Object.keys(res).forEach(function (key) { copy[key] = res[key] });
-                copy.body = res.body.toString('utf8')
-                console.log(getIndentation(1) + "Response: ", JSON.stringify(copy).substr(0, 5000));
-            });
-        }
-        driver.on('method-call', function (event) {
-            var msg = event.target;
-            indentation = event.indentation;
-            if (event.selector) {
-                msg += '(' + util.inspect(event.selector, {colors: true}) + ')';
-            }
-            msg += '.' + event.name;
-            msg += '(' + event.args.map(function (a) {
-                return util.inspect(a, {colors: true});
-            }).join(', ') + ')';
-            if (event.result && typeof event.result !== 'object') {
-                msg += ' => ' + util.inspect(event.result, {colors: true});
-            }
-            console.log(getIndentation(0) + '[' + (event.state + stringFill(' ', 5)).substr(0, 5) + '] ' + msg);
-            if (event.state.toLowerCase() !== 'start') {
-                console.log(getIndentation(0) + stringFill('-', 50));
-            }
-        });
-    }
-}
-*/
 export default Driver;

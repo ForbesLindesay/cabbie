@@ -1,4 +1,5 @@
 import type Driver from './driver';
+import addDebugging from './add-debugging';
 import url from 'url';
 import Cookie from './cookie';
 import BaseClass from './base-class';
@@ -77,5 +78,5 @@ class CookieStorage extends BaseClass {
     return cookies.length;
   }
 }
-
+addDebugging(CookieStorage);
 export default CookieStorage;

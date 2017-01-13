@@ -1,3 +1,4 @@
+import addDebugging from './add-debugging';
 import type Driver from './driver';
 import BaseClass from './base-class';
 
@@ -64,4 +65,5 @@ class GlobalTouch extends BaseClass {
     await this.requestJSON('POST', '/flick', { xspeed: xSpeed, yspeed: ySpeed });
   }
 }
+addDebugging(GlobalTouch);
 export default GlobalTouch;

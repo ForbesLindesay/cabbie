@@ -1,14 +1,18 @@
+import type Debug from './debug';
 import type Driver from './driver';
 import type Element from './element';
+import addDebugging from './add-debugging';
 
 /**
  * Touch commands relative to a DOM-element
  */
 class Touch {
+  debug: Debug;
   driver: Driver;
   _parent: Element;
 
   constructor(driver: Driver, parent: Element) {
+    this.debug = driver.debug;
     this.driver = driver;
     this._parent = parent;
   }
@@ -84,6 +88,10 @@ class Touch {
 
   //TODO: Element touch flick
   //TODO: Element touch scroll
-}
 
+  inspect(depth: number, options: Object) {
+    return this._parent.inspect(depth, options) + '.touch';
+  }
+}
+addDebugging(Touch);
 export default Touch;

@@ -1,7 +1,6 @@
 // @flow
 import fs from 'fs';
 import assert from 'assert';
-import test from 'testit';
 import request from 'sync-request';
 import createCabbie from 'cabbie-async';
 import chromedriver from 'chromedriver';
@@ -61,8 +60,8 @@ async function run() {
   );
   const options = (
     LOCAL
-    ? {httpDebug: true}
-    : {httpDebug: true, browserName: 'chrome'}
+    ? {debug: true, httpDebug: false}
+    : {debug: true, httpDebug: false, browserName: 'chrome'}
   );
   let driver;
   try {

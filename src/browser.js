@@ -1,6 +1,7 @@
 import type {BrowserOrientation} from './enums/browser-orientations';
 import type Driver from './driver';
 import ActiveWindow from './active-window';
+import addDebugging from './add-debugging';
 import BaseClass from './base-class';
 import CookieStorage from './cookie-storage';
 import IME from './ime';
@@ -86,4 +87,5 @@ class Browser extends BaseClass {
     await this.requestJSON('POST', '/location', loc);
   }
 }
+addDebugging(Browser);
 export default Browser;

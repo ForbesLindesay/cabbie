@@ -1,4 +1,5 @@
 import type Driver from './driver';
+import addDebugging from './add-debugging';
 import BaseClass from './base-class';
 
 /**
@@ -30,5 +31,5 @@ class Frame extends BaseClass {
     await this.requestJSON('POST', '/parent');
   }
 }
-
+addDebugging(Frame);
 export default Frame;

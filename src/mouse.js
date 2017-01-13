@@ -1,7 +1,9 @@
 import type {MouseButton} from './enums/mouse-buttons';
 import type {HttpMethod} from './flow-types/http-method';
+import type Debug from './debug';
 import type Driver from './driver';
 import type Element from './element';
+import addDebugging from './add-debugging';
 import MouseButtons from './enums/mouse-buttons';
 
 /**
@@ -9,9 +11,11 @@ import MouseButtons from './enums/mouse-buttons';
  */
 class Mouse {
   driver: Driver;
+  debug: Debug;
   _parent: Element;
   constructor(driver: Driver, parent: Element) {
     this.driver = driver;
+    this.debug = driver.debug;
     this._parent = parent;
   }
 
@@ -100,5 +104,10 @@ class Mouse {
     await this.moveTo(xOffset, yOffset);
     await this.driver.browser.activeWindow.mouse.buttonUp(button);
   }
+
+  inspect(depth: number, options: Object) {
+    return this._parent.inspect(depth, options) + '.mouse';
+  }
 }
+addDebugging(Mouse);
 export default Mouse;

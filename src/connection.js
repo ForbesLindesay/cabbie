@@ -35,11 +35,20 @@ class Connection {
       uri = this.remote + uri;
     }
 
-    this.debug.onRequest({method, uri, options});
-    const response = await autoRequest(method, uri, options);
-    this.debug.onResponse(response);
+    let lastEx = null;
+    for (let i = 0; i < 10; i++) {
+      try {
+        this.debug.onRequest({method, uri, options});
+        const response = await autoRequest(method, uri, options);
+        this.debug.onResponse(response);
+        return response;
+      } catch (ex) {
+        lastEx = ex;
+        // TODO: sleep for 100ms, then 1000ms, then 2000ms, 3000ms and so on
+      }
+    }
 
-    return response;
+    throw lastEx;
   }
 }
 export default Connection;

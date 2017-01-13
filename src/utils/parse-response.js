@@ -15,8 +15,12 @@ function parseResponse(res: HttpResponse): WebdriverResponse {
     throw new Error('Invalid request (' + res.statusCode + '):\n' + bodyString);
 
   } else if (res.statusCode >= 500 && res.statusCode < 600) { // 500s
-    const body = JSON.parse(bodyString);
-
+    let body;
+    try {
+      body = JSON.parse(bodyString);
+    } catch (ex) {
+      throw new Error("Failed command (" + res.statusCode + "):\n" + bodyString);
+    }
     throw new Error("Failed command (" + res.statusCode + "):\n" + body.value.message + (body.value.class ? "\nClass: " + body.value.class : "") + (body.value.stackTrace ? "\nStack-trace:\n " + stringifyStackTrace(body.value.stackTrace) : ""));
   } else if (res.statusCode >= 200 && res.statusCode < 300) {
 
@@ -24,7 +28,12 @@ function parseResponse(res: HttpResponse): WebdriverResponse {
       return null;
 
     } else {
-      const body = JSON.parse(bodyString);
+      let body;
+      try {
+        body = JSON.parse(bodyString);
+      } catch (ex) {
+        throw new Error('Failed parsing JSON response (with status code ' + res.statusCode + '):\n' + bodyString);
+      }
 
       if (body.status === 0) {
         return body.value;

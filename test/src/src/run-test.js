@@ -31,34 +31,6 @@ async function run(driver: Driver, location: string) {
     assert.equal(typeof activeWindowHandle.id, 'string');
   });
 
-  await test('get the position of the active window', async () => {
-    const position = await driver.browser.activeWindow.getPosition();
-    assert.equal(typeof position, 'object');
-    assert.equal(typeof position.x, 'number');
-    assert.equal(typeof position.y, 'number');
-  });
-
-  await test('get the size of the active window', async () => {
-    const size = await driver.browser.activeWindow.getSize();
-    assert.equal(typeof size, 'object');
-    assert.equal(typeof size.width, 'number');
-    assert.equal(typeof size.height, 'number');
-  });
-
-  await test('resize the active window', async () => {
-    await driver.browser.activeWindow.resize(500, 300);
-    assert.deepEqual(await driver.browser.activeWindow.getSize(), {width: 500, height: 300});
-  });
-
-  await test('position the active window', async () => {
-    await driver.browser.activeWindow.position(160, 163);
-    assert.deepEqual(await driver.browser.activeWindow.getPosition(), {x: 160, y: 163});
-  });
-
-  await test('maximize the active window', async () => {
-    await driver.browser.activeWindow.maximize();
-  });
-
   await test('navigate to a domain', async () => {
     await driver.browser.activeWindow.navigator.navigateTo(location);
   });
@@ -714,10 +686,12 @@ async function run(driver: Driver, location: string) {
     status.getOSArchitecture();
     status.getOSName();
   });
-  test("get a session list", async () => {
-    const sessions = await getSessions(driver.remote, driver.options);
-    console.log(sessions);
-  });
+
+  // TODO: this feature is not supported by sauce labs:
+  // test("get a session list", async () => {
+  //   const sessions = await getSessions(driver.remote, driver.options);
+  //   console.log(sessions);
+  // });
 
   await test("get capabilities information", async () => {
     const session = await driver.session;
@@ -773,6 +747,34 @@ async function run(driver: Driver, location: string) {
       await button.getText(),
       'clicked',
     );
+  });
+
+  await test('get the position of the active window', async () => {
+    const position = await driver.browser.activeWindow.getPosition();
+    assert.equal(typeof position, 'object');
+    assert.equal(typeof position.x, 'number');
+    assert.equal(typeof position.y, 'number');
+  });
+
+  await test('get the size of the active window', async () => {
+    const size = await driver.browser.activeWindow.getSize();
+    assert.equal(typeof size, 'object');
+    assert.equal(typeof size.width, 'number');
+    assert.equal(typeof size.height, 'number');
+  });
+
+  await test('resize the active window', async () => {
+    await driver.browser.activeWindow.resize(500, 300);
+    assert.deepEqual(await driver.browser.activeWindow.getSize(), {width: 500, height: 300});
+  });
+
+  await test('position the active window', async () => {
+    await driver.browser.activeWindow.position(160, 163);
+    assert.deepEqual(await driver.browser.activeWindow.getPosition(), {x: 160, y: 163});
+  });
+
+  await test('maximize the active window', async () => {
+    await driver.browser.activeWindow.maximize();
   });
 
   await test('close the active window', async () => {

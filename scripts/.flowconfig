@@ -1,0 +1,7 @@
+[options]
+module.use_strict=true
+unsafe.enable_getters_and_setters=true
+munge_underscores=true
+
+[ignore]
+.*/node_modules/\(flow-runtime\|babel-plugin-flow-runtime\)/.*

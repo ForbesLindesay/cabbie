@@ -1,0 +1,15 @@
+{
+  "ignore": ["node_modules"],
+  "plugins": [
+    "syntax-flow",
+    "syntax-trailing-function-commas",
+    "syntax-class-properties",
+  ],
+  "env": {
+    "sync": {
+      "plugins": [
+        "../../babel-plugin-remove-async",
+      ]
+    },
+  }
+}

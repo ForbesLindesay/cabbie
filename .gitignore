@@ -12,3 +12,7 @@ results
 node_modules
 /coverage
 .idea
+
+/output
+/test/async
+/test/sync

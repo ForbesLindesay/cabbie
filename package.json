@@ -24,6 +24,7 @@
     "lsr": "^1.0.0",
     "mkdirp": "^0.5.1",
     "ms": "^0.7.2",
+    "prettier": "0.0.5",
     "resolve": "^1.2.0",
     "rimraf": "^2.5.4",
     "sync-request": "^4.0.1",
@@ -31,7 +32,9 @@
     "throat": "^3.0.0"
   },
   "scripts": {
+    "prettier": "babel-node scripts/prettier",
     "www": "babel-node www",
+    "prebuild": "npm run prettier",
     "build": "babel-node scripts/build",
     "pretest": "babel-node scripts/build --only-tests",
     "test": "babel-node test/sync/src && babel-node test/async/src",

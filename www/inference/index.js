@@ -41,11 +41,7 @@ class ModuleGenerator {
     const result = parse(this._src, {
       sourceType: 'module',
       sourceFilename: filename,
-      plugins: [
-        'flow',
-        'objectRestSpread',
-        'classProperties',
-      ],
+      plugins: ['flow', 'objectRestSpread', 'classProperties'],
     });
 
     const statements = result.program.body;
@@ -56,16 +52,12 @@ class ModuleGenerator {
   }
 
   getError(node, message, data) {
-    const codeFrame = (
-      node.loc
+    const codeFrame = node.loc
       ? createCodeFrame(this._src, node.loc.start.line, node.loc.start.column, {highlightCode: true})
-      : ''
-    );
+      : '';
 
     return new Error(
-      message +
-      (data ? '\n\n' + inspect(data, {depth: 2, colors: true}) : '') +
-      (codeFrame ? '\n\n' + codeFrame : '')
+      message + (data ? '\n\n' + inspect(data, {depth: 2, colors: true}) : '') + (codeFrame ? '\n\n' + codeFrame : ''),
     );
   }
 
@@ -103,60 +95,56 @@ class ModuleGenerator {
       }
       superClass = this._values.get(statement.superClass.name);
     }
-    const cls = {
-      loc: new SourceLocation(statement.loc),
-      type: 'class',
-      superClass,
-    };
+    const cls = {loc: new SourceLocation(statement.loc), type: 'class', superClass};
     this._values.set(local, cls);
     let constructor = null;
-    cls.body = statement.body.body.filter(property => {
-      if (property.kind === 'constructor') {
-        constructor = property;
-        return false;
-      }
-      return true;
-    }).map(property => {
-      switch (property.type) {
-        case 'ClassProperty': {
-          assert(!property.computed, 'computed properties are not supported');
-          return {
-            loc: new SourceLocation(property.loc),
-            type: 'property',
-            key: property.key.name,
-            variance: property.variance,
-            static: property.static,
-            typeAnnotation: this.getTypeValue(property.typeAnnotation),
-            leadingComments: property.leadingComments ? property.leadingComments.map(extractComment) : [],
-          };
+    cls.body = statement.body.body
+      .filter(property => {
+        if (property.kind === 'constructor') {
+          constructor = property;
+          return false;
         }
-        case 'ClassMethod': {
-          assert(!property.computed, 'computed properties are not supported');
-          assert.equal(property.kind, 'method');
-          return {
-            loc: new SourceLocation(property.loc),
-            type: 'method',
-            key: property.key.name,
-            variance: property.variance,
-            static: property.static,
-            params: property.params.map(p => this.getParam(p)),
-            returnType: property.returnType ? this.getTypeValue(property.returnType) : null,
-            leadingComments: property.leadingComments ? property.leadingComments.map(extractComment) : [],
-          };
+        return true;
+      })
+      .map(property => {
+        switch (property.type) {
+          case 'ClassProperty': {
+            assert(!property.computed, 'computed properties are not supported');
+            return {
+              loc: new SourceLocation(property.loc),
+              type: 'property',
+              key: property.key.name,
+              variance: property.variance,
+              static: property.static,
+              typeAnnotation: this.getTypeValue(property.typeAnnotation),
+              leadingComments: property.leadingComments ? property.leadingComments.map(extractComment) : [],
+            };
+          }
+          case 'ClassMethod': {
+            assert(!property.computed, 'computed properties are not supported');
+            assert.equal(property.kind, 'method');
+            return {
+              loc: new SourceLocation(property.loc),
+              type: 'method',
+              key: property.key.name,
+              variance: property.variance,
+              static: property.static,
+              params: property.params.map(p => this.getParam(p)),
+              returnType: property.returnType ? this.getTypeValue(property.returnType) : null,
+              leadingComments: property.leadingComments ? property.leadingComments.map(extractComment) : [],
+            };
+          }
+          default:
+            throw this.getError(property, 'Unknown class property type:', property);
         }
-        default:
-          throw this.getError(property, 'Unknown class property type:', property);
-      }
-    });
+      });
   }
 
   onImportDeclaration(statement) {
     assert.equal(statement.source.type, 'StringLiteral');
-    const moduleID = (
-      statement.source.value[0] === '.'
+    const moduleID = statement.source.value[0] === '.'
       ? resolveImport(statement.source.value, {basedir: dirname(this._filename)})
-      : statement.source.value
-    );
+      : statement.source.value;
     if (statement.source.value[0] === '.') {
       this.dependencies.add(moduleID);
     }
@@ -205,10 +193,7 @@ class ModuleGenerator {
   onExportDeclaration(_declaration, leadingComments, overrideName) {
     const declaration = {
       ..._declaration,
-      leadingComments: [
-        ...(leadingComments || []),
-        ...(_declaration.leadingComments || []),
-      ],
+      leadingComments: [...(leadingComments || []), ...(_declaration.leadingComments || [])],
     };
     switch (declaration.type) {
       case 'FunctionDeclaration':
@@ -270,32 +255,26 @@ class ModuleGenerator {
     const id = statement.id.name;
     const returnType = statement.returnType ? this.getTypeValue(statement.returnType) : null;
     const params = statement.params.map(p => this.getParam(p));
-    this._values.set(
+    this._values.set(id, {
+      type: 'function',
       id,
-      {
-        type: 'function',
-        id,
-        params,
-        returnType,
-        leadingComments: statement.leadingComments ? statement.leadingComments.map(extractComment) : [],
-        loc: new SourceLocation(statement.loc),
-      },
-    );
+      params,
+      returnType,
+      leadingComments: statement.leadingComments ? statement.leadingComments.map(extractComment) : [],
+      loc: new SourceLocation(statement.loc),
+    });
   }
 
   onTypeAlias(statement) {
     assert.equal(statement.id.type, 'Identifier');
     const id = statement.id.name;
 
-    this._values.set(
+    this._values.set(id, {
+      type: 'type-alias',
       id,
-      {
-        type: 'type-alias',
-        id,
-        value: this.getTypeValue(statement.right),
-        loc: new SourceLocation(statement.loc),
-      },
-    );
+      value: this.getTypeValue(statement.right),
+      loc: new SourceLocation(statement.loc),
+    });
   }
 
   onVariableDeclaration(statement) {
@@ -336,12 +315,12 @@ class ModuleGenerator {
     }
   }
   getValue(value) {
-    switch(value.type) {
+    switch (value.type) {
       case 'ObjectExpression':
         return {
           type: 'object-expression',
           properties: value.properties.map(property => {
-            switch(property.type) {
+            switch (property.type) {
               case 'ObjectProperty':
                 assert(!property.computed, 'computed properties are not supported');
                 assert(property.key.type === 'Identifier' || property.key.type === 'StringLiteral');
@@ -351,7 +330,7 @@ class ModuleGenerator {
                   value: this.getValue(property.value),
                   loc: new SourceLocation(property.loc),
                   leadingComments: property.leadingComments ? property.leadingComments.map(extractComment) : [],
-                }
+                };
               default:
                 throw this.getError(property, 'Unknown property type:', property);
             }
@@ -440,10 +419,14 @@ class ModuleGenerator {
           }),
           returnType: this.getTypeValue(typeAnnotation.returnType),
           loc: new SourceLocation(typeAnnotation.loc),
-        }
+        };
       }
       case 'UnionTypeAnnotation': {
-        return {type: 'union', types: typeAnnotation.types.map(t => this.getTypeValue(t)), loc: new SourceLocation(typeAnnotation.loc)}
+        return {
+          type: 'union',
+          types: typeAnnotation.types.map(t => this.getTypeValue(t)),
+          loc: new SourceLocation(typeAnnotation.loc),
+        };
       }
       case 'AnyTypeAnnotation': {
         return {type: 'builtin-type', id: 'any'};

@@ -1,3 +1,5 @@
+// @disable-prettier: It messes up the unprintable keyboard characters
+
 /*
  * Web-driver keys
  */

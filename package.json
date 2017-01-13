@@ -33,6 +33,7 @@
   },
   "scripts": {
     "prettier": "babel-node scripts/prettier",
+    "prewww": "npm run prettier",
     "www": "babel-node www",
     "prebuild": "npm run prettier",
     "build": "babel-node scripts/build",

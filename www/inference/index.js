@@ -292,6 +292,29 @@ class ModuleGenerator {
     }
     assert.equal(declarator.id.type, 'Identifier');
     this._values.set(declarator.id.name, this.getValue(declarator.init));
+    if (/Enum$/.test(declarator.id.name)) {
+      if (!declarator.init.type === 'ObjectExpression') {
+        throw this.getError(declarator.init, 'Enums must be object literals');
+      }
+      const entries = declarator.init.properties.map(prop => {
+        if (prop.computed || prop.type !== 'ObjectProperty' || prop.key.type !== 'Identifier') {
+          throw this.getError(prop, 'Enum keys must be plain identifiers');
+        }
+        if (prop.value.type === 'StringLiteral') {
+          return {type: 'string-literal', value: prop.value.value};
+        } else if (prop.value.type === 'NumericLiteral') {
+          return {type: 'numeric-literal', value: prop.value.value};
+        } else {
+          throw this.getError(prop.value, 'Enum values must be string literals or numeric literals');
+        }
+      });
+      this.exports[declarator.id.name.replace(/Enum$/, '')] = {
+        type: 'type-alias',
+        id: declarator.id.name.replace(/Enum$/, ''),
+        value: {type: 'union', types: entries, loc: new SourceLocation(declarator.loc)},
+        loc: new SourceLocation(declarator.loc),
+      };
+    }
   }
 
   getParam(param) {
@@ -316,6 +339,11 @@ class ModuleGenerator {
   }
   getValue(value) {
     switch (value.type) {
+      case 'Identifier':
+        if (!this._values.has(value.name)) {
+          throw this.getError(value, 'Unrecognised identifier: ' + value.name);
+        }
+        return this._values.get(value.name);
       case 'ObjectExpression':
         return {
           type: 'object-expression',
@@ -349,6 +377,11 @@ class ModuleGenerator {
           loc: new SourceLocation(value.loc),
           elements: value.elements.map(e => this.getValue(e)),
         };
+
+      case 'MemberExpression':
+        assert(!value.computed, 'computed MemberExpression is not supported');
+        assert.equal(value.property.type, 'Identifier');
+        return {type: 'member-expression', object: this.getValue(value.object), property: value.property.name};
       default:
         throw this.getError(value, 'Unknown value type:', value);
     }
@@ -449,6 +482,9 @@ class ModuleGenerator {
       case 'StringLiteralTypeAnnotation': {
         return {type: 'string-literal', value: typeAnnotation.value};
       }
+      case 'NumericLiteralTypeAnnotation': {
+        return {type: 'numeric-literal', value: typeAnnotation.value};
+      }
       default:
         throw this.getError(typeAnnotation, 'Unknown type annotation type:', typeAnnotation);
     }
@@ -465,7 +501,6 @@ function normalize(value, context) {
 
   switch (value.type) {
     case 'import':
-      console.dir(getModule(value.moduleID));
       const result = getModule(value.moduleID)[value.name];
       if (result === undefined) {
         throw context.getError(value, `${value.moduleID} has no export named "${value.name}"`);
@@ -490,6 +525,7 @@ function normalize(value, context) {
       value.typeAnnotation = normalize(value.typeAnnotation, context);
       return value;
     case 'string-literal':
+    case 'numeric-literal':
     case 'builtin-type':
       return value;
     case 'type-alias':
@@ -512,6 +548,12 @@ function normalize(value, context) {
       return value;
     case 'property':
       value.typeAnnotation = normalize(value.typeAnnotation, context);
+      return value;
+    case 'object-expression':
+      value.properties = value.properties.map(v => normalize(v, context));
+      return value;
+    case 'object-property':
+      value.value = normalize(value.value, context);
       return value;
     default:
       throw context.getError(value, 'Unknown value type:', value);

@@ -36,5 +36,7 @@ import {format} from 'prettier';
     // Controls the printing of spaces inside array and objects
     bracketSpacing: false
   });
-  writeFileSync(file.fullPath, output);
+  if (src !== output) {
+    writeFileSync(file.fullPath, output);
+  }
 })

@@ -5,6 +5,7 @@ import {dirname, resolve as resolvePath} from 'path';
 import createCodeFrame from 'babel-code-frame';
 import {parse} from 'babylon';
 import {sync as resolveImport} from 'resolve';
+import pluralize from 'pluralize';
 
 const builtInValues = new Map();
 builtInValues.set('Array', {type: 'builtin-type', id: 'Array'});
@@ -29,16 +30,16 @@ function extractComment(comment) {
 }
 class ModuleGenerator {
   _filename: string;
-  _src: string;
+  src: string;
   _values = new Map();
   exports = {};
   dependencies = new Set();
 
   constructor(filename: string) {
     this._filename = filename;
-    this._src = readFileSync(filename, 'utf8');
+    this.src = readFileSync(filename, 'utf8');
 
-    const result = parse(this._src, {
+    const result = parse(this.src, {
       sourceType: 'module',
       sourceFilename: filename,
       plugins: ['flow', 'objectRestSpread', 'classProperties'],
@@ -53,7 +54,7 @@ class ModuleGenerator {
 
   getError(node, message, data) {
     const codeFrame = node.loc
-      ? createCodeFrame(this._src, node.loc.start.line, node.loc.start.column, {highlightCode: true})
+      ? createCodeFrame(this.src, node.loc.start.line, node.loc.start.column, {highlightCode: true})
       : '';
 
     return new Error(
@@ -95,7 +96,7 @@ class ModuleGenerator {
       }
       superClass = this._values.get(statement.superClass.name);
     }
-    const cls = {loc: new SourceLocation(statement.loc), type: 'class', superClass};
+    const cls = {type: 'class', name: local, loc: new SourceLocation(statement.loc), superClass};
     this._values.set(local, cls);
     let constructor = null;
     cls.body = statement.body.body
@@ -291,29 +292,36 @@ class ModuleGenerator {
       return;
     }
     assert.equal(declarator.id.type, 'Identifier');
-    this._values.set(declarator.id.name, this.getValue(declarator.init));
     if (/Enum$/.test(declarator.id.name)) {
       if (!declarator.init.type === 'ObjectExpression') {
         throw this.getError(declarator.init, 'Enums must be object literals');
       }
+      const values = {};
       const entries = declarator.init.properties.map(prop => {
         if (prop.computed || prop.type !== 'ObjectProperty' || prop.key.type !== 'Identifier') {
           throw this.getError(prop, 'Enum keys must be plain identifiers');
         }
         if (prop.value.type === 'StringLiteral') {
-          return {type: 'string-literal', value: prop.value.value};
+          values[prop.key.name] = {type: 'string-literal', value: prop.value.value};
         } else if (prop.value.type === 'NumericLiteral') {
-          return {type: 'numeric-literal', value: prop.value.value};
+          values[prop.key.name] = {type: 'numeric-literal', value: prop.value.value};
         } else {
           throw this.getError(prop.value, 'Enum values must be string literals or numeric literals');
         }
       });
-      this.exports[declarator.id.name.replace(/Enum$/, '')] = {
-        type: 'type-alias',
-        id: declarator.id.name.replace(/Enum$/, ''),
-        value: {type: 'union', types: entries, loc: new SourceLocation(declarator.loc)},
+      const typeName = declarator.id.name.replace(/Enum$/, '');
+      const enumObject = {
+        type: 'enum',
+        name: pluralize(typeName),
+        valueName: typeName,
+        values,
         loc: new SourceLocation(declarator.loc),
       };
+      this.exports[declarator.id.name.replace(/Enum$/, '')] = {type: 'enum-value-type', enum: enumObject};
+      this._values.set(declarator.id.name, enumObject);
+    } else {
+      const value = this.getValue(declarator.init);
+      this._values.set(declarator.id.name, value);
     }
   }
 
@@ -329,7 +337,6 @@ class ModuleGenerator {
       case 'AssignmentPattern':
         return {
           ...this.getParam(param.left),
-          // TODO: simplify default value
           defaultValue: this.getValue(param.right),
           loc: new SourceLocation(param.loc),
         };
@@ -418,7 +425,25 @@ class ModuleGenerator {
                 return {
                   type: 'object-type-property',
                   key: p.key.name,
-                  value: this.getTypeValue(p.value),
+                  typeAnnotation: this.getTypeValue(p.value),
+                  optional: p.optional,
+                  static: p.static,
+                  variance: p.variance,
+                  leadingComments: p.leadingComments ? p.leadingComments.map(extractComment) : [],
+                  loc: new SourceLocation(p.loc),
+                };
+              default:
+                throw this.getError(p, 'Unknown property type annotation type:', p);
+            }
+          }),
+          indexers: typeAnnotation.indexers.map(p => {
+            switch (p.type) {
+              case 'ObjectTypeIndexer':
+                return {
+                  type: 'object-type-indexer',
+                  key: p.id.name,
+                  keyType: this.getTypeValue(p.key),
+                  typeAnnotation: this.getTypeValue(p.value),
                   optional: p.optional,
                   static: p.static,
                   variance: p.variance,
@@ -490,7 +515,7 @@ class ModuleGenerator {
     }
   }
 }
-function normalize(value, context) {
+function mergeFiles(value, context) {
   const {getModule, visited, getError} = context;
   if (visited.has(value)) {
     return value;
@@ -506,54 +531,76 @@ function normalize(value, context) {
         throw context.getError(value, `${value.moduleID} has no export named "${value.name}"`);
       }
       if (result.type === 'import') {
-        return normalize(result, context);
+        return mergeFiles(result, context);
       } else {
         return result;
       }
     case 'method':
     case 'function':
-      value.params = value.params.map(v => normalize(v, context));
+      value.params = value.params.map(v => mergeFiles(v, context));
       if (value.returnType) {
-        value.returnType = normalize(value.returnType, context);
+        value.returnType = mergeFiles(value.returnType, context);
       }
       return value;
     case 'generic-type':
-      value.id = normalize(value.id, context);
-      value.typeParameters = value.typeParameters.map(v => normalize(v, context));
+      value.id = mergeFiles(value.id, context);
+      value.typeParameters = value.typeParameters.map(v => mergeFiles(v, context));
       return value;
     case 'param':
-      value.typeAnnotation = normalize(value.typeAnnotation, context);
+      value.typeAnnotation = mergeFiles(value.typeAnnotation, context);
+      if (value.defaultValue) {
+        value.defaultValue = mergeFiles(value.defaultValue, context);
+      }
       return value;
     case 'string-literal':
     case 'numeric-literal':
+    case 'boolean-literal':
     case 'builtin-type':
+    case 'enum':
       return value;
     case 'type-alias':
-      value.value = normalize(value.value, context);
+      value.value = mergeFiles(value.value, context);
       return value;
     case 'object-type':
-      value.properties = value.properties.map(p => normalize(p, context));
+      value.properties = value.properties.map(p => mergeFiles(p, context));
+      value.indexers = value.indexers.map(p => mergeFiles(p, context));
       return value;
     case 'object-type-property':
-      value.value = normalize(value.value, context);
+      value.typeAnnotation = mergeFiles(value.typeAnnotation, context);
+      return value;
+    case 'object-type-indexer':
+      value.keyType = mergeFiles(value.keyType, context);
+      value.typeAnnotation = mergeFiles(value.typeAnnotation, context);
       return value;
     case 'union':
-      value.types = value.types.map(v => normalize(v, context));
+      value.types = value.types.map(v => mergeFiles(v, context));
       return value;
     case 'class':
       if (value.superClass) {
-        value.superClass = normalize(value.superClass, context);
+        value.superClass = mergeFiles(value.superClass, context);
       }
-      value.body = value.body.map(v => normalize(v, context));
+      value.body = value.body.map(v => mergeFiles(v, context));
       return value;
     case 'property':
-      value.typeAnnotation = normalize(value.typeAnnotation, context);
+      value.typeAnnotation = mergeFiles(value.typeAnnotation, context);
       return value;
     case 'object-expression':
-      value.properties = value.properties.map(v => normalize(v, context));
+      value.properties = value.properties.map(v => mergeFiles(v, context));
       return value;
     case 'object-property':
-      value.value = normalize(value.value, context);
+      value.value = mergeFiles(value.value, context);
+      return value;
+    case 'array-expression':
+      value.elements = value.elements.map(v => mergeFiles(v, context));
+      return value;
+    case 'enum-value-type':
+      value.enum = mergeFiles(value.enum, context);
+      return value;
+    case 'member-expression':
+      value.object = mergeFiles(value.object, context);
+      if (value.object.type === 'enum') {
+        value.type = 'enum-value';
+      }
       return value;
     default:
       throw context.getError(value, 'Unknown value type:', value);
@@ -571,10 +618,14 @@ class DocumentationGenerator {
     this._moduleSpecs.set(filename, moduleSpec);
     moduleSpec.dependencies.forEach(dependency => this.handleFile(dependency));
   }
-  normalize() {
+  mergeFiles() {
     this._moduleSpecs.forEach(spec => {
       Object.keys(spec.exports).forEach(key => {
-        spec.exports[key] = normalize(spec.exports[key], {
+        if (!spec.exports[key]) {
+          delete spec.exports[key];
+          return;
+        }
+        spec.exports[key] = mergeFiles(spec.exports[key], {
           getModule: name => this.getModule(name),
           getError: (...args) => spec.getError(...args),
           visited: new Set(),
@@ -585,15 +636,21 @@ class DocumentationGenerator {
   getModule(filename) {
     return this._moduleSpecs.get(resolvePath(filename)).exports;
   }
+  getModuleSource(filename) {
+    return this._moduleSpecs.get(resolvePath(filename)).src;
+  }
 }
 function runInference(filename) {
   const doc = new DocumentationGenerator();
   doc.handleFile(resolvePath(filename));
-  doc.normalize();
+  doc.mergeFiles();
   return {
     entry: doc.getModule(filename),
     getModule(f) {
       return doc.getModule(f);
+    },
+    getModuleSource(f) {
+      return doc.getModuleSource(f);
     },
   };
 }

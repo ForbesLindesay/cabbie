@@ -10,6 +10,8 @@ export {Connection, Debug, Driver, Status};
 
 /*
  * Create a new cabbie Driver
+ *
+ * @public
  */
 export default function createCabbieDriver(remote: string, options: Options = {}): Driver {
   return new Driver(remote, options);
@@ -19,7 +21,9 @@ export type {Options};
 /*
  * Returns a list of the currently active sessions
  *
- * Note: Appears not to be supported by the selenium-standalone-server!}
+ * Note: Appears not to be supported by the selenium-standalone-server!
+ *
+ * @public
  */
 export async function getSessions(remote: string, options: Options = {}): Promise<Array<SessionData>> {
   const connection = new Connection(remote, new Debug(options));
@@ -30,6 +34,8 @@ export async function getSessions(remote: string, options: Options = {}): Promis
 
 /*
  * Gets the selenium-system status
+ *
+ * @public
  */
 export async function getStatus(remote: string, options: Options = {}): Promise<Status> {
   const connection = new Connection(remote, new Debug(options));

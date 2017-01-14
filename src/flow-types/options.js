@@ -1,3 +1,4 @@
+import type {Mode} from '../enums/modes';
 import type {SessionData} from './session-data';
 
 export type Options = {
@@ -58,5 +59,5 @@ export type Options = {
   /*
    * This field is ignored unless you are using the combined async/sync cabbie
    */
-  mode?: 'sync' | 'async',
+  mode?: Mode,
 };

@@ -2,9 +2,9 @@ import React from 'react';
 import {renderToString} from 'react-dom/server';
 import {ServerRouter, createServerRenderContext} from 'react-router';
 import {styleSheet} from 'styled-components';
-import Application from './ui';
+import Application from './';
 
-function serverRender(url) {
+function serverRender(url, clientURL) {
   // first create a context for <ServerRouter>, it's where we keep the
   // results of rendering for the second pass if necessary
   const context = createServerRenderContext();
@@ -52,7 +52,10 @@ function serverRender(url) {
   <title>Cabbie</title>
   <style>${css}</style>
 </head>
-<body><div>${markup}</div></body>
+<body>
+  <div id="container">${markup}</div>
+  <script async defer src="${clientURL}"></script>
+</body>
 </html>`,
     };
   }

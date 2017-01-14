@@ -1,4 +1,4 @@
-import {readFileSync, writeFileSync} from 'fs';
+import {readFile, writeFile} from 'fs';
 import {sync as lsr} from 'lsr';
 import {format} from 'prettier';
 
@@ -12,31 +12,33 @@ import {format} from 'prettier';
   if (!(file.isFile() && /\.js$/.test(file.fullPath))) {
     return;
   }
-  console.log(file.fullPath);
-  const src = readFileSync(file.fullPath, 'utf8');
-  if (/@disable-prettier/.test(src)) {
-    return;
-  }
-  const output = format(src, {
-    // Fit code within this line limit
-    printWidth: 120,
+  readFile(file.fullPath, 'utf8', (err, src) => {
+    if (err) throw err;
+    console.log(file.fullPath);
+    if (/@disable-prettier/.test(src)) {
+      return;
+    }
+    const output = format(src, {
+      // Fit code within this line limit
+      printWidth: 120,
 
-    // Number of spaces it should use per tab
-    tabWidth: 2,
+      // Number of spaces it should use per tab
+      tabWidth: 2,
 
-    // Use the flow parser instead of babylon
-    useFlowParser: false,
+      // Use the flow parser instead of babylon
+      useFlowParser: false,
 
-    // If true, will use single instead of double quotes
-    singleQuote: true,
+      // If true, will use single instead of double quotes
+      singleQuote: true,
 
-    // Controls the printing of trailing commas wherever possible
-    trailingComma: true,
+      // Controls the printing of trailing commas wherever possible
+      trailingComma: true,
 
-    // Controls the printing of spaces inside array and objects
-    bracketSpacing: false
+      // Controls the printing of spaces inside array and objects
+      bracketSpacing: false
+    });
+    if (src !== output) {
+      writeFile(file.fullPath, output, err => { if (err) throw err; });
+    }
   });
-  if (src !== output) {
-    writeFileSync(file.fullPath, output);
-  }
 })

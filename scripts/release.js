@@ -22,7 +22,8 @@ function publish(directory) {
     throw new Error(res.stderr.toString());
   }
   if (res.error) {
-    if (typeof res.error === 'string') res.error = new Error(res.error);
+    if (typeof res.error === 'string')
+      res.error = new Error(res.error);
     throw res.error;
   }
 }

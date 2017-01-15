@@ -35,46 +35,39 @@ function execute(description, name, args, options = {}) {
         });
         console.log();
       }
-      if (exitCode) reject(new Error('exit code ' + exitCode));
-      else resolve(stdout);
+      if (exitCode)
+        reject(new Error('exit code ' + exitCode));
+      else
+        resolve(stdout);
     });
   });
 }
-  /*
+/*
   "prerelease": "rm -rf output && npm run build && npm run typecheck",
   "release": "npm run release:sync & npm run release:async",
   "release:sync": "cd output/sync && npm publish",
   "release:async": "cd output/async && npm publish",
   */
-
 function babel(args, BABEL_ENV) {
   const p = require.resolve('.bin/babel');
-  return execute(
-    `BABEL_ENV=${BABEL_ENV} babel ${args.join(' ')}`,
-    p, args, {env: {BABEL_ENV}},
-  );
+  return execute(`BABEL_ENV=${BABEL_ENV} babel ${args.join(' ')}`, p, args, {env: {BABEL_ENV}});
 }
 
 function flow(directory, args = []) {
   const p = require.resolve('.bin/flow');
-  return execute(
-    `CWD=${directory} flow ${args.join(' ')}`,
-    p, args, {cwd: directory},
-  );
+  return execute(`CWD=${directory} flow ${args.join(' ')}`, p, args, {cwd: directory});
 }
 function generateFlow(directory, args = []) {
   const p = require.resolve('.bin/flow');
-  return execute(
-    `CWD=${directory} flow generate ${args[1]}`,
-    p, args, {cwd: directory, getStdout: true, silent: true},
-  );
+  return execute(`CWD=${directory} flow generate ${args[1]}`, p, args, {cwd: directory, getStdout: true, silent: true});
 }
 function generateFlowFiles(mode) {
   const failedPaths = [];
   const successPaths = [];
   return Promise.all(
-    lsr.sync(__dirname + '/../output/' + mode + '/src').filter(e => e.isFile()).map(throat(1, entry => {
-      /*
+    lsr.sync(__dirname + '/../output/' + mode + '/src').filter(e => e.isFile()).map(
+      throat(1, entry => {
+        /*
       return generateFlow(__dirname + '/../output/' + mode, ['gen-flow-files', entry.fullPath, '--retries', '100']).then(
         result => {
           return result;
@@ -90,20 +83,18 @@ function generateFlowFiles(mode) {
         });
       });
       */
-      const result = fs.readFileSync(entry.fullPath);
-      successPaths.push({
-        path: entry.path,
-        fullPath: __dirname + '/../output/' + mode + '/lib' + entry.path.substr(1) + '.flow',
-        src: result,
-      });
-    })),
+        const result = fs.readFileSync(entry.fullPath);
+        successPaths.push({
+          path: entry.path,
+          fullPath: __dirname + '/../output/' + mode + '/lib' + entry.path.substr(1) + '.flow',
+          src: result,
+        });
+      }),
+    ),
   ).then(() => ({successPaths, failedPaths}));
 }
 function install(directory) {
-  return execute(
-    `CWD=${directory} npm install`,
-    'npm', ['install'], {cwd: directory},
-  );
+  return execute(`CWD=${directory} npm install`, 'npm', ['install'], {cwd: directory});
 }
 
 function exposeAllTypes(mode) {
@@ -114,14 +105,12 @@ function exposeAllTypes(mode) {
   const exports = [];
   const typeExports = [];
   enums.forEach(enumFileName => {
-    const name = (
-      enumFileName[0].toUpperCase() +
-      enumFileName.substr(1).replace(/\-([a-z])/g, (_, l) => l.toUpperCase()).replace(/\.js$/, '')
-    );
+    const name = enumFileName[0].toUpperCase() +
+      enumFileName.substr(1).replace(/\-([a-z])/g, (_, l) => l.toUpperCase()).replace(/\.js$/, '');
     const enumSrc = fs.readFileSync(`output/${mode}/src/enums/${enumFileName}`, 'utf8');
     const typeName = /^export type ([A-Za-z]+) =/m.exec(enumSrc)[1];
     imports.push(`import ${name} from './enums/${enumFileName}';`);
-    imports.push(`import type ${typeName} from './enums/${enumFileName}';`)
+    imports.push(`import type ${typeName} from './enums/${enumFileName}';`);
     exports.push(name);
     typeExports.push(typeName);
   });
@@ -142,10 +131,13 @@ function exposeAllTypes(mode) {
   });
   fs.writeFileSync(
     filename,
-    src.split('import')[0] + imports.join('\n') + '\nimport' +
-    src.split('import').slice(1).join('import') + '\n' +
-    'export {' + exports.join(', ') + '};\n' +
-    'export type {' + typeExports.join(', ') + '};\n'
+    src.split('import')[0] + imports.join('\n') + '\nimport' + src.split('import').slice(1).join('import') + '\n' +
+      'export {' +
+      exports.join(', ') +
+      '};\n' +
+      'export type {' +
+      typeExports.join(', ') +
+      '};\n',
   );
 }
 
@@ -165,7 +157,7 @@ async function build(mode) {
     }
   });
   flowFiles.successPaths.forEach(file => {
-    console.log(chalk.green(file.path))
+    console.log(chalk.green(file.path));
     fs.writeFileSync(file.fullPath, file.src);
   });
   flowFiles.failedPaths.forEach(path => console.log(chalk.red(path)));
@@ -178,7 +170,6 @@ async function buildTest(mode) {
   await flow(__dirname + '/../test/' + mode);
   await flow(__dirname + '/../test/' + mode, ['stop']);
 }
-
 
 /*
   "prebuild:test": "babel-node test/copy-output-packages",
@@ -193,24 +184,20 @@ async function run() {
   const isAll = process.argv.indexOf('--all') !== -1;
   if (!isOnlyTests) {
     rimraf.sync(__dirname + '/../output');
-    await Promise.all([
-      build('sync'),
-      build('async'),
-    ]);
+    await Promise.all([build('sync'), build('async')]);
   }
   if (isOnlyTests || isAll) {
     rimraf.sync(__dirname + '/../test/sync');
     rimraf.sync(__dirname + '/../test/async');
-    await execute(
-      `babel-node test/copy-output-packages`,
-      'babel-node', ['test/copy-output-packages'],
-    );
-    await Promise.all([
-      buildTest('sync'),
-      buildTest('async'),
-    ]);
+    await execute(`babel-node test/copy-output-packages`, 'babel-node', ['test/copy-output-packages']);
+    await Promise.all([buildTest('sync'), buildTest('async')]);
   }
 }
 run().catch(ex => {
-  setTimeout(() => { throw ex; }, 0);
+  setTimeout(
+    () => {
+      throw ex;
+    },
+    0,
+  );
 });

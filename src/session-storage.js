@@ -2,7 +2,7 @@ import type Driver from './driver';
 import addDebugging from './add-debugging';
 import BaseStorage from './base-storage';
 
-/**
+/*
  * Managing session-storage
  */
 class SessionStorage extends BaseStorage {

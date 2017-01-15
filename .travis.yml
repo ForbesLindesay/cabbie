@@ -1,4 +1,8 @@
 language: node_js
 node_js:
   - "6"
-script: "npm run build && npm test"
+script:
+  - npm run build-styled-components
+  - npm run build
+  - npm test
+  - npm run www:publish

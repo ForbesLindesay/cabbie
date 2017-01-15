@@ -1,18 +1,16 @@
 const MouseButtonEnum = {
-  /**
+  /*
    * Left mouse button
    */
   LEFT: 0,
-
-  /**
+  /*
    * Middle mouse button. It is the scroll button on some mouses.
    */
   MIDDLE: 1,
-
-  /**
+  /*
    * Right mouse button
    */
-  RIGHT: 2
+  RIGHT: 2,
 };
 
 export default MouseButtonEnum;

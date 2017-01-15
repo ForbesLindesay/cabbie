@@ -1,0 +1,11 @@
+{
+  "presets": ["forbeslindesay"],
+  "plugins": [
+    "styled-components",
+    "transform-flow-comments",
+    ["flow-runtime", {
+      "assert": true,
+      "decorate": true
+    }]
+  ]
+}

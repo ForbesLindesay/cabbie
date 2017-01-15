@@ -2,20 +2,20 @@ import type {ApplicationCacheStatus} from './enums/application-cache-statuses';
 import type {HttpMethod} from './flow-types/http-method';
 import type {Options} from './flow-types/options';
 import type {SessionData} from './flow-types/session-data';
-import util from "util";
-import url from "url";
+import util from 'util';
+import url from 'url';
 import addDebugging from './add-debugging';
 import autoRequest from 'then-request';
-import {fromBody} from "./utils/errors";
-import Connection from "./connection";
-import Browser from "./browser";
+import {fromBody} from './utils/errors';
+import Connection from './connection';
+import Browser from './browser';
 import Debug from './debug';
-import TimeOut from "./time-out";
-import Status from "./status";
-import LogEntry from "./log-entry";
+import TimeOut from './time-out';
+import Status from './status';
+import LogEntry from './log-entry';
 import parseResponse from './utils/parse-response';
 
-/**
+/*
  * Create a new Driver session, remember to call `.dispose()`
  * at the end to terminate the session.
  */
@@ -26,12 +26,12 @@ class Driver {
   remote: string;
   options: Options;
 
-  /**
+  /*
    * The browser object.
    */
   browser: Browser;
 
-  /**
+  /*
    * Configuration timeouts
    */
   timeOut: TimeOut;
@@ -47,7 +47,7 @@ class Driver {
     this.timeOut = new TimeOut(this);
   }
 
-  /**
+  /*
    * Performs a context dependent JSON request for the current session.
    * The result is parsed for errors.
    */
@@ -56,32 +56,30 @@ class Driver {
     return this._connection.requestWithSession(session, method, path, {json: body});
   }
 
-  /**
+  /*
    * Get the status of the html5 application cache
    */
   async getApplicationCacheStatus(): Promise<ApplicationCacheStatus> {
     return await this.requestJSON('GET', '/application_cache/status');
   }
 
-  /**
+  /*
    * Get the log for a given log type. Log buffer is reset after each request.
    */
   async getLogs(logType: string): Promise<Array<LogEntry>> {
-    const logs = await this.requestJSON('POST', '/log', {
-      type: logType
-    });
+    const logs = await this.requestJSON('POST', '/log', {type: logType});
 
     return logs.map(logEntry => new LogEntry(logEntry));
   }
 
-  /**
+  /*
    * Get available log types
    */
   async getLogTypes(): Promise<Array<string>> {
     return await this.requestJSON('GET', '/log/types');
   }
 
-  /**
+  /*
    * End this Driver session
    */
   async dispose(status?: Object): Promise<void> {
@@ -91,7 +89,7 @@ class Driver {
     await this.requestJSON('DELETE', '');
   }
 
-  /**
+  /*
    * Sauce Labs Methods
    */
   async sauceJobUpdate(body: Object): Promise<boolean> {
@@ -118,44 +116,36 @@ class Driver {
 
     return true;
   }
-
   // TODO: provide instructions for converting async driver to sync driver and visa versersa
 }
-
 
 ////////////
 // Events //
 ////////////
-
-/**
+/*
  * Fired when a request is made
  *
  * @event request
  * @param {Object} request Request options
  */
-
-/**
+/*
  * Fired when a response is received
  *
  * @event response
  * @param {Object} response Response data
  */
-
-/**
+/*
  * Fired when a public method is called
  *
  * @event method-call
  * @param {Object} event Method event data
  */
-
-/**
+/*
  * Fired when the session is destroyed
  *
  * @event disposed
  */
-
-
-/**
+/*
  * End this Driver session
  *
  * Alias for `dispose`
@@ -163,11 +153,9 @@ class Driver {
  */
 (Driver.prototype: any).quit = Driver.prototype.dispose;
 
-
 ///////////////
 // Utilities //
 ///////////////
-
 async function createSession(connection: Connection, options: Options): Promise<SessionData> {
   if (options.session !== undefined) {
     return options.session;
@@ -178,15 +166,13 @@ async function createSession(connection: Connection, options: Options): Promise<
     capabilities.requiredCapabilities = options.requiredCapabilities;
   }
 
-  const res = await connection.request('POST', '/session', {
-    json: capabilities
-  });
+  const res = await connection.request('POST', '/session', {json: capabilities});
 
   if (res.statusCode !== 200) {
     console.dir(res.headers);
     throw new Error(
       'Failed to start a Selenium session. Server responded with status code ' + res.statusCode + ':\n' +
-      res.body.toString('utf8')
+        res.body.toString('utf8'),
     );
   }
 

@@ -18,27 +18,32 @@ import {format} from 'prettier';
     if (/@disable-prettier/.test(src)) {
       return;
     }
-    const output = format(src, {
-      // Fit code within this line limit
-      printWidth: 120,
+    try {
+      const output = format(src, {
+        // Fit code within this line limit
+        printWidth: 120,
 
-      // Number of spaces it should use per tab
-      tabWidth: 2,
+        // Number of spaces it should use per tab
+        tabWidth: 2,
 
-      // Use the flow parser instead of babylon
-      useFlowParser: false,
+        // Use the flow parser instead of babylon
+        useFlowParser: false,
 
-      // If true, will use single instead of double quotes
-      singleQuote: true,
+        // If true, will use single instead of double quotes
+        singleQuote: true,
 
-      // Controls the printing of trailing commas wherever possible
-      trailingComma: true,
+        // Controls the printing of trailing commas wherever possible
+        trailingComma: true,
 
-      // Controls the printing of spaces inside array and objects
-      bracketSpacing: false
-    });
-    if (src !== output) {
-      writeFile(file.fullPath, output, err => { if (err) throw err; });
+        // Controls the printing of spaces inside array and objects
+        bracketSpacing: false
+      });
+      if (src !== output) {
+        writeFile(file.fullPath, output, err => { if (err) throw err; });
+      }
+    } catch (ex) {
+      console.log('Error prettifying: ' + file.fullPath);
+      console.error(ex.stack);
     }
   });
 })

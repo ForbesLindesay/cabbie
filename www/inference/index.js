@@ -301,10 +301,11 @@ class ModuleGenerator {
         if (prop.computed || prop.type !== 'ObjectProperty' || prop.key.type !== 'Identifier') {
           throw this.getError(prop, 'Enum keys must be plain identifiers');
         }
+        const leadingComments = prop.leadingComments ? prop.leadingComments.map(extractComment) : [];
         if (prop.value.type === 'StringLiteral') {
-          values[prop.key.name] = {type: 'string-literal', value: prop.value.value};
+          values[prop.key.name] = {type: 'string-literal', value: prop.value.value, leadingComments};
         } else if (prop.value.type === 'NumericLiteral') {
-          values[prop.key.name] = {type: 'numeric-literal', value: prop.value.value};
+          values[prop.key.name] = {type: 'numeric-literal', value: prop.value.value, leadingComments};
         } else {
           throw this.getError(prop.value, 'Enum values must be string literals or numeric literals');
         }
@@ -315,6 +316,7 @@ class ModuleGenerator {
         name: pluralize(typeName),
         valueName: typeName,
         values,
+        leadingComments: declarator.leadingComments.map(extractComment),
         loc: new SourceLocation(declarator.loc),
       };
       this.exports[declarator.id.name.replace(/Enum$/, '')] = {type: 'enum-value-type', enum: enumObject};

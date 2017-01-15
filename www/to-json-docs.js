@@ -139,6 +139,12 @@ function toJson(inference) {
     }
   }
   onModule(inference.entry, 'cabbie');
+  output.classes.sort((a, b) => {
+    return a.name < b.name ? -1 : 1;
+  });
+  output.enums.sort((a, b) => {
+    return a.name < b.name ? -1 : 1;
+  });
   return output;
 }
 export default toJson;

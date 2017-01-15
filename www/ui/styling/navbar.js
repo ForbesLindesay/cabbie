@@ -1,9 +1,12 @@
 import styled from 'styled-components';
 
-console.log('begin create navbar');
 const NavBar = styled.nav`
-  background: red;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: #000842;
+  height: 60px;
 `;
-console.log('end create navbar');
 
 export default NavBar;

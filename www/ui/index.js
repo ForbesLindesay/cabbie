@@ -1,44 +1,64 @@
-import React from 'react';
+import React, {Component, PropTypes} from 'react';
 import Router from 'react-router/BrowserRouter';
-import Match from 'react-router/Match';
-import Link from 'react-router/Link';
-import NavBar from './navbar';
+import styled, {injectGlobal} from 'styled-components';
+import Match from './match';
+import Home from './home';
+import Container from './styling/container';
+import NavBarItems from './styling/navbar-items';
+import NavBarLink from './styling/navbar-link';
+import NavBarToggleAsync from './styling/navbar-toggle-async';
+import NavBar from './styling/navbar';
+import Logo from './logo';
+import GettingStarted from './getting-started';
+import Api from './api';
 
-const BasicExample = () => <div>
-  <NavBar>
-    <ul>
-      <li><Link to='/'>Home</Link></li>
-      <li><Link to='/about'>About</Link></li>
-      <li><Link to='/topics'>Topics</Link></li>
-    </ul>
-  </NavBar>
-  <hr />
-  <Match exactly pattern='/' component={Home} />
-  <Match pattern='/about' component={About} />
-  <Match pattern='/topics' component={Topics} />
-</div>;
+injectGlobal`
+  html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: auto;
+  }
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    padding-top: 70px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji",
+      "Segoe UI Emoji", "Segoe UI Symbol";
+    color: #000842;
+  }
+  #container {
+    height: 100%;
+  }
+`;
 
-const Home = () => <div>
-  <h2>Home</h2>
-</div>;
+const Root = styled.div`
+  height: 100%;
+`;
 
-const About = () => <div>
-  <h2>About</h2>
-</div>;
+function Application() {
+  return (
+    <Root>
+      <NavBar>
+        <NavBarItems>
+          <NavBarLink to='/' logoLink={true}><Logo height='40' width='40' fill='#95a2ff' style={
+            {margin: '10px 0'}
+          } /></NavBarLink>
+          <NavBarLink to='/' isActive={() => false}>Home</NavBarLink>
+          <NavBarLink to='/getting-started'>Getting Started</NavBarLink>
+          <NavBarLink to='/api'>API</NavBarLink>
+          <NavBarToggleAsync />
+        </NavBarItems>
+      </NavBar>
+      <Container>
+        <Match exactly pattern='/' component={Home} />
+        <Match pattern='/getting-started' component={GettingStarted} />
+        <Match pattern='/api' component={Api} />
+      </Container>
+    </Root>
+  );
+}
 
-const Topics = ({pathname}) => <div>
-  <h2>Topics</h2>
-  <ul>
-    <li><Link to={`${pathname}/rendering`}>Rendering with React</Link></li>
-    <li><Link to={`${pathname}/components`}>Components</Link></li>
-    <li><Link to={`${pathname}/props-v-state`}>Props v. State</Link></li>
-  </ul>
-  <Match pattern={`${pathname}/:topicId`} component={Topic} />
-  <Match pattern={pathname} exactly render={() => <h3>Please select a topic</h3>} />
-</div>;
-
-const Topic = ({params}) => <div>
-  <h3>{params.topicId}</h3>
-</div>;
-
-export default BasicExample;
+export default Application;

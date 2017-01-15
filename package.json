@@ -45,7 +45,7 @@
     "throat": "^3.0.0"
   },
   "scripts": {
-    "fix-styled-components": "cd node_modules/styled-components/ && npm install",
+    "build-styled-components": "cd node_modules/styled-components/ && npm install",
     "prettier": "babel-node scripts/prettier",
     "prewww": "npm run prettier",
     "www": "babel-node www",

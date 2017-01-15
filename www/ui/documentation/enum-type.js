@@ -26,8 +26,8 @@ function EnumType({enumType}) {
       <table>
         <thead>
           <tr>
-            <th>Usage</th>
-            <th>Value</th>
+            <th style={{width: 390}}>Usage</th>
+            <th style={{width: 100}}>Value</th>
             <th>Description</th>
           </tr>
         </thead>

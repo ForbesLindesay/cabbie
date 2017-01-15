@@ -12,7 +12,8 @@ import BaseWindow from './base-window';
 import WindowHandle from './window-handle';
 
 /*
- * Active window object
+ * This is an object representing the currently active window.  You can access the navigation for that window,
+ * touch and mouse objects for interacting via screen coordinates, and (most imporatantly) getElement and getElements.
  */
 class ActiveWindow extends BaseWindow {
   /*

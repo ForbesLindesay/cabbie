@@ -32,6 +32,21 @@ injectGlobal`
   #container {
     height: 100%;
   }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  th {
+    text-align: left;
+    border-bottom: 2px solid #f1eff1;
+  }
+  td {
+    border-bottom: 1px solid #f1eff1;
+  }
+  pre, code {
+    font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  }
 `;
 
 const Root = styled.div`

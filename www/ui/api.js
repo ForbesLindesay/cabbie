@@ -4,6 +4,8 @@ import Link from './link';
 import Match from './match';
 import Mode from './mode';
 import documentation from '../documentation';
+import Cabbie from './documentation/cabbie';
+import Enums from './documentation/enums';
 import TypeReference from './documentation/type-reference';
 import Parameter from './documentation/parameter';
 import DocumentationComments from './documentation/documentation-comments';
@@ -42,34 +44,14 @@ const ApiNavSectionName = styled(Link)`
 `;
 ApiNavSectionName.defaultProps = {activeClassName: 'active-link'};
 
-const MethodConatiner = styled.h2`
-  font-size: 1.7vw;
-`;
-function ModuleMethod({method}) {
-  const name = method.fun.id;
-  const params = method.fun.params.map(
-    (param, i) => <span key={i}>{i !== 0 ? ', ' : ''}<Parameter param={param} /></span>,
-  );
-  const returnType = method.fun.returnType ? <span>{': '}<TypeReference type={method.fun.returnType} /></span> : '';
-  return (
-    <section>
-      <MethodConatiner>{name}({params}){returnType}</MethodConatiner>
-      <CodeBlock><ImportDeclaration local={name} exportKey={method.key} isType={false} /></CodeBlock>
-      <DocumentationComments comments={method.fun.leadingComments} />
-    </section>
-  );
-}
 function Api() {
   return (
     <ApiWrapper>
       <ApiNavigationWrapper>
-        <ApiNavSectionName to='/api' exactly>Cabbie</ApiNavSectionName>
+        <Match pattern='/api' exactly children={
+          ({matched}) => <ApiNavSectionName to='/api' isActive={() => matched}>Cabbie</ApiNavSectionName>
+        } />
         <ApiNavSectionName to='/api/enums'>Enums</ApiNavSectionName>
-        <ul>
-          {documentation.enums.map(enumType => {
-              return <li key={enumType.name}>{enumType.name}</li>;
-            })}
-        </ul>
         {documentation.classes.map(c => {
             return <ApiNavSectionName key={c.name} to={
               '/api/classes/' + c.name.toLowerCase()
@@ -77,20 +59,9 @@ function Api() {
           })}
       </ApiNavigationWrapper>
       <ApiContentWrapper>
-        <Mode sync={<h1>cabbie-sync</h1>} async={<h1>cabbie-async</h1>} />
-        <p>
-          Cabbie is a webdriver client. It allows can be used in both an asynchronous and asynchronous mode.
-          The synchronous mode is much easier to use, however you may get slightly better performance from the
-          asynchronous mode, especially if you are running many tests in parallel.
-        </p>
-        <p>
-          Synchronous and asynchronous modes have almost identical APIs, but you can toggle the documentation between
-          them usin the button at the right hand end of the navbar.
-        </p>
-        {documentation.modules[0].methods.map(method => <ModuleMethod key={method.fun.id} method={method} />)}
-        <h1>Enums</h1>
-        {documentation.enums.map(enumType => <EnumType key={enumType.name} enumType={enumType} />)}
-        {documentation.classes.map(classType => <ClassType key={classType.name} classType={classType} />)}
+        <Match pattern='/api' exactly component={Cabbie} />
+        <Match pattern='/api/enums' exactly component={Enums} />
+        <Match pattern='/api/classes/:className' exactly component={ClassType} />
       </ApiContentWrapper>
     </ApiWrapper>
   );

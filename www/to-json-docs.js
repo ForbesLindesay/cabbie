@@ -48,7 +48,12 @@ function toJson(inference) {
       return {...processed.get(cls)};
     }
     const name = getClassName(cls.name);
-    const clsReference = {type: 'class', name};
+    const clsReference = {
+      type: 'class',
+      name,
+      superClass: cls.superClass ? onValue(cls.superClass) : null,
+      leadingComments: cls.leadingComments,
+    };
     processed.set(cls, clsReference);
     const properties = [];
     const methods = [];
@@ -69,6 +74,18 @@ function toJson(inference) {
           ? staticMethods
           : methods).push({key: entry.key, leadingComments: entry.leadingComments, params: entry.params.map(onValue), returnType: entry.returnType && onValue(entry.returnType)});
       }
+    });
+    properties.sort((a, b) => {
+      return a.key > b.key ? 1 : -1;
+    });
+    methods.sort((a, b) => {
+      return a.key > b.key ? 1 : -1;
+    });
+    staticProperties.sort((a, b) => {
+      return a.key > b.key ? 1 : -1;
+    });
+    staticMethods.sort((a, b) => {
+      return a.key > b.key ? 1 : -1;
     });
     // TOOD: constructor
     output.classes.push({type: 'class', name, properties, methods, staticProperties, staticMethods});
@@ -98,6 +115,9 @@ function toJson(inference) {
       }
       case 'union':
         return onValue(alias.value);
+      case 'builtin-type':
+        // TODO: don't loose the info about what this object actually represents
+        return {type: 'builtin-type', name: alias.id};
       default:
         throw getError(alias.value, 'Unexpected type alias type:', alias.value);
     }
@@ -105,7 +125,7 @@ function toJson(inference) {
   function onEnum(enumObject) {
     if (!processed.has(enumObject)) {
       output.enums.push(enumObject);
-      processed.set(enumObject, {type: 'enum', name: enumObject.name});
+      processed.set(enumObject, {type: 'enum', name: enumObject.name, valueName: enumObject.valueName});
     }
     return {...processed.get(enumObject)};
   }

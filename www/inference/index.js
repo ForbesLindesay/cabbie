@@ -96,7 +96,13 @@ class ModuleGenerator {
       }
       superClass = this._values.get(statement.superClass.name);
     }
-    const cls = {type: 'class', name: local, loc: new SourceLocation(statement.loc), superClass};
+    const cls = {
+      type: 'class',
+      name: local,
+      loc: new SourceLocation(statement.loc),
+      superClass,
+      leadingComments: statement.leadingComments ? statement.leadingComments.map(extractComment) : [],
+    };
     this._values.set(local, cls);
     let constructor = null;
     cls.body = statement.body.body

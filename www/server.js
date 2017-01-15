@@ -16,7 +16,10 @@ let serverRenderHandle;
 
 const now = Date.now();
 const CLIENT_URL = '/static/' + now + '/client.js';
-app.get(CLIENT_URL, browserify(__dirname + '/../output/www/ui/client.js'));
+app.get(
+  CLIENT_URL,
+  browserify(__dirname + '/../output/www/ui/client.js', {transform: [[require('envify'), {global: true}]]}),
+);
 app.use((req, res, next) => {
   if (!serverRenderHandle) {
     serverRenderHandle = babelLive(
@@ -28,7 +31,6 @@ app.use((req, res, next) => {
   }
   serverRenderHandle.reRun();
   const result = serverRender.default(req.url, CLIENT_URL);
-  console.dir(result);
   if (result.statusCode === 200 || result.statusCode === 404) {
     res.status(result.statusCode);
     res.send(result.html);

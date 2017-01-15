@@ -11,9 +11,14 @@ import MethodDetails from './method-details';
 import Parameter from './parameter';
 
 function Property({prop}) {
+  const typeAnnotation = (
+    prop.typeAnnotation
+    ? <span>{': '}{<TypeReference type={prop.typeAnnotation} />}</span>
+    : null
+  )
   return (
     <div>
-      <h3>{prop.key}{': '}{<TypeReference type={prop.typeAnnotation} />}</h3>
+      <h3>{prop.key}{typeAnnotation}</h3>
       <DocumentationComments comments={prop.leadingComments} />
     </div>
   );
@@ -22,7 +27,7 @@ function Method({method}) {
   const params = method.params.map((param, i) => <span key={i}>{i !== 0 ? ', ' : ''}<Parameter param={param} /></span>);
   return (
     <div>
-      <h3>{method.key}({params}){': '}{<TypeReference type={method.returnType} />}</h3>
+      <h3>{method.key}({params}){': '}{method.returnType ? <TypeReference type={method.returnType} /> : 'void'}</h3>
       <MethodDetails fun={method} />
       <DocumentationComments comments={method.leadingComments} />
     </div>

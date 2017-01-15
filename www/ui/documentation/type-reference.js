@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import Match from 'react-router/Match';
 import Link from '../link';
 import styled from 'styled-components';
@@ -49,8 +49,15 @@ function TypeReference({type, isAsync}) {
       return <pre>{JSON.stringify(type)}</pre>;
   }
 }
+TypeReference.propTypes = {
+  type: PropTypes.object.isRequired,
+  isAsync: PropTypes.bool.isRequired,
+};
 
 function TypeReferenceHandlingAsync(props) {
   return <Match pattern='/async' children={({matched}) => <TypeReference {...props} isAsync={matched} />} />;
 }
+TypeReferenceHandlingAsync.propTypes = {
+  type: PropTypes.object.isRequired,
+};
 export default TypeReferenceHandlingAsync;

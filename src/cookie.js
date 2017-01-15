@@ -21,9 +21,6 @@ class Cookie {
     this.validate();
   }
 
-  ////////////////////
-  // Public Methods //
-  ////////////////////
   /*
    * The name of the cookie.
    */

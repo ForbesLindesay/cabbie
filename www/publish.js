@@ -5,7 +5,7 @@ import {sync as rimraf} from 'rimraf';
 
 rimraf(__dirname + '/../output/www-static');
 
-require('./server');
+require('./index');
 
 const localDir = __dirname + '/../output/www-static';
 setTimeout(() => {
@@ -42,4 +42,4 @@ setTimeout(() => {
       });
     }
   });
-}, 15000);
+}, 1000);

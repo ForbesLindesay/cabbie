@@ -2,6 +2,7 @@ import {parse} from 'url';
 import stop from 'stop';
 import s3 from 's3';
 import {sync as rimraf} from 'rimraf';
+import request 'sync-request';
 
 rimraf(__dirname + '/../output/www-static');
 
@@ -9,6 +10,8 @@ require('./index');
 
 const localDir = __dirname + '/../output/www-static';
 setTimeout(() => {
+  const response = request('get', 'http://localhost:3000');
+  console.log(response.body.toString('utf8'));
   stop.getWebsiteStream('http://localhost:3000', {
     filter: function(currentURL) {
       return parse(currentURL).hostname === 'localhost';
@@ -42,4 +45,4 @@ setTimeout(() => {
       });
     }
   });
-}, 1000);
+}, 5000);

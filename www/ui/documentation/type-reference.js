@@ -49,15 +49,10 @@ function TypeReference({type, isAsync}) {
       return <pre>{JSON.stringify(type)}</pre>;
   }
 }
-TypeReference.propTypes = {
-  type: PropTypes.object.isRequired,
-  isAsync: PropTypes.bool.isRequired,
-};
+TypeReference.propTypes = {type: PropTypes.object.isRequired, isAsync: PropTypes.bool.isRequired};
 
 function TypeReferenceHandlingAsync(props) {
   return <Match pattern='/async' children={({matched}) => <TypeReference {...props} isAsync={matched} />} />;
 }
-TypeReferenceHandlingAsync.propTypes = {
-  type: PropTypes.object.isRequired,
-};
+TypeReferenceHandlingAsync.propTypes = {type: PropTypes.object.isRequired};
 export default TypeReferenceHandlingAsync;

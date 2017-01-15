@@ -16,7 +16,7 @@ stop.getWebsiteStream('http://localhost:3000', {
   parallel: 1,
 }).syphon(stop.minifyCSS({deadCode: true, silent: true})).syphon(stop.log()).syphon(stop.checkStatusCodes([200])).syphon(stop.writeFileSystem(localDir)).wait().done(function() {
   console.log('done building website');
-  if (process.env.TRAVIS_PULL_REQUEST !== "false" || process.env.TRAVIS_BRANCH !== "master") {
+  if (process.env.TRAVIS_PULL_REQUEST !== 'false' || process.env.TRAVIS_BRANCH !== 'master') {
     process.exit(0);
     return;
   }
@@ -25,22 +25,19 @@ stop.getWebsiteStream('http://localhost:3000', {
       s3Options: {
         accessKeyId: process.env.S3_KEY,
         secretAccessKey: process.env.S3_SECRET,
-        region: process.env.S3_REGION
+        region: process.env.S3_REGION,
       },
     });
     const uploader = client.uploadDir({
       localDir,
       deleteRemoved: true,
-      s3Params: {
-        Bucket: process.env.S3_BUCKET,
-        Prefix: ''
-      }
+      s3Params: {Bucket: process.env.S3_BUCKET, Prefix: ''},
     });
     uploader.on('error', function(err) {
       console.error('unable to sync:', err.stack);
     });
     uploader.on('end', function() {
-      console.log("done uploading website");
+      console.log('done uploading website');
       process.exit(0);
     });
   }

@@ -11,11 +11,7 @@ import MethodDetails from './method-details';
 import Parameter from './parameter';
 
 function Property({prop}) {
-  const typeAnnotation = (
-    prop.typeAnnotation
-    ? <span>{': '}{<TypeReference type={prop.typeAnnotation} />}</span>
-    : null
-  )
+  const typeAnnotation = prop.typeAnnotation ? <span>{': '}{<TypeReference type={prop.typeAnnotation} />}</span> : null;
   return (
     <div>
       <h3>{prop.key}{typeAnnotation}</h3>

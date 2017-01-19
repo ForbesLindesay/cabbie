@@ -1,7 +1,7 @@
 {
   "name": "cabbie",
   "private": true,
-  "version": "0.2.4",
+  "version": "0.3.0",
   "main": "./lib/index.js",
   "description": "A webdriver client",
   "keywords": [
@@ -56,7 +56,8 @@
     "build": "babel-node scripts/build",
     "pretest": "babel-node scripts/build --only-tests",
     "test": "babel-node test/sync/src && babel-node test/async/src",
-    "test:sauce": "babel-node test/sync/src --sauce && babel-node test/async/src --sauce"
+    "test:sauce": "babel-node test/sync/src --sauce && babel-node test/async/src --sauce",
+    "release": "npm run build && cd output/async && npm publish && cd ../sync && npm publish"
   },
   "repository": {
     "type": "git",

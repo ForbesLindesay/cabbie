@@ -2,6 +2,7 @@
   "presets": ["forbeslindesay"],
   "plugins": [
     "styled-components",
-    "transform-flow-comments"
+    "transform-flow-comments",
+    "../../babel-plugin-syntax-highlight"
   ]
 }

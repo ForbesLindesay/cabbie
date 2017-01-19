@@ -36,7 +36,7 @@ class Driver {
    */
   timeOut: TimeOut;
 
-  constructor(remote: string, options: Options) {
+  constructor(remote: string, options: Options = {}) {
     this.remote = remote;
     this.options = options;
     this.debug = new Debug(options);
@@ -47,21 +47,33 @@ class Driver {
         remoteURI = 'http://localhost:9515/';
         break;
       case 'saucelabs':
-        remoteURI = (
-          `http://${process.env.SAUCE_USERNAME}:${process.env.SAUCE_ACCESS_KEY}@ondemand.saucelabs.com/wd/hub`
-        );
+        if (!process.env.SAUCE_USERNAME || !process.env.SAUCE_ACCESS_KEY) {
+          throw new Error(
+            'To use sauce labs, you must specify SAUCE_USERNAME and SAUCE_ACCESS_KEY in enviornment variables.',
+          );
+        }
+        remoteURI = `http://${process.env.SAUCE_USERNAME}:${process.env.SAUCE_ACCESS_KEY}@ondemand.saucelabs.com/wd/hub`;
         break;
       case 'browserstack':
+        const username = process.env.BROWSER_STACK_USERNAME;
+        const accessKey = process.env.BROWSER_STACK_ACCESS_KEY;
+        if (!username || !accessKey) {
+          throw new Error(
+            'To use browserstack, you must specify BROWSER_STACK_USERNAME and SAUCE_ACCESS_KEY in enviornment variables.',
+          );
+        }
         remoteURI = 'http://hub-cloud.browserstack.com/wd/hub';
-        capabilities['browserstack.user'] = process.env.BROWSER_STACK_USERNAME;
-        capabilities['browserstack.key'] = process.env.BROWSER_STACK_ACCESS_KEY;
+        capabilities['browserstack.user'] = username;
+        capabilities['browserstack.key'] = accessKey;
         break;
       case 'testingbot':
-        remoteURI = (
-          `http://${process.env.TESTINGBOT_KEY}:${process.env.TESTINGBOT_SECRET}@hub.testingbot.com/wd/hub`
-        );
+        if (!process.env.TESTINGBOT_KEY || !process.env.TESTINGBOT_SECRET) {
+          throw new Error(
+            'To use testingbot, you must specify TESTINGBOT_KEY and TESTINGBOT_SECRET in enviornment variables.',
+          );
+        }
+        remoteURI = `http://${process.env.TESTINGBOT_KEY}:${process.env.TESTINGBOT_SECRET}@hub.testingbot.com/wd/hub`;
         break;
-  }
     }
     this._connection = new Connection(remoteURI, this.debug);
     this.session = createSession(this._connection, {...options, capabilities});

@@ -3,6 +3,7 @@
     "syntax-flow",
     "syntax-trailing-function-commas",
     "syntax-class-properties",
+    "syntax-object-rest-spread",
     "../babel-plugin-flow-enum",
 
     ["add-header-comment", {

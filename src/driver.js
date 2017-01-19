@@ -40,8 +40,31 @@ class Driver {
     this.remote = remote;
     this.options = options;
     this.debug = new Debug(options);
-    this._connection = new Connection(remote, this.debug);
-    this.session = createSession(this._connection, options);
+    let remoteURI = remote;
+    const capabilities = {...(options.capabilities || {})};
+    switch (remote) {
+      case 'chromedriver':
+        remoteURI = 'http://localhost:9515/';
+        break;
+      case 'saucelabs':
+        remoteURI = (
+          `http://${process.env.SAUCE_USERNAME}:${process.env.SAUCE_ACCESS_KEY}@ondemand.saucelabs.com/wd/hub`
+        );
+        break;
+      case 'browserstack':
+        remoteURI = 'http://hub-cloud.browserstack.com/wd/hub';
+        capabilities['browserstack.user'] = process.env.BROWSER_STACK_USERNAME;
+        capabilities['browserstack.key'] = process.env.BROWSER_STACK_ACCESS_KEY;
+        break;
+      case 'testingbot':
+        remoteURI = (
+          `http://${process.env.TESTINGBOT_KEY}:${process.env.TESTINGBOT_SECRET}@hub.testingbot.com/wd/hub`
+        );
+        break;
+  }
+    }
+    this._connection = new Connection(remoteURI, this.debug);
+    this.session = createSession(this._connection, {...options, capabilities});
 
     this.browser = new Browser(this);
     this.timeOut = new TimeOut(this);

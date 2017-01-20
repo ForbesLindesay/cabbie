@@ -15,7 +15,7 @@ function Cabbie() {
       </p>
       <p>
         Synchronous and asynchronous modes have almost identical APIs, but you can toggle the documentation between
-        them usin the button at the right hand end of the navbar.
+        them using the button at the right hand end of the navbar.
       </p>
       {documentation.modules[0].methods.map(method => <ModuleMethod key={method.fun.id} method={method} />)}
     </div>

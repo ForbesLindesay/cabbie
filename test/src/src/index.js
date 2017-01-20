@@ -1,6 +1,7 @@
 // @flow
 import fs from 'fs';
 import assert from 'assert';
+import {fork} from 'child_process';
 import request from 'sync-request';
 import createCabbie from 'cabbie-async';
 import chromedriver from 'chromedriver';
@@ -13,11 +14,13 @@ if (process.argv.indexOf('--help') !== -1 || process.argv.indexOf('-h') !== -1) 
   console.log('  -s --sauce Run tests in sauce labs');
   console.log('             (default if CI env variable is present)');
   console.log('  -l --local Run tests locally (default)');
+  console.log('  -r --record Record test runs to be replayed later');
   process.exit(0);
 }
 
-const LOCAL_FLAG = process.argv.indexOf('--local') !== -1 || process.argv.indexOf('-l') !== -1;
-const SAUCE_FLAG = process.argv.indexOf('--sauce') !== -1 || process.argv.indexOf('-s') !== -1;
+const RECORD = process.argv.includes('--record') || process.argv.includes('-r');
+const LOCAL_FLAG = process.argv.includes('--local') || process.argv.includes('-l');
+const SAUCE_FLAG = process.argv.includes('--sauce') || process.argv.includes('-s');
 
 if (LOCAL_FLAG && SAUCE_FLAG) {
   console.error('You cannot use sauce and local in one test run.');
@@ -25,7 +28,9 @@ if (LOCAL_FLAG && SAUCE_FLAG) {
   process.exit(1);
 }
 
-const LOCAL = LOCAL_FLAG || !process.env.CI && !SAUCE_FLAG;
+const LOCAL = !SAUCE_FLAG;
+
+
 
 function doReplacements(source: string, replacements: {[key: string]: string}): string {
   Object.keys(replacements).forEach(function(key) {
@@ -44,37 +49,70 @@ function createPage(filename: string, replacements?: {[key: string]: string}): s
   return 'https://tempjs.org' + parsed.path;
 }
 
+const onDispose = [];
+async function dispose() {
+  while (onDispose.length) {
+    const value = onDispose.pop();
+    try {
+      await value();
+    } catch (ex) {
+      console.error(ex.stack);
+    }
+  }
+}
 async function run() {
-  if (LOCAL) {
+  if (LOCAL && RECORD) {
     console.log('starting chromedriver');
     chromedriver.start();
+    onDispose.push(() => chromedriver.stop());
   }
   const remote = LOCAL
-    ? 'http://localhost:9515'
+    ? 'http://localhost:7883'
     : 'http://cabbie:6f1108e1-6b52-47e4-b686-95fa9eef2156@ondemand.saucelabs.com/wd/hub';
   const options = LOCAL
     ? {debug: true, httpDebug: false}
     : {debug: true, httpDebug: false, capabilities: {browserName: 'chrome'}};
-  let driver;
   try {
     console.log('creating driver');
-    driver = createCabbie(remote, options);
+    const driver = createCabbie(remote, options);
+    onDispose.push(() => driver.dispose());
     const location = createPage(__dirname + '/../../demoPage.html', {
       '{{linked-page}}': createPage(__dirname + '/../../linkedTo.html'),
     });
     await runTest(driver, location);
   } finally {
-    if (driver) {
-      await driver.dispose();
-    }
-    chromedriver.stop();
+    await dispose();
   }
 }
-(async () => {
+
+async function onProxyReady() {
   try {
     await run();
   } catch (ex) {
     console.error(ex.stack || ex.message || ex);
     process.exit(1);
   }
-})();
+}
+if (LOCAL) {
+  const proxyArgs = RECORD ? ['--record'] : [];
+  const proxy = fork(require.resolve('../../record'), proxyArgs, {stdio: ['inherit', 'inherit', 'inherit', 'ipc']});
+  onDispose.push(() => proxy.kill());
+  proxy.on('error', err => {
+    dispose();
+    throw err;
+  });
+  proxy.on('exit', status => {
+    dispose();
+    if (status) {
+      console.error('proxy exited with non-zero status code');
+      process.exit(status);
+    }
+  });
+  proxy.on('message', (message) => {
+    if (message.status === 'started') {
+      onProxyReady();
+    }
+  });
+} else {
+  onProxyReady();
+}

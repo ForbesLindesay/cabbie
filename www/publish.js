@@ -31,7 +31,7 @@ setTimeout(
           if (file.isFile()) {
             writeFileSync(localDir + file.path.substr(1), readFileSync(file.fullPath));
           }
-        })
+        });
         if (process.env.S3_KEY) {
           const client = s3.createClient({
             s3Options: {

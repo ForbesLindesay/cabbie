@@ -11,26 +11,35 @@ export const NavBarLinkContainer = styled.li`
     display: inline-block;
     line-height: 60px;
     text-decoration: none;
-    padding: 0 10px;
-    font-size: 1.5em;
+    padding: 0 5px;
     font-weight: 200;
+    @media (min-width: 300px) {
+      font-size: 5vw;
+    }
+    @media (min-width: 500px) {
+      font-size: 1.5em;
+      padding: 0 10px;
+    }
   }
   .active-nav-link {
     background: #95a2ff;
     color: #000842;
   }
+  @media(max-width: ${props => (props.minWidth || 1) - 1}px) {
+    display: none;
+  }
 `;
-function NavBarLink({logoLink, ...props}) {
+function NavBarLink({exactly, logoLink, minWidth, ...props}) {
   if (logoLink) {
     return (
-      <NavBarLinkContainer>
+      <NavBarLinkContainer minWidth={minWidth}>
         <Link {...props} />
       </NavBarLinkContainer>
     );
   }
   return (
-    <NavBarLinkContainer>
-      <Link {...props} className='nav-link' activeClassName='active-nav-link' exactly={false} />
+    <NavBarLinkContainer minWidth={minWidth}>
+      <Link {...props} className='nav-link' activeClassName='active-nav-link' exactly={exactly === true} />
     </NavBarLinkContainer>
   );
 }

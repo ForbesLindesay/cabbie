@@ -8,6 +8,7 @@ import NavBarItems from './styling/navbar-items';
 import NavBarLink from './styling/navbar-link';
 import NavBarToggleAsync from './styling/navbar-toggle-async';
 import NavBar from './styling/navbar';
+import MinWidth from './styling/min-width';
 import Logo from './logo';
 import GettingStarted from './getting-started';
 import Api from './api';
@@ -62,10 +63,10 @@ function Application() {
       <NavBar>
         <NavBarItems>
           <NavBarLink to='/' logoLink={true}><Logo height='40' width='40' fill='#95a2ff' style={
-            {margin: '10px 0'}
+            {margin: '10px 10px 0 0'}
           } /></NavBarLink>
-          <NavBarLink to='/' isActive={() => false}>Home</NavBarLink>
-          <NavBarLink to='/getting-started'>Getting Started</NavBarLink>
+          <NavBarLink exactly to='/' minWidth={600}>Home</NavBarLink>
+          <NavBarLink to='/getting-started'>Get<MinWidth minWidth={400}>ting</MinWidth>{' '}Started</NavBarLink>
           <NavBarLink to='/api'>API</NavBarLink>
           <NavBarToggleAsync />
         </NavBarItems>

@@ -11,7 +11,7 @@ function Home() {
         <Logo width='10vw' height='10vw' />
         <Heading>Cabbie</Heading>
       </Header>
-      <div style={{margin: 'auto', maxWidth: 1000}}>
+      <div style={{margin: 'auto', maxWidth: 1200}}>
         <ChromedriverExample />
       </div>
     </div>

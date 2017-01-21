@@ -3,6 +3,7 @@ import Link from 'react-router/Link';
 import Match from 'react-router/Match';
 import styled from 'styled-components';
 import {NavBarLinkContainer} from './navbar-link';
+import MinWidth from './min-width';
 
 function NavBarLink(props) {
   return (
@@ -22,7 +23,7 @@ function renderAsyncToggle({location: {pathname}}) {
     );
   } else {
     const asyncPathname = '/async' + pathname.replace(/\/$/, '');
-    return <NavBarLink to={asyncPathname}>Show Async API</NavBarLink>;
+    return <NavBarLink to={asyncPathname}>Show Async<MinWidth minWidth={400}>{' '}API</MinWidth></NavBarLink>;
   }
 }
 function NavBarToggleAsync() {

@@ -8,7 +8,10 @@ import TypeReference from './type-reference';
 import MethodDetails from './method-details';
 
 const MethodConatiner = styled.h2`
-  font-size: 1.7vw;
+  font-size: 1.5em;
+  @media (min-width: 1400px) {
+    font-size: 2em;
+  }
 `;
 function ModuleMethod({method}) {
   const name = method.fun.id;

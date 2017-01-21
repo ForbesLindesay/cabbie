@@ -45,6 +45,18 @@ function TypeReference({type, isAsync}) {
       });
       return <span>{types}</span>;
     }
+    case 'object-type': {
+      const properties = [];
+      type.properties.forEach((prop, i) => {
+        if (i !== 0) {
+          properties.push(', ');
+        }
+        properties.push(<TypeReference type={prop} isAsync={isAsync} />);
+      });
+      return <span>{'{'}{properties}{'}'}</span>;
+    }
+    case 'object-type-property':
+      return <span>{type.key}:{<TypeReference type={type.typeAnnotation} isAsync={isAsync} />}</span>;
     default:
       return <pre>{JSON.stringify(type)}</pre>;
   }

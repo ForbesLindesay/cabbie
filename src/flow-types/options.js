@@ -1,5 +1,5 @@
 import type {Mode} from '../enums/modes';
-import type {SessionData} from './session-data';
+import type {Session} from './session-data';
 
 export type Options = {
   [key: string]: void,
@@ -34,7 +34,7 @@ export type Options = {
   /*
    * Optionally provide a session if you have already started the selenium session.
    */
-  session?: SessionData,
+  session?: Session,
   /*
    * Log method calls to the console
    */

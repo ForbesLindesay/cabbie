@@ -135,6 +135,8 @@ class Cookie {
 
   /*
    * Validate the cookie data
+   *
+   * @private
    */
   validate(completed: boolean = false) {
     if (completed) {

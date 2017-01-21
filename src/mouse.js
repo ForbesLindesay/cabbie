@@ -10,7 +10,13 @@ import MouseButtons from './enums/mouse-buttons';
  * Mouse commands relative to a DOM-element
  */
 class Mouse {
+  /*
+   * @private
+   */
   driver: Driver;
+  /*
+   * @private
+   */
   debug: Debug;
   _parent: Element;
   constructor(driver: Driver, parent: Element) {
@@ -19,6 +25,9 @@ class Mouse {
     this._parent = parent;
   }
 
+  /*
+   * @private
+   */
   async requestJSON(method: HttpMethod, path: string, body?: Object): Promise<any> {
     return await this._parent.requestJSON(method, path, body);
   }
@@ -105,6 +114,9 @@ class Mouse {
     await this.driver.browser.activeWindow.mouse.buttonUp(button);
   }
 
+  /*
+   * @private
+   */
   inspect(depth: number, options: Object) {
     return this._parent.inspect(depth, options) + '.mouse';
   }

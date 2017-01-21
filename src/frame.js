@@ -2,9 +2,6 @@ import type Driver from './driver';
 import addDebugging from './add-debugging';
 import BaseClass from './base-class';
 
-/*
- * Managing session-storage
- */
 class Frame extends BaseClass {
   constructor(driver: Driver) {
     super(driver, '/frame');

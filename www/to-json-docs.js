@@ -48,20 +48,24 @@ function toJson(inference) {
       return {...processed.get(cls)};
     }
     const name = getClassName(cls.name);
-    const clsReference = {
-      type: 'class',
-      name,
-      superClass: cls.superClass ? onValue(cls.superClass) : null,
-      leadingComments: cls.leadingComments,
-    };
+    const clsReference = {type: 'class', name, leadingComments: cls.leadingComments};
     processed.set(cls, clsReference);
     const properties = [];
     const methods = [];
     const staticProperties = [];
     const staticMethods = [];
+    let body = cls.body;
+    let superClass = cls.superClass;
+    while (superClass) {
+      body = body.concat(superClass.body);
+      superClass = superClass.superClass;
+    }
 
-    cls.body.forEach(entry => {
+    body.forEach(entry => {
       if (entry.key[0] === '_') {
+        return;
+      }
+      if (entry.leadingComments && entry.leadingComments.some(comment => comment.raw.indexOf('@private') !== -1)) {
         return;
       }
       if (entry.type === 'property') {
@@ -88,7 +92,15 @@ function toJson(inference) {
       return a.key > b.key ? 1 : -1;
     });
     // TOOD: constructor
-    output.classes.push({type: 'class', name, properties, methods, staticProperties, staticMethods});
+    output.classes.push({
+      type: 'class',
+      leadingComments: cls.leadingComments,
+      name,
+      properties,
+      methods,
+      staticProperties,
+      staticMethods,
+    });
     return clsReference;
   }
   function onTypeAlias(alias) {

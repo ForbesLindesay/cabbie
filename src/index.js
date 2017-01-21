@@ -1,5 +1,5 @@
 import type {Options} from './flow-types/options';
-import type {SessionData} from './flow-types/session-data';
+import type {Session} from './flow-types/session-data';
 import Connection from './connection';
 import Debug from './debug';
 import Driver from './driver';
@@ -9,7 +9,7 @@ import Status from './status';
 export {Connection, Debug, Driver, Status};
 
 /*
- * Create a new cabbie Driver
+ * Create a new cabbie Driver. See [getting started](/getting-started) for examples.
  */
 export default function createCabbieDriver(remote: string, options: Options = {}): Driver {
   return new Driver(remote, options);
@@ -21,7 +21,7 @@ export type {Options};
  *
  * Note: Appears not to be supported by the selenium-standalone-server!
  */
-export async function getSessions(remote: string, options: Options = {}): Promise<Array<SessionData>> {
+export async function getSessions(remote: string, options: Options = {}): Promise<Array<Session>> {
   const connection = new Connection(remote, new Debug(options));
   const rawSessions = await connection.request('GET', '/sessions');
   const sessions = parseResponse(rawSessions);
@@ -42,7 +42,9 @@ let chromedriverRunning = false;
 /*
  * Start a chromedriver instance.  You must have installed chromedriver to use this:
  *
+ * ```
  * npm install chromedriver --save-dev
+ * ```
  */
 export function startChromedriver(): void {
   if (chromedriverRunning) {

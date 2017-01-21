@@ -40,9 +40,10 @@ function ClassType({params: {className}}) {
       <CodeBlock>
         <ImportDeclaration local={classType.name} isType={false} />
       </CodeBlock>
-      <h2>Properties</h2>
+      <DocumentationComments comments={classType.leadingComments || []} />
+      {classType.properties.length ? <h2>Properties</h2> : null}
       {classType.properties.map(prop => <Property key={prop.key} prop={prop} />)}
-      <h2>Methods</h2>
+      {classType.methods.length ? <h2>Methods</h2> : null}
       {classType.methods.map(method => <Method key={method.key} method={method} />)}
     </section>
   );

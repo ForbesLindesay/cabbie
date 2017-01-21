@@ -13,6 +13,10 @@ import WindowHandle from './window-handle';
  * Browser accessor class
  */
 class Browser extends BaseClass {
+  /*
+   * The currently active window.  This has most of the methods to interact with
+   * the the current page.
+   */
   activeWindow: ActiveWindow;
 
   /*

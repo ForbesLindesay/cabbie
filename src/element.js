@@ -9,6 +9,15 @@ import Mouse from './mouse';
 import SelectorTypes from './enums/selector-types';
 import Touch from './touch';
 
+/*
+ * A representation of a remote element.  You can use it to click on, type text into and check the attributes of.
+ *
+ * ```js
+ * const element = await driver.browser.activeWindow.getElement('[data-test-id="my-test-element"]');
+ *
+ * const elements = await driver.browser.activeWindow.getElements('.some-class-name');
+ * ```
+ */
 class Element extends BaseClass {
   _parent: Element | Browser;
   _selector: string;
@@ -17,7 +26,13 @@ class Element extends BaseClass {
    * The selenium id of the element
    */
   elementID: string;
+  /*
+   * Utility methods for clicking on the element
+   */
   mouse: Mouse;
+  /*
+   * Methods for interacting with the element via touch
+   */
   touch: Touch;
   constructor(driver: Driver, parent: Element | Browser, selector: string, elementHandle: ElementHandle) {
     const prefix = '/element/' + elementHandle.ELEMENT;
@@ -194,6 +209,9 @@ class Element extends BaseClass {
     return elements.length > 0;
   }
 
+  /*
+   * @private
+   */
   inspect(depth: number, options: Object) {
     return 'Element(' + inspect(this._selector, options) + ')';
   }

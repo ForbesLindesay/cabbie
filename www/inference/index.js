@@ -6,6 +6,49 @@ import createCodeFrame from 'babel-code-frame';
 import {parse} from 'babylon';
 import {sync as resolveImport} from 'resolve';
 import pluralize from 'pluralize';
+import configureMarkdown from 'markdown-it';
+import hljs from 'highlight.js';
+import {transform as transformWithBabel} from 'babel-core';
+function createMarkdown(isAsync) {
+  return configureMarkdown({
+    linkify: true,
+    highlight: function(code, lang) {
+      if (lang)
+        lang = lang.toLowerCase();
+      if (lang === 'js' || lang === 'javascript') {
+        if (!isAsync) {
+          const transformedCode = transformWithBabel('async function run () {\n' + code + '\n}', {
+            babelrc: false,
+            plugins: [
+              require('babel-plugin-syntax-flow'),
+              require('babel-plugin-syntax-trailing-function-commas'),
+              require('babel-plugin-syntax-class-properties'),
+              require('babel-plugin-syntax-object-rest-spread'),
+              require('../../babel-plugin-remove-async'),
+            ],
+          }).code;
+          try {
+            return hljs.highlight(
+              'javascript',
+              transformedCode.replace(/^function run\(\) \{/, '').replace(/\}$/, '').replace(/^  /gm, '').trim(),
+            ).value;
+          } catch (ex) {
+            console.error(transformedCode);
+            throw ex;
+          }
+        }
+        try {
+          return hljs.highlight('javascript', code).value;
+        } catch (ex) {
+          console.error(code);
+          throw ex;
+        }
+      }
+    },
+  });
+}
+const markdownAsync = createMarkdown(true);
+const markdownSync = createMarkdown(false);
 
 const builtInValues = new Map();
 builtInValues.set('Array', {type: 'builtin-type', id: 'Array'});
@@ -26,7 +69,8 @@ class SourceLocation {
   }
 }
 function extractComment(comment) {
-  return comment.value;
+  const raw = comment.value.replace(/^ *\* ?/gm, '');
+  return {raw, async: markdownAsync.render(raw), sync: markdownSync.render(raw)};
 }
 class ModuleGenerator {
   _filename: string;

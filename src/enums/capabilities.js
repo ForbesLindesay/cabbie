@@ -1,4 +1,4 @@
-const SessionEnum = {
+const CapabilityEnum = {
   /*
    * Request for a specific browser
    */
@@ -66,4 +66,4 @@ const SessionEnum = {
    */
   PROXY: 'proxy',
 };
-export default SessionEnum;
+export default CapabilityEnum;

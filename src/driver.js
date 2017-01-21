@@ -1,7 +1,7 @@
 import type {ApplicationCacheStatus} from './enums/application-cache-statuses';
 import type {HttpMethod} from './flow-types/http-method';
 import type {Options} from './flow-types/options';
-import type {SessionData} from './flow-types/session-data';
+import type {Session} from './flow-types/session-data';
 import util from 'util';
 import url from 'url';
 import {readFileSync} from 'fs';
@@ -34,10 +34,31 @@ function getVariables(names: Array<string>): Object {
  * at the end to terminate the session.
  */
 class Driver {
-  session: Promise<SessionData>;
+  /*
+   * The current session.  You can pass this session to createCabbieDriver to convert
+   * between sync and async drivers.  e.g.
+   *
+   * ```js
+   * const driver = createCabbieDriver(oldDriver.remote, {...oldDriver.options, session: oldDriver.session});
+   * ```
+   */
+  session: Promise<Session>;
+  /*
+   * @private
+   */
   debug: Debug;
+  /*
+   * @private
+   */
   _connection: Connection;
+  /*
+   * The location of the selenium server
+   */
   remote: string;
+
+  /*
+   * The options that were originally passed in to createCabbieDriver
+   */
   options: Options;
 
   /*
@@ -46,7 +67,7 @@ class Driver {
   browser: Browser;
 
   /*
-   * Configuration timeouts
+   * Timeout configuration
    */
   timeOut: TimeOut;
 
@@ -103,6 +124,7 @@ class Driver {
   /*
    * Performs a context dependent JSON request for the current session.
    * The result is parsed for errors.
+   * @private
    */
   async requestJSON(method: HttpMethod, path: string, body?: Object): Promise<any> {
     const session = await this.session;
@@ -172,32 +194,6 @@ class Driver {
   // TODO: provide instructions for converting async driver to sync driver and visa versersa
 }
 
-////////////
-// Events //
-////////////
-/*
- * Fired when a request is made
- *
- * @event request
- * @param {Object} request Request options
- */
-/*
- * Fired when a response is received
- *
- * @event response
- * @param {Object} response Response data
- */
-/*
- * Fired when a public method is called
- *
- * @event method-call
- * @param {Object} event Method event data
- */
-/*
- * Fired when the session is destroyed
- *
- * @event disposed
- */
 /*
  * End this Driver session
  *
@@ -206,10 +202,7 @@ class Driver {
  */
 (Driver.prototype: any).quit = Driver.prototype.dispose;
 
-///////////////
-// Utilities //
-///////////////
-async function createSession(connection: Connection, options: Options): Promise<SessionData> {
+async function createSession(connection: Connection, options: Options): Promise<Session> {
   if (options.session !== undefined) {
     return options.session;
   }

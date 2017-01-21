@@ -1,12 +1,18 @@
 import React from 'react';
-import Link from '../link';
 import styled from 'styled-components';
+import Link from '../link';
+import Mode from '../mode';
 
+function renderComment(comment, i) {
+  return <Mode key={i} async={<div dangerouslySetInnerHTML={{__html: comment.async}} />} sync={
+    <div dangerouslySetInnerHTML={{__html: comment.sync}} />
+  } />;
+}
 function DocumentationComments({comments}) {
-  const comment = comments.join('\n\n').replace(/^ *\* ?/gm, '');
-  const elements = comment.split('\n\n').map((comment, i) => {
-    return <p key={i}>{comment}</p>;
-  });
-  return <div>{elements}</div>;
+  return (
+    <div>
+      {comments.map(renderComment)}
+    </div>
+  );
 }
 export default DocumentationComments;

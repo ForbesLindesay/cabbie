@@ -1,7 +1,7 @@
 import type {HttpMethod} from './flow-types/http-method';
 import type {WebdriverResponse} from './flow-types/webdriver-response';
 import type {HttpResponse} from './flow-types/http-response';
-import type {SessionData} from './flow-types/session-data';
+import type {Session} from './flow-types/session-data';
 import type Debug from './debug';
 import autoRequest from 'then-request';
 import parseResponse from './utils/parse-response';
@@ -11,6 +11,12 @@ class Connection {
    * The url of the selenium web-driver server
    */
   remote: string;
+
+  /*
+   * Reference to the debug context
+   *
+   * @private
+   */
   debug: Debug;
   constructor(remote: string, debug: Debug) {
     this.remote = remote.replace(/\/$/, '');
@@ -20,7 +26,7 @@ class Connection {
    * Session request with automatic parsing for errors
    */
   async requestWithSession(
-    session: SessionData,
+    session: Session,
     method: HttpMethod,
     uri: string,
     options?: Object,
@@ -33,6 +39,9 @@ class Connection {
     return parseResponse(response);
   }
 
+  /*
+   * Make a request without using the current session.
+   */
   async request(method: HttpMethod, uri: string, options?: Object): Promise<HttpResponse> {
     if (!/^https?\:\:\/\//.test(uri)) {
       uri = this.remote + uri;

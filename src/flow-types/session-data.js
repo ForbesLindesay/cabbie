@@ -1,1 +1,1 @@
-export type SessionData = {sessionID: string, capabilities: Object};
+export type Session = {sessionID: string, capabilities: Object};

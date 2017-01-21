@@ -7,7 +7,13 @@ import addDebugging from './add-debugging';
  * Touch commands relative to a DOM-element
  */
 class Touch {
+  /*
+   * @private
+   */
   debug: Debug;
+  /*
+   * @private
+   */
   driver: Driver;
   _parent: Element;
 
@@ -88,6 +94,9 @@ class Touch {
 
   //TODO: Element touch flick
   //TODO: Element touch scroll
+  /*
+   * @private
+   */
   inspect(depth: number, options: Object) {
     return this._parent.inspect(depth, options) + '.touch';
   }

@@ -13,6 +13,7 @@
   },
   "devDependencies": {
     "babel-cli": "^6.18.0",
+    "babel-core": "^6.22.1",
     "babel-live": "^4.0.1",
     "babel-plugin-add-header-comment": "^1.0.3",
     "babel-plugin-flow-runtime": "0.0.3",
@@ -34,6 +35,7 @@
     "flow-runtime": "0.0.3",
     "highlight.js": "^9.9.0",
     "lsr": "^1.0.0",
+    "markdown-it": "^8.2.2",
     "mkdirp": "^0.5.1",
     "ms": "^0.7.2",
     "pluralize": "^3.1.0",

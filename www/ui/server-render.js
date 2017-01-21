@@ -55,6 +55,12 @@ function serverRender(url, clientURL) {
   <link rel="manifest" href="/manifest.json">
   <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#000842">
   <meta name="theme-color" content="#95a2ff">
+  <meta property="og:image:width" content="279">
+  <meta property="og:image:height" content="279">
+  <meta property="og:title" content="CabbieJS">
+  <meta property="og:description" content="Easy testing in real web browsers using node.js">
+  <meta property="og:url" content="cabbiejs.org">
+  <meta property="og:image" content="https://cabbiejs.org/og-image.jpg">
   <title>Cabbie</title>
   <style>${css}</style>
 </head>

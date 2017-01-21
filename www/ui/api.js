@@ -5,7 +5,6 @@ import Cabbie from './documentation/cabbie';
 import Enums from './documentation/enums';
 import ClassType from './documentation/class-type';
 import PageWithNavigation, {NavigationWrapper, ContentWrapper, SidebarLink} from './styling/page-with-navigation';
-import NotFound from './not-found';
 
 function Api() {
   return (

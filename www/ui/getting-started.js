@@ -6,7 +6,6 @@ import Chromedriver from './getting-started/chromedriver';
 import SauceLabs from './getting-started/saucelabs';
 import TestingBot from './getting-started/testingbot';
 import Other from './getting-started/other';
-import NotFound from './not-found';
 
 function GettingStarted() {
   return (

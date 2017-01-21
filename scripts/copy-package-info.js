@@ -20,6 +20,7 @@ export default function copyFiles(mode) {
   }
   const syncPackage = getPackage({name: 'cabbie-sync', description: 'A synchronous webdriver client'}, [
     'chalk',
+    'dotenv',
     'flow-runtime',
     'ms',
     'sync-request',
@@ -27,6 +28,7 @@ export default function copyFiles(mode) {
   ]);
   const asyncPackage = getPackage({name: 'cabbie-async', description: 'An asynchronous webdriver client'}, [
     'chalk',
+    'dotenv',
     'flow-runtime',
     'ms',
     'then-request',

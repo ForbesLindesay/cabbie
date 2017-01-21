@@ -30,7 +30,7 @@ function NavBarLink({logoLink, ...props}) {
   }
   return (
     <NavBarLinkContainer>
-      <Link {...props} className='nav-link' activeClassName='active-nav-link' />
+      <Link {...props} className='nav-link' activeClassName='active-nav-link' exactly={false} />
     </NavBarLinkContainer>
   );
 }

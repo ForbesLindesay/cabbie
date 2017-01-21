@@ -348,7 +348,6 @@ async function run(driver: Driver, location: string) {
   //   assert.equal(await driver.browser.activeWindow.alert.getText(), 'test-33');
   //   await driver.browser.activeWindow.alert.accept();
   // });
-
   await test('execute javascript code as a function with parameters', async () => {
     const alertButtonText = await driver.browser.activeWindow.execute(
       'return document.getElementById(arguments[0]).textContent;',

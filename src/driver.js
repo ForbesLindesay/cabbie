@@ -4,6 +4,8 @@ import type {Options} from './flow-types/options';
 import type {SessionData} from './flow-types/session-data';
 import util from 'util';
 import url from 'url';
+import {readFileSync} from 'fs';
+import {parse as parseEnv} from 'dotenv';
 import addDebugging from './add-debugging';
 import autoRequest from 'then-request';
 import {fromBody} from './utils/errors';
@@ -15,6 +17,18 @@ import Status from './status';
 import LogEntry from './log-entry';
 import parseResponse from './utils/parse-response';
 
+function getVariables(names: Array<string>): Object {
+  const result = {};
+
+  names.forEach(key => result[key] = process.env[key]);
+
+  try {
+    const parsedObj = parseEnv(readFileSync('.env', 'utf8'));
+    names.forEach(key => result[key] = result[key] || parsedObj[key]);
+  } catch (e) {}
+
+  return result;
+}
 /*
  * Create a new Driver session, remember to call `.dispose()`
  * at the end to terminate the session.
@@ -47,32 +61,36 @@ class Driver {
         remoteURI = 'http://localhost:9515/';
         break;
       case 'saucelabs':
-        if (!process.env.SAUCE_USERNAME || !process.env.SAUCE_ACCESS_KEY) {
+        const {SAUCE_USERNAME, SAUCE_ACCESS_KEY} = getVariables(['SAUCE_USERNAME', 'SAUCE_ACCESS_KEY']);
+        if (!SAUCE_USERNAME || !SAUCE_ACCESS_KEY) {
           throw new Error(
             'To use sauce labs, you must specify SAUCE_USERNAME and SAUCE_ACCESS_KEY in enviornment variables.',
           );
         }
-        remoteURI = `http://${process.env.SAUCE_USERNAME}:${process.env.SAUCE_ACCESS_KEY}@ondemand.saucelabs.com/wd/hub`;
+        remoteURI = `http://${SAUCE_USERNAME}:${SAUCE_ACCESS_KEY}@ondemand.saucelabs.com/wd/hub`;
         break;
       case 'browserstack':
-        const username = process.env.BROWSER_STACK_USERNAME;
-        const accessKey = process.env.BROWSER_STACK_ACCESS_KEY;
-        if (!username || !accessKey) {
+        const {BROWSER_STACK_USERNAME, BROWSER_STACK_ACCESS_KEY} = getVariables([
+          'BROWSER_STACK_USERNAME',
+          'BROWSER_STACK_ACCESS_KEY',
+        ]);
+        if (!BROWSER_STACK_USERNAME || !BROWSER_STACK_ACCESS_KEY) {
           throw new Error(
             'To use browserstack, you must specify BROWSER_STACK_USERNAME and SAUCE_ACCESS_KEY in enviornment variables.',
           );
         }
         remoteURI = 'http://hub-cloud.browserstack.com/wd/hub';
-        capabilities['browserstack.user'] = username;
-        capabilities['browserstack.key'] = accessKey;
+        capabilities['browserstack.user'] = BROWSER_STACK_USERNAME;
+        capabilities['browserstack.key'] = BROWSER_STACK_ACCESS_KEY;
         break;
       case 'testingbot':
-        if (!process.env.TESTINGBOT_KEY || !process.env.TESTINGBOT_SECRET) {
+        const {TESTINGBOT_KEY, TESTINGBOT_SECRET} = getVariables(['TESTINGBOT_KEY', 'TESTINGBOT_SECRET']);
+        if (!TESTINGBOT_KEY || !TESTINGBOT_SECRET) {
           throw new Error(
             'To use testingbot, you must specify TESTINGBOT_KEY and TESTINGBOT_SECRET in enviornment variables.',
           );
         }
-        remoteURI = `http://${process.env.TESTINGBOT_KEY}:${process.env.TESTINGBOT_SECRET}@hub.testingbot.com/wd/hub`;
+        remoteURI = `http://${TESTINGBOT_KEY}:${TESTINGBOT_SECRET}@hub.testingbot.com/wd/hub`;
         break;
     }
     this._connection = new Connection(remoteURI, this.debug);

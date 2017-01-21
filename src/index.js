@@ -10,8 +10,6 @@ export {Connection, Debug, Driver, Status};
 
 /*
  * Create a new cabbie Driver
- *
- * @public
  */
 export default function createCabbieDriver(remote: string, options: Options = {}): Driver {
   return new Driver(remote, options);
@@ -22,8 +20,6 @@ export type {Options};
  * Returns a list of the currently active sessions
  *
  * Note: Appears not to be supported by the selenium-standalone-server!
- *
- * @public
  */
 export async function getSessions(remote: string, options: Options = {}): Promise<Array<SessionData>> {
   const connection = new Connection(remote, new Debug(options));
@@ -34,12 +30,37 @@ export async function getSessions(remote: string, options: Options = {}): Promis
 
 /*
  * Gets the selenium-system status
- *
- * @public
  */
 export async function getStatus(remote: string, options: Options = {}): Promise<Status> {
   const connection = new Connection(remote, new Debug(options));
   const rawResponse = await connection.request('GET', '/status');
   const response = parseResponse(rawResponse);
   return new Status(response);
+}
+
+let chromedriverRunning = false;
+/*
+ * Start a chromedriver instance.  You must have installed chromedriver to use this:
+ *
+ * npm install chromedriver --save-dev
+ */
+export function startChromedriver(): void {
+  if (chromedriverRunning) {
+    return;
+  }
+  chromedriverRunning = true;
+  let chromedriver;
+  try {
+    chromedriver = (require: any)('chromedriver');
+  } catch (ex) {
+    throw new Error(
+      'You must install the chromedriver module via "npm install chromedriver --save-dev" to call ' +
+        'cabbie.startChromedriver();',
+    );
+  }
+  const cd = chromedriver;
+  cd.start().unref();
+  process.once('exit', code => {
+    cd.stop();
+  });
 }

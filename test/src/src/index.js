@@ -3,8 +3,7 @@ import fs from 'fs';
 import assert from 'assert';
 import {fork} from 'child_process';
 import request from 'sync-request';
-import createCabbie from 'cabbie-async';
-import chromedriver from 'chromedriver';
+import createCabbie, {startChromedriver} from 'cabbie-async';
 import runTest from './run-test';
 
 if (process.argv.indexOf('--help') !== -1 || process.argv.indexOf('-h') !== -1) {
@@ -29,8 +28,6 @@ if (LOCAL_FLAG && SAUCE_FLAG) {
 }
 
 const LOCAL = !SAUCE_FLAG;
-
-
 
 function doReplacements(source: string, replacements: {[key: string]: string}): string {
   Object.keys(replacements).forEach(function(key) {
@@ -63,8 +60,7 @@ async function dispose() {
 async function run() {
   if (LOCAL && RECORD) {
     console.log('starting chromedriver');
-    chromedriver.start();
-    onDispose.push(() => chromedriver.stop());
+    startChromedriver();
   }
   const remote = LOCAL
     ? 'http://localhost:7883'
@@ -72,22 +68,22 @@ async function run() {
   const options = LOCAL
     ? {debug: true, httpDebug: false}
     : {debug: true, httpDebug: false, capabilities: {browserName: 'chrome'}};
+  console.log('creating driver');
+  const driver = createCabbie(remote, options);
   try {
-    console.log('creating driver');
-    const driver = createCabbie(remote, options);
-    onDispose.push(() => driver.dispose());
     const location = createPage(__dirname + '/../../demoPage.html', {
       '{{linked-page}}': createPage(__dirname + '/../../linkedTo.html'),
     });
     await runTest(driver, location);
   } finally {
-    await dispose();
+    await driver.dispose();
   }
 }
 
 async function onProxyReady() {
   try {
     await run();
+    process.exit(0);
   } catch (ex) {
     console.error(ex.stack || ex.message || ex);
     process.exit(1);
@@ -96,7 +92,11 @@ async function onProxyReady() {
 if (LOCAL) {
   const proxyArgs = RECORD ? ['--record'] : [];
   const proxy = fork(require.resolve('../../record'), proxyArgs, {stdio: ['inherit', 'inherit', 'inherit', 'ipc']});
-  onDispose.push(() => proxy.kill());
+
+  process.on('exit', () => {
+    proxy.kill();
+  });
+  proxy.unref();
   proxy.on('error', err => {
     dispose();
     throw err;
@@ -108,7 +108,7 @@ if (LOCAL) {
       process.exit(status);
     }
   });
-  proxy.on('message', (message) => {
+  proxy.on('message', message => {
     if (message.status === 'started') {
       onProxyReady();
     }

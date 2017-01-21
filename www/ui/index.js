@@ -66,7 +66,7 @@ function Application() {
             {margin: '10px 10px 0 0'}
           } /></NavBarLink>
           <NavBarLink exactly to='/' minWidth={600}>Home</NavBarLink>
-          <NavBarLink to='/getting-started'>Get<MinWidth minWidth={400}>ting</MinWidth>{' '}Started</NavBarLink>
+          <NavBarLink to='/getting-started'>Get<MinWidth minWidth={450}>ting</MinWidth>{' '}Started</NavBarLink>
           <NavBarLink to='/api'>API</NavBarLink>
           <NavBarToggleAsync />
         </NavBarItems>

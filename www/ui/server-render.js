@@ -61,6 +61,8 @@ function serverRender(url, clientURL) {
   <meta property="og:description" content="Easy testing in real web browsers using node.js">
   <meta property="og:url" content="cabbiejs.org">
   <meta property="og:image" content="https://cabbiejs.org/og-image.jpg">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <title>Cabbie</title>
   <style>${css}</style>
 </head>

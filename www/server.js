@@ -20,6 +20,7 @@ app.get(
   CLIENT_URL,
   browserify(__dirname + '/../output/www/ui/client.js', {transform: [[require('envify'), {global: true}]]}),
 );
+app.use(express.static(__dirname + '/favicon'));
 app.use((req, res, next) => {
   if (!serverRenderHandle) {
     serverRenderHandle = babelLive(

@@ -1,8 +1,10 @@
+import {writeFileSync, readFileSync} from 'fs';
 import {parse} from 'url';
 import stop from 'stop';
 import s3 from 's3';
 import {sync as rimraf} from 'rimraf';
 import request from 'then-request';
+import {sync as lsr} from 'lsr';
 
 rimraf(__dirname + '/../output/www-static');
 
@@ -25,6 +27,11 @@ setTimeout(
           process.exit(0);
           return;
         }
+        lsr(__dirname + '/favicon').forEach(file => {
+          if (file.isFile()) {
+            writeFileSync(localDir + file.path.substr(1), readFileSync(file.fullPath));
+          }
+        })
         if (process.env.S3_KEY) {
           const client = s3.createClient({
             s3Options: {

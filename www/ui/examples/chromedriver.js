@@ -20,7 +20,7 @@ function SyncExample() {
 
       // get an element, and check that its text equals some expected value
       assert.equal(
-        dirver.browser.activeWindow.getElement('h1').getText(),
+        driver.browser.activeWindow.getElement('h1').getText(),
         'Example Domain',
       );
     } finally {
@@ -45,7 +45,7 @@ function AsyncExample() {
       try {
         await driver.browser.activeWindow.navigator.navigateTo('http://example.com');
 
-        const heading = await dirver.browser.activeWindow.getElement('h1');
+        const heading = await driver.browser.activeWindow.getElement('h1');
         assert.equal(
           await heading.getText(),
           'Example Domain',

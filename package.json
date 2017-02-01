@@ -2,7 +2,8 @@
   "name": "cabbie",
   "private": true,
   "version": "0.5.0",
-  "main": "./lib/index.js",
+  "main": "lib/index.js",
+  "module": "src/index.js",
   "description": "A webdriver client",
   "keywords": [
     "cabbie",

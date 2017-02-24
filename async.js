@@ -1,3 +1,5 @@
+// @flow
+
 import assert from 'assert';
 import cabbie, {startChromedriver} from 'cabbie-async';
 

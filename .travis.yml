@@ -1,0 +1,8 @@
+language: node_js
+node_js:
+  - "6"
+
+# Use faster Docker architecture on Travis.
+sudo: false
+
+script: npm test

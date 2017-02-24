@@ -3,11 +3,16 @@ import cabbie, {startChromedriver} from 'cabbie-async';
 
 // Start the chromedriver server, this provides a local selenium server
 // You must install chromedriver to use this.
-startChromedriver();
+if (!process.env.SAUCE_USERNAME) {
+  startChromedriver();
+}
 
 async function runTest() {
   // connect to chromedriver, adding {debug: true} makes cabbie log each method call.
-  const driver = cabbie('chromedriver', {debug: true, capabilities: {browserName: 'chrome'}});
+  const driver = cabbie(
+    process.env.SAUCE_USERNAME ? 'saucelabs' : 'chromedriver',
+    {debug: true, capabilities: {browserName: 'chrome'}},
+  );
 
   try {
     await driver.browser.activeWindow.navigator.navigateTo('http://example.com');

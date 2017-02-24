@@ -9,7 +9,7 @@ if (!process.env.SAUCE_USERNAME) {
 
 // connect to chromedriver, adding {debug: true} makes cabbie log each method call.
 const driver = cabbie(
-  process.env.SAUCE_USERNAME ? 'sauce' : 'chromedriver',
+  process.env.SAUCE_USERNAME ? 'saucelabs' : 'chromedriver',
   {debug: true, capabilities: {browserName: 'chrome'}},
 );
 

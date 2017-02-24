@@ -64,7 +64,7 @@
     "test": "babel-node test/sync/src && babel-node test/async/src",
     "test:record": "npm run pretest && babel-node test/async/src --record",
     "test:sauce": "npm run pretest && babel-node test/sync/src --sauce && babel-node test/async/src --sauce",
-    "release": "npm run build && cd output/async && npm publish && cd ../sync && npm publish"
+    "release": "npm run build && cd output/async && npm publish && cd ../sync && npm publish && cd ../../core && npm publish"
   },
   "repository": {
     "type": "git",

@@ -4,25 +4,20 @@ A synchronous and asynchronous webdriver client for node.js.  This client is com
 
 ## Installation
 
-To get both:
-
-```
-npm install cabbie
-```
-
-If you only need one or the other:
+To write async tests:
 
 ```
 npm install cabbie-async
+```
+
+To write sync tests:
+
+```
 npm install cabbie-sync
 ```
 
 ## Usage
 
-```js
-const cabbie = require('cabbie/async'); // or require('cabbie-async');
-```
+To write async tests, see https://cabbiejs.org/async
 
-```js
-const cabbie = require('cabbie/sync'); // or require('cabbie-sync');
-```
+To write sync tests, see https://cabbiejs.org

@@ -1,49 +1,32 @@
-![Cabbie](logo.png)
+![Cabbie](logo/logo.svg)
 
 # Cabbie
 
-A node web-driver client
+A synchronous and asynchronous webdriver client for node.js.  This client is completely standalone so you can use your choice of test framework: jest, mocha, jasmine, tap.......you decide!
 
 [![Build Status](https://img.shields.io/travis/ForbesLindesay/cabbie/master.svg)](https://travis-ci.org/ForbesLindesay/cabbie)
-[![Selenium Test Status](https://saucelabs.com/buildstatus/cabbie)](https://saucelabs.com/u/cabbie)
 [![Dependency Status](https://img.shields.io/david/ForbesLindesay/cabbie.svg)](https://david-dm.org/ForbesLindesay/cabbie)
 [![NPM version](https://img.shields.io/npm/v/cabbie.svg)](https://www.npmjs.com/package/cabbie)
 
 ## Installation
 
-    npm install cabbie
+To write async tests:
+
+```
+npm install cabbie-async
+```
+
+To write sync tests:
+
+```
+npm install cabbie-sync
+```
 
 ## Usage
 
-See "docs/api" for full API reference.
+To write async tests, see https://cabbiejs.org/async
 
-```js
-var assert = require('assert');
-var cabbie = require('cabbie');
-
-var driver = cabbie('http://localhost:4444/wd/hub', {
-  mode: cabbie.Browser.MODE_SYNC,
-  capabilities: { browserName:'firefox' },
-});
-var browser = driver.browser;
-var activeWindow = browser.activeWindow;
-
-// Set url and assert a header-text
-activeWindow.navigator.setUrl('http://www.example.com');
-assert.equal(activeWindow.getElement('h1').getText(), 'Example Domain');
-
-// Click on element
-activeWindow.getElement('h1').mouse.click();
-
-// Click on a specific coordinate
-activeWindow.mouse.clickAt(500, 200);
-
-// Close active window
-activeWindow.close();
-
-driver.dispose();
-```
-
+To write sync tests, see https://cabbiejs.org
 
 ## License
 

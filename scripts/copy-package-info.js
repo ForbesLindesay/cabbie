@@ -2,6 +2,14 @@ const fs = require('fs');
 const mkdirp = require('mkdirp');
 const pkg = require('../package.json');
 
+export function copyCoreVersions() {
+  const corePackage = JSON.parse(fs.readFileSync(__dirname + '/../core/package.json', 'utf8'));
+  corePackage.version = pkg.version;
+  corePackage.dependencies['cabbie-async'] = pkg.version;
+  corePackage.dependencies['cabbie-sync'] = pkg.version;
+  fs.writeFileSync(__dirname + '/../core/package.json', JSON.stringify(corePackage, null, '  ') + '\n');
+}
+
 export default function copyFiles(mode) {
   mkdirp.sync(__dirname + '/../output/' + mode);
 

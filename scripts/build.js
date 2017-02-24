@@ -7,6 +7,7 @@ const chalk = require('chalk');
 const ms = require('ms');
 const lsr = require('lsr');
 const copyFiles = require('./copy-package-info').default;
+const copyCoreVersions = require('./copy-package-info').copyCoreVersions;
 
 function execute(description, name, args, options = {}) {
   return new Promise((resolve, reject) => {
@@ -185,6 +186,7 @@ async function run() {
   if (!isOnlyTests) {
     rimraf.sync(__dirname + '/../output');
     await Promise.all([build('sync'), build('async')]);
+    copyCoreVersions();
   }
   if (isOnlyTests || isAll) {
     rimraf.sync(__dirname + '/../test/sync');

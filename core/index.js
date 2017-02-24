@@ -1,6 +1,10 @@
 const cabbieSync = require('cabbie-sync');
 const cabbieAsync = require('cabbie-async');
 
+console.warn('');
+console.warn('You should use cabbie-async or cabbie-sync directly, not cabbie!!!');
+console.warn('');
+
 function createDriver(remote, options) {
   if (!options) {
     throw new Error('Expected options');

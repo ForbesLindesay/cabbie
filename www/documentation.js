@@ -1,3 +1,3 @@
 // placeholder for real documentation that gets generated
 
-export default ({}: any)
+export default ({}: any);

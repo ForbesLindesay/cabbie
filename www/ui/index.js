@@ -62,19 +62,19 @@ function Application() {
     <Root>
       <NavBar>
         <NavBarItems>
-          <NavBarLink to='/' logoLink={true}><Logo height='40' width='40' fill='#95a2ff' style={
-            {margin: '10px 10px 0 0'}
-          } /></NavBarLink>
-          <NavBarLink exactly to='/' minWidth={600}>Home</NavBarLink>
-          <NavBarLink to='/getting-started'>Get<MinWidth minWidth={450}>ting</MinWidth>{' '}Started</NavBarLink>
-          <NavBarLink to='/api'>API</NavBarLink>
+          <NavBarLink to="/" logoLink={true}>
+            <Logo height="40" width="40" fill="#95a2ff" style={{margin: '10px 10px 0 0'}} />
+          </NavBarLink>
+          <NavBarLink exactly to="/" minWidth={600}>Home</NavBarLink>
+          <NavBarLink to="/getting-started">Get<MinWidth minWidth={450}>ting</MinWidth>{' '}Started</NavBarLink>
+          <NavBarLink to="/api">API</NavBarLink>
           <NavBarToggleAsync />
         </NavBarItems>
       </NavBar>
       <Container>
-        <Match pattern='/' component={Home} />
-        <Match exactly={false} pattern='/getting-started' component={GettingStarted} />
-        <Match exactly={false} pattern='/api' component={Api} />
+        <Match pattern="/" component={Home} />
+        <Match exactly={false} pattern="/getting-started" component={GettingStarted} />
+        <Match exactly={false} pattern="/api" component={Api} />
       </Container>
     </Root>
   );

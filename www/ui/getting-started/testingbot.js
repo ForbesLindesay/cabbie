@@ -13,9 +13,7 @@ function Documentation() {
         open source projects.
       </p>
       <p>
-        Start by signing up for an account at{
-          ' '
-        }<a href='https://testingbot.com/'>testingbot.com</a>,
+        Start by signing up for an account at{' '}<a href="https://testingbot.com/">testingbot.com</a>,
         then set the following environment variables:
       </p>
       <dl>
@@ -26,11 +24,7 @@ function Documentation() {
       </dl>
       <p>
         To do this locally, you can create
-        a{
-          ' '
-        }<a href='https://github.com/motdotla/dotenv'><code>.env</code></a>{
-          ' '
-        }file in your project's
+        a{' '}<a href="https://github.com/motdotla/dotenv"><code>.env</code></a>{' '}file in your project's
         root directory:
       </p>
       <CodeBlock>{dotenvExample}</CodeBlock>

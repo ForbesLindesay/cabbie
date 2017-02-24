@@ -11,9 +11,7 @@ function Documentation() {
       <p>
         You can use your own selenium webdriver server. You will need to know the url of your
         webdriver server before you can get started.  If your webdriver server takes basic authentication,
-        you can pass that in the url (e.g.{
-          ' '
-        }<code>https://username:password@example.com</code>).
+        you can pass that in the url (e.g.{' '}<code>https://username:password@example.com</code>).
       </p>
       <Example />
     </div>

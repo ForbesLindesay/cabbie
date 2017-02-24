@@ -19,7 +19,7 @@ async function run(driver: Driver, location: string) {
   }
 
   await test('test timeouts', async () => {
-    await driver.timeOut.setTimeOuts({'implicit': '1s', 'async': '10s'});
+    await driver.timeOut.setTimeOuts({implicit: '1s', async: '10s'});
   });
 
   await test('get the active window handle', async () => {
@@ -51,7 +51,7 @@ async function run(driver: Driver, location: string) {
     assert(false, 'Expected getting a non-existent element to throw an error');
   });
 
-  await test('select a single element\'s id', async () => {
+  await test("select a single element's id", async () => {
     const alertButton = await driver.browser.activeWindow.getElement('#alert_button');
     const elementID = alertButton.elementID;
     assert(elementID.length > 0);
@@ -335,7 +335,7 @@ async function run(driver: Driver, location: string) {
   });
 
   await test('execute javascript code as string', async () => {
-    await driver.browser.activeWindow.execute('alert(\'test-32\');');
+    await driver.browser.activeWindow.execute("alert('test-32');");
     assert.equal(await driver.browser.activeWindow.alert.getText(), 'test-32');
     await driver.browser.activeWindow.alert.accept();
   });
@@ -357,7 +357,7 @@ async function run(driver: Driver, location: string) {
   });
 
   await test('execute asynchronous javascript code', async () => {
-    await driver.browser.activeWindow.asyncExecute('alert(\'test-35\');');
+    await driver.browser.activeWindow.asyncExecute("alert('test-35');");
     assert.equal(await driver.browser.activeWindow.alert.getText(), 'test-35');
     await driver.browser.activeWindow.alert.accept();
   });
@@ -397,13 +397,13 @@ async function run(driver: Driver, location: string) {
     assert.equal(cookie.getExpiry(), 500);
 
     assert.deepEqual(cookie.toObject(), {
-      'path': '/test',
-      'name': 'testKey',
-      'value': '2468',
-      'domain': 'www.google.com',
-      'secure': true,
-      'httpOnly': false,
-      'expiry': 500,
+      path: '/test',
+      name: 'testKey',
+      value: '2468',
+      domain: 'www.google.com',
+      secure: true,
+      httpOnly: false,
+      expiry: 500,
     });
   });
 

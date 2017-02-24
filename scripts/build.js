@@ -36,10 +36,8 @@ function execute(description, name, args, options = {}) {
         });
         console.log();
       }
-      if (exitCode)
-        reject(new Error('exit code ' + exitCode));
-      else
-        resolve(stdout);
+      if (exitCode) reject(new Error('exit code ' + exitCode));
+      else resolve(stdout);
     });
   });
 }
@@ -66,9 +64,9 @@ function generateFlowFiles(mode) {
   const failedPaths = [];
   const successPaths = [];
   return Promise.all(
-    lsr.sync(__dirname + '/../output/' + mode + '/src').filter(e => e.isFile()).map(
-      throat(1, entry => {
-        /*
+      lsr.sync(__dirname + '/../output/' + mode + '/src').filter(e => e.isFile()).map(
+        throat(1, entry => {
+          /*
       return generateFlow(__dirname + '/../output/' + mode, ['gen-flow-files', entry.fullPath, '--retries', '100']).then(
         result => {
           return result;
@@ -84,15 +82,16 @@ function generateFlowFiles(mode) {
         });
       });
       */
-        const result = fs.readFileSync(entry.fullPath);
-        successPaths.push({
-          path: entry.path,
-          fullPath: __dirname + '/../output/' + mode + '/lib' + entry.path.substr(1) + '.flow',
-          src: result,
-        });
-      }),
-    ),
-  ).then(() => ({successPaths, failedPaths}));
+          const result = fs.readFileSync(entry.fullPath);
+          successPaths.push({
+            path: entry.path,
+            fullPath: __dirname + '/../output/' + mode + '/lib' + entry.path.substr(1) + '.flow',
+            src: result,
+          });
+        }),
+      ),
+    )
+    .then(() => ({successPaths, failedPaths}));
 }
 function install(directory) {
   return execute(`CWD=${directory} npm install`, 'npm', ['install'], {cwd: directory});
@@ -132,7 +131,11 @@ function exposeAllTypes(mode) {
   });
   fs.writeFileSync(
     filename,
-    src.split('import')[0] + imports.join('\n') + '\nimport' + src.split('import').slice(1).join('import') + '\n' +
+    src.split('import')[0] +
+      imports.join('\n') +
+      '\nimport' +
+      src.split('import').slice(1).join('import') +
+      '\n' +
       'export {' +
       exports.join(', ') +
       '};\n' +

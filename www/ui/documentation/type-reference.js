@@ -17,9 +17,9 @@ const TypeContainer = styled.span`
 function TypeReference({type, isAsync}) {
   switch (type.type) {
     case 'class':
-      return <TypeContainer><TypeLink to={'/api/classes/' + type.name.toLowerCase()}>{
-        type.name
-      }</TypeLink></TypeContainer>;
+      return (
+        <TypeContainer><TypeLink to={'/api/classes/' + type.name.toLowerCase()}>{type.name}</TypeLink></TypeContainer>
+      );
     case 'enum-value-type':
       return <TypeContainer><TypeLink to={'/api/enums'}>{type.enum.valueName}</TypeLink></TypeContainer>;
     case 'generic-type':
@@ -27,9 +27,11 @@ function TypeReference({type, isAsync}) {
         return <TypeReference type={type.typeParameters[0]} isAsync={isAsync} />;
       }
       return (
-        <span><TypeReference type={type.id} isAsync={isAsync} />{'<'}{type.typeParameters.map((tp, i) => {
-              return <span key={i}>{i !== 0 ? ', ' : ''}<TypeReference type={tp} isAsync={isAsync} /></span>;
-            })}{'>'}</span>
+        <span>
+          <TypeReference type={type.id} isAsync={isAsync} />{'<'}{type.typeParameters.map((tp, i) => {
+            return <span key={i}>{i !== 0 ? ', ' : ''}<TypeReference type={tp} isAsync={isAsync} /></span>;
+          })}{'>'}
+        </span>
       );
     case 'builtin-type':
       return <TypeContainer>{type.id}</TypeContainer>;
@@ -64,7 +66,7 @@ function TypeReference({type, isAsync}) {
 TypeReference.propTypes = {type: PropTypes.object.isRequired, isAsync: PropTypes.bool.isRequired};
 
 function TypeReferenceHandlingAsync(props) {
-  return <Match pattern='/async' children={({matched}) => <TypeReference {...props} isAsync={matched} />} />;
+  return <Match pattern="/async" children={({matched}) => <TypeReference {...props} isAsync={matched} />} />;
 }
 TypeReferenceHandlingAsync.propTypes = {type: PropTypes.object.isRequired};
 export default TypeReferenceHandlingAsync;

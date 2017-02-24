@@ -15,9 +15,9 @@ const MethodConatiner = styled.h2`
 `;
 function ModuleMethod({method}) {
   const name = method.fun.id;
-  const params = method.fun.params.map(
-    (param, i) => <span key={i}>{i !== 0 ? ', ' : ''}<Parameter param={param} /></span>,
-  );
+  const params = method.fun.params.map((param, i) => (
+    <span key={i}>{i !== 0 ? ', ' : ''}<Parameter param={param} /></span>
+  ));
   const returnType = method.fun.returnType ? <span>{': '}<TypeReference type={method.fun.returnType} /></span> : '';
   return (
     <section>

@@ -16,44 +16,51 @@ setTimeout(
     console.log('begin loading content');
     request('get', 'http://localhost:3000').done(response => {
       console.log(response.body.toString('utf8'));
-      stop.getWebsiteStream('http://localhost:3000', {
-        filter: function(currentURL) {
-          return parse(currentURL).hostname === 'localhost';
-        },
-        parallel: 1,
-      }).syphon(stop.minifyCSS({deadCode: true, silent: true})).syphon(stop.log()).syphon(stop.checkStatusCodes([200])).syphon(stop.writeFileSystem(localDir)).wait().done(function() {
-        console.log('done building website');
-        if (process.env.TRAVIS_PULL_REQUEST !== 'false' || process.env.TRAVIS_BRANCH !== 'master') {
-          process.exit(0);
-          return;
-        }
-        lsr(__dirname + '/favicon').forEach(file => {
-          if (file.isFile()) {
-            writeFileSync(localDir + file.path.substr(1), readFileSync(file.fullPath));
+      stop
+        .getWebsiteStream('http://localhost:3000', {
+          filter: function(currentURL) {
+            return parse(currentURL).hostname === 'localhost';
+          },
+          parallel: 1,
+        })
+        .syphon(stop.minifyCSS({deadCode: true, silent: true}))
+        .syphon(stop.log())
+        .syphon(stop.checkStatusCodes([200]))
+        .syphon(stop.writeFileSystem(localDir))
+        .wait()
+        .done(function() {
+          console.log('done building website');
+          if (process.env.TRAVIS_PULL_REQUEST !== 'false' || process.env.TRAVIS_BRANCH !== 'master') {
+            process.exit(0);
+            return;
+          }
+          lsr(__dirname + '/favicon').forEach(file => {
+            if (file.isFile()) {
+              writeFileSync(localDir + file.path.substr(1), readFileSync(file.fullPath));
+            }
+          });
+          if (process.env.S3_KEY) {
+            const client = s3.createClient({
+              s3Options: {
+                accessKeyId: process.env.S3_KEY,
+                secretAccessKey: process.env.S3_SECRET,
+                region: process.env.S3_REGION,
+              },
+            });
+            const uploader = client.uploadDir({
+              localDir,
+              deleteRemoved: true,
+              s3Params: {Bucket: process.env.S3_BUCKET, Prefix: ''},
+            });
+            uploader.on('error', function(err) {
+              console.error('unable to sync:', err.stack);
+            });
+            uploader.on('end', function() {
+              console.log('done uploading website');
+              process.exit(0);
+            });
           }
         });
-        if (process.env.S3_KEY) {
-          const client = s3.createClient({
-            s3Options: {
-              accessKeyId: process.env.S3_KEY,
-              secretAccessKey: process.env.S3_SECRET,
-              region: process.env.S3_REGION,
-            },
-          });
-          const uploader = client.uploadDir({
-            localDir,
-            deleteRemoved: true,
-            s3Params: {Bucket: process.env.S3_BUCKET, Prefix: ''},
-          });
-          uploader.on('error', function(err) {
-            console.error('unable to sync:', err.stack);
-          });
-          uploader.on('end', function() {
-            console.log('done uploading website');
-            process.exit(0);
-          });
-        }
-      });
     });
   },
   1000,

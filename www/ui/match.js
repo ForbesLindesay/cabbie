@@ -6,6 +6,6 @@ function MatchHandlingAsync({pattern, exactly, ...props}) {
     const p = pattern.replace(/\/?$/, /\/$/.test(location.pathname) ? '/' : '');
     return <Match pattern={matched ? '/async' + p : p || '/'} exactly={exactly !== false} {...props} />;
   };
-  return <Match pattern='/async' children={children} />;
+  return <Match pattern="/async" children={children} />;
 }
 export default MatchHandlingAsync;

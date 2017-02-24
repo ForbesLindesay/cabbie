@@ -41,4 +41,4 @@ app.use((req, res, next) => {
   }
 });
 
-export default app.listen(3000)
+export default app.listen(3000);

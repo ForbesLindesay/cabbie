@@ -153,8 +153,7 @@ class Cookie {
     }
 
     // localhost is a special case, the domain must be ""
-    if (this._values.domain === 'localhost')
-      this._values.domain = '';
+    if (this._values.domain === 'localhost') this._values.domain = '';
   }
 
   inspect(depth: number, options: Object) {

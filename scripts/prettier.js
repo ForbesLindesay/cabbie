@@ -27,13 +27,13 @@ import {format} from 'prettier';
         tabWidth: 2,
 
         // Use the flow parser instead of babylon
-        useFlowParser: false,
+        parser: 'flow',
 
         // If true, will use single instead of double quotes
         singleQuote: true,
 
         // Controls the printing of trailing commas wherever possible
-        trailingComma: true,
+        trailingComma: 'all',
 
         // Controls the printing of spaces inside array and objects
         bracketSpacing: false

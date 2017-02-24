@@ -35,7 +35,8 @@ class TimeOut extends BaseClass {
         break;
       default:
         throw new Error(
-          'Invalid timeout type ' + JSON.stringify(timeOutType) +
+          'Invalid timeout type ' +
+            JSON.stringify(timeOutType) +
             ', expected "script", "page load", "implicit" or "async"',
         );
     }

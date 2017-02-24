@@ -11,18 +11,18 @@ function GettingStarted() {
   return (
     <PageWithNavigation>
       <NavigationWrapper>
-        <SidebarLink to='/getting-started'>Chromedriver</SidebarLink>
-        <SidebarLink to='/getting-started/browserstack'>Browser Stack</SidebarLink>
-        <SidebarLink to='/getting-started/saucelabs'>Sauce Labs</SidebarLink>
-        <SidebarLink to='/getting-started/testingbot'>Testing Bot</SidebarLink>
-        <SidebarLink to='/getting-started/other'>Other</SidebarLink>
+        <SidebarLink to="/getting-started">Chromedriver</SidebarLink>
+        <SidebarLink to="/getting-started/browserstack">Browser Stack</SidebarLink>
+        <SidebarLink to="/getting-started/saucelabs">Sauce Labs</SidebarLink>
+        <SidebarLink to="/getting-started/testingbot">Testing Bot</SidebarLink>
+        <SidebarLink to="/getting-started/other">Other</SidebarLink>
       </NavigationWrapper>
       <ContentWrapper>
-        <Match pattern='/getting-started' component={Chromedriver} />
-        <Match pattern='/getting-started/browserstack' exactly component={BrowserStack} />
-        <Match pattern='/getting-started/saucelabs' exactly component={SauceLabs} />
-        <Match pattern='/getting-started/testingbot' exactly component={TestingBot} />
-        <Match pattern='/getting-started/other' exactly component={Other} />
+        <Match pattern="/getting-started" component={Chromedriver} />
+        <Match pattern="/getting-started/browserstack" exactly component={BrowserStack} />
+        <Match pattern="/getting-started/saucelabs" exactly component={SauceLabs} />
+        <Match pattern="/getting-started/testingbot" exactly component={TestingBot} />
+        <Match pattern="/getting-started/other" exactly component={Other} />
       </ContentWrapper>
     </PageWithNavigation>
   );

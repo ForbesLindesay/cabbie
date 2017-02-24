@@ -10,16 +10,16 @@ function Api() {
   return (
     <PageWithNavigation>
       <NavigationWrapper>
-        <SidebarLink to='/api'>Cabbie</SidebarLink>
-        <SidebarLink to='/api/enums'>Enums</SidebarLink>
+        <SidebarLink to="/api">Cabbie</SidebarLink>
+        <SidebarLink to="/api/enums">Enums</SidebarLink>
         {documentation.classes.map(c => {
-            return <SidebarLink key={c.name} to={'/api/classes/' + c.name.toLowerCase()}>{c.name}</SidebarLink>;
-          })}
+          return <SidebarLink key={c.name} to={'/api/classes/' + c.name.toLowerCase()}>{c.name}</SidebarLink>;
+        })}
       </NavigationWrapper>
       <ContentWrapper>
-        <Match pattern='/api' exactly component={Cabbie} />
-        <Match pattern='/api/enums' exactly component={Enums} />
-        <Match pattern='/api/classes/:className' exactly component={ClassType} />
+        <Match pattern="/api" exactly component={Cabbie} />
+        <Match pattern="/api/enums" exactly component={Enums} />
+        <Match pattern="/api/classes/:className" exactly component={ClassType} />
       </ContentWrapper>
     </PageWithNavigation>
   );

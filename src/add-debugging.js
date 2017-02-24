@@ -1,4 +1,4 @@
-function addLogging(cls: Object, options: {baseClass: boolean} = {baseClass: false}) {
+function addLogging(cls: any, options: {baseClass: boolean} = {baseClass: false}) {
   const proto = cls.prototype;
   Object.getOwnPropertyNames(proto).forEach(name => {
     if (typeof proto[name] !== 'function') {

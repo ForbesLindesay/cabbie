@@ -217,7 +217,9 @@ async function createSession(connection: Connection, options: Options): Promise<
   if (res.statusCode !== 200) {
     console.dir(res.headers);
     throw new Error(
-      'Failed to start a Selenium session. Server responded with status code ' + res.statusCode + ':\n' +
+      'Failed to start a Selenium session. Server responded with status code ' +
+        res.statusCode +
+        ':\n' +
         res.body.toString('utf8'),
     );
   }

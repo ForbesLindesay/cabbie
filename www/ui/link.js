@@ -18,6 +18,6 @@ function LinkHandlingAsync({to, exactly, ...props}) {
     }
     return <Link {...props} to={path} />;
   };
-  return <Match pattern='/async' children={children} />;
+  return <Match pattern="/async" children={children} />;
 }
 export default LinkHandlingAsync;

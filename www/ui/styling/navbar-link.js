@@ -39,7 +39,7 @@ function NavBarLink({exactly, logoLink, minWidth, ...props}) {
   }
   return (
     <NavBarLinkContainer minWidth={minWidth}>
-      <Link {...props} className='nav-link' activeClassName='active-nav-link' exactly={exactly === true} />
+      <Link {...props} className="nav-link" activeClassName="active-nav-link" exactly={exactly === true} />
     </NavBarLinkContainer>
   );
 }

@@ -8,7 +8,7 @@ function Home() {
   return (
     <div>
       <Header>
-        <Logo width='10vw' height='10vw' />
+        <Logo width="10vw" height="10vw" />
         <Heading>Cabbie</Heading>
       </Header>
       <div style={{margin: 'auto', maxWidth: 1200}}>

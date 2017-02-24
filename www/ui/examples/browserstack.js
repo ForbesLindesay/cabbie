@@ -54,4 +54,4 @@ function AsyncExample() {
   `;
 }
 
-export default () => <Mode sync={<SyncExample />} async={<AsyncExample />} />
+export default () => <Mode sync={<SyncExample />} async={<AsyncExample />} />;

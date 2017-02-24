@@ -22,7 +22,10 @@ function parseResponse(res: HttpResponse): WebdriverResponse {
       throw new Error('Failed command (' + res.statusCode + '):\n' + bodyString);
     }
     throw new Error(
-      'Failed command (' + res.statusCode + '):\n' + body.value.message +
+      'Failed command (' +
+        res.statusCode +
+        '):\n' +
+        body.value.message +
         (body.value.class ? '\nClass: ' + body.value.class : '') +
         (body.value.stackTrace ? '\nStack-trace:\n ' + stringifyStackTrace(body.value.stackTrace) : ''),
     );
@@ -57,7 +60,12 @@ function stringifyStackTrace(stackTrace: Array<Object>): string {
   for (i = 0, len = stackTrace.length; i < len; i++) {
     if (stackTrace[i]) {
       result.push(
-        stackTrace[i].methodName + '::' + stackTrace[i].className + ' (' + stackTrace[i].fileName + ':' +
+        stackTrace[i].methodName +
+          '::' +
+          stackTrace[i].className +
+          ' (' +
+          stackTrace[i].fileName +
+          ':' +
           stackTrace[i].lineNumber +
           ')',
       );

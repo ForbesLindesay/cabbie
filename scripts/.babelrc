@@ -4,7 +4,7 @@
     "transform-flow-comments",
     ["flow-runtime", {
       "assert": true,
-      "decorate": true
+      "annotate": true
     }]
   ]
 }

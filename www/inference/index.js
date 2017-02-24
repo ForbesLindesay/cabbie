@@ -13,8 +13,7 @@ function createMarkdown(isAsync) {
   return configureMarkdown({
     linkify: true,
     highlight: function(code, lang) {
-      if (lang)
-        lang = lang.toLowerCase();
+      if (lang) lang = lang.toLowerCase();
       if (lang === 'js' || lang === 'javascript') {
         if (!isAsync) {
           const transformedCode = transformWithBabel('async function run () {\n' + code + '\n}', {

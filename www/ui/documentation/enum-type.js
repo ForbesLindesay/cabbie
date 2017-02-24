@@ -32,13 +32,10 @@ function EnumType({enumType}) {
           </tr>
         </thead>
         <tbody>
-          {
-            Object
-              .keys(enumType.values)
-              .map(
-                key => <EnumValue key={key} enumValueName={key} enumType={enumType} enumValue={enumType.values[key]} />,
-              )
-          }
+          {Object.keys(enumType.values)
+            .map(key => (
+              <EnumValue key={key} enumValueName={key} enumType={enumType} enumValue={enumType.values[key]} />
+            ))}
         </tbody>
       </table>
     </div>

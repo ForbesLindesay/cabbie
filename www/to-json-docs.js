@@ -6,12 +6,13 @@ function toJson(inference) {
   function getError(node, message, data) {
     const codeFrame = node.loc
       ? createCodeFrame(inference.getModuleSource(node.loc.filename), node.loc.start.line, node.loc.start.column, {
-        highlightCode: true,
-      })
+          highlightCode: true,
+        })
       : '';
 
     return new Error(
-      message + (data ? '\n\n' + inspect(data, {depth: 2, colors: true}) : '') +
+      message +
+        (data ? '\n\n' + inspect(data, {depth: 2, colors: true}) : '') +
         (node.loc ? '\n\n' + node.loc.filename : '') +
         (codeFrame ? '\n\n' + codeFrame : ''),
     );
@@ -69,14 +70,19 @@ function toJson(inference) {
         return;
       }
       if (entry.type === 'property') {
-        (entry.static
-          ? staticProperties
-          : properties).push({key: entry.key, leadingComments: entry.leadingComments, typeAnnotation: onValue(entry.typeAnnotation)});
+        (entry.static ? staticProperties : properties).push({
+          key: entry.key,
+          leadingComments: entry.leadingComments,
+          typeAnnotation: onValue(entry.typeAnnotation),
+        });
       }
       if (entry.type === 'method') {
-        (entry.static
-          ? staticMethods
-          : methods).push({key: entry.key, leadingComments: entry.leadingComments, params: entry.params.map(onValue), returnType: entry.returnType && onValue(entry.returnType)});
+        (entry.static ? staticMethods : methods).push({
+          key: entry.key,
+          leadingComments: entry.leadingComments,
+          params: entry.params.map(onValue),
+          returnType: entry.returnType && onValue(entry.returnType),
+        });
       }
     });
     properties.sort((a, b) => {

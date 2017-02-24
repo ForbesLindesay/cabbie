@@ -8,7 +8,7 @@ import MinWidth from './min-width';
 function NavBarLink(props) {
   return (
     <NavBarLinkContainer style={{float: 'right'}}>
-      <Link {...props} className='nav-link' />
+      <Link {...props} className="nav-link" />
     </NavBarLinkContainer>
   );
 }
@@ -27,6 +27,6 @@ function renderAsyncToggle({location: {pathname}}) {
   }
 }
 function NavBarToggleAsync() {
-  return <Match pattern='/' children={renderAsyncToggle} />;
+  return <Match pattern="/" children={renderAsyncToggle} />;
 }
 export default NavBarToggleAsync;

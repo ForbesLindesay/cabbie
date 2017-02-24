@@ -46,14 +46,21 @@ class Debug {
   ) {
     if (this.options.debug && event.name !== 'requestJSON') {
       let message = (event.success ? chalk.magenta(' • ') : chalk.red(' ✗ ')) +
-        inspect(event.obj, {colors: true, depth: 1}) +
+        inspect(event.obj, {
+          colors: true,
+          depth: 1,
+        }) +
         '.' +
         event.name +
         '(' +
         event.args.map(v => inspect(v, {colors: true, depth: 1})).join(', ') +
         ')';
       if (event.success && event.result !== undefined) {
-        message += ' => ' + inspect(event.result, {colors: true, depth: 1});
+        message += ' => ' +
+          inspect(event.result, {
+            colors: true,
+            depth: 1,
+          });
       } else if (!event.success) {
         message += ' => ' + chalk.red('' + (event.err.message || event.err));
       }

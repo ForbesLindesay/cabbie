@@ -17,7 +17,7 @@
     "babel-live": "^4.0.1",
     "babel-plugin-add-header-comment": "^1.0.3",
     "babel-plugin-flow-runtime": "0.6.0",
-    "babel-plugin-styled-components": "^1.0.0",
+    "babel-plugin-styled-components": "^1.1.4",
     "babel-plugin-syntax-object-rest-spread": "^6.13.0",
     "babel-plugin-transform-flow-comments": "^6.21.0",
     "babel-preset-forbeslindesay": "^2.1.0",
@@ -47,13 +47,12 @@
     "rimraf": "^2.5.4",
     "s3": "^4.4.0",
     "stop": "^3.1.0",
-    "styled-components": "https://github.com/styled-components/styled-components/archive/1afeb362ef4af0327540e217289af8b2f4d596fe.tar.gz",
+    "styled-components": "^2.0.0",
     "sync-request": "^4.0.1",
     "then-request": "^2.0.1",
     "throat": "^3.0.0"
   },
   "scripts": {
-    "build-styled-components": "cd node_modules/styled-components/ && npm install",
     "prettier": "babel-node scripts/prettier",
     "prewww": "npm run prettier",
     "www": "babel-node www",

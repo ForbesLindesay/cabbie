@@ -1,7 +1,7 @@
 import React from 'react';
 import {renderToString} from 'react-dom/server';
 import {ServerRouter, createServerRenderContext} from 'react-router';
-import {styleSheet} from 'styled-components';
+import {ServerStyleSheet} from 'styled-components';
 import Application from './';
 
 function serverRender(url, clientURL) {
@@ -10,13 +10,15 @@ function serverRender(url, clientURL) {
   const context = createServerRenderContext();
 
   // render the first time
-  // styleSheet.reset();
+  const sheet = new ServerStyleSheet();
   let markup = renderToString(
-    <ServerRouter location={url} context={context}>
-      <Application />
-    </ServerRouter>,
+    sheet.collectStyles(
+      <ServerRouter location={url} context={context}>
+        <Application />
+      </ServerRouter>,
+    ),
   );
-  let css = styleSheet.getCSS();
+  let styleTags = sheet.getStyleTags();
 
   // get the result
   const result = context.getResult();
@@ -33,13 +35,15 @@ function serverRender(url, clientURL) {
     let statusCode = 200;
     if (result.missed) {
       statusCode = 404;
-      // styleSheet.reset();
+      const sheet = new ServerStyleSheet();
       markup = renderToString(
-        <ServerRouter location={url} context={context}>
-          <Application />
-        </ServerRouter>,
+        sheet.collectStyles(
+          <ServerRouter location={url} context={context}>
+            <Application />
+          </ServerRouter>,
+        ),
       );
-      css = styleSheet.getCSS();
+      styleTags = sheet.getStyleTags();
     }
     return {
       statusCode,
@@ -64,7 +68,7 @@ function serverRender(url, clientURL) {
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <title>Cabbie</title>
-  <style>${css}</style>
+  ${styleTags}
 </head>
 <body>
   <div id="container">${markup}</div>

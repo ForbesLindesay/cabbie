@@ -29,11 +29,11 @@ async function run(driver: Driver, location: string) {
   });
 
   await test('navigate to a domain', async () => {
-    await driver.browser.activeWindow.navigator.navigateTo(location);
+    await driver.browser.activeWindow.navigateTo(location);
   });
 
   await test('get the url of the active window', async () => {
-    assert.equal(await driver.browser.activeWindow.navigator.getUrl(), location);
+    assert.equal(await driver.browser.activeWindow.getUrl(), location);
   });
 
   await test('select a single element', async () => {
@@ -111,7 +111,7 @@ async function run(driver: Driver, location: string) {
   await test('submit a form', async () => {
     const formToSubmit = await driver.browser.activeWindow.getElement('#formToSubmit');
     await formToSubmit.submit();
-    const url = await driver.browser.activeWindow.navigator.getUrl();
+    const url = await driver.browser.activeWindow.getUrl();
     assert.equal(url.substr(-7), '?q=1357');
   });
 
@@ -273,16 +273,16 @@ async function run(driver: Driver, location: string) {
   });
 
   await test('go backward', async () => {
-    await driver.browser.activeWindow.navigator.backward();
+    await driver.browser.activeWindow.goBackward();
   });
 
   await test('go forward', async () => {
-    await driver.browser.activeWindow.navigator.forward();
-    await driver.browser.activeWindow.navigator.backward();
+    await driver.browser.activeWindow.goForward();
+    await driver.browser.activeWindow.goBackward();
   });
 
   await test('refresh', async () => {
-    await driver.browser.activeWindow.navigator.refresh();
+    await driver.browser.activeWindow.refresh();
   });
 
   await test('accept an alert', async () => {

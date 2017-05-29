@@ -48,7 +48,7 @@ class CookieStorage extends BaseClass {
     if (cookie.getDomain() != null) {
       await this.requestJSON('POST', '', {cookie: cookie.toObject()});
     } else {
-      const base = await this.driver.browser.activeWindow.navigator.getUrl();
+      const base = await this.driver.browser.activeWindow.getUrl();
       // $FlowFixMe: hostname should never be undefined
       const hostname: string = url.parse(base).hostname;
       cookie.setDomain(hostname);

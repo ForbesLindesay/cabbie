@@ -10,14 +10,14 @@ export type Options = {
    *
    * ```js
    * const driver = cabbie(remote, {});
-   * driver.browser.activeWindow.navigator.navigateTo('http://example.com/my/path');
+   * driver.browser.activeWindow.navigateTo('http://example.com/my/path');
    * ```
    *
    * You can write:
    *
    * ```js
    * const driver = cabbie(remote, {base: 'http://example.com'});
-   * driver.browser.activeWindow.navigator.navigateTo('/my/path');
+   * driver.browser.activeWindow.navigateTo('/my/path');
    * ```
    *
    * This makes it easier to port tests between development/staging/production

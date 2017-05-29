@@ -440,6 +440,13 @@ class ModuleGenerator {
         assert(!value.computed, 'computed MemberExpression is not supported');
         assert.equal(value.property.type, 'Identifier');
         return {type: 'member-expression', object: this.getValue(value.object), property: value.property.name};
+
+      case 'CallExpression':
+        return {
+          type: 'call-expression',
+          callee: this.getValue(value.callee),
+          args: value.arguments.map(v => this.getValue(v)),
+        };
       default:
         throw this.getError(value, 'Unknown value type:', value);
     }

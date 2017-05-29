@@ -4,6 +4,8 @@ import BaseClass from './base-class';
 
 /*
  * Navigation object
+ *
+ * @deprecated These methods all now live directly on the "ActiveWindow" object.
  */
 class Navigator extends BaseClass {
   /*

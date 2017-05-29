@@ -16,7 +16,7 @@ function SyncExample() {
 
     try {
       // navigate to a url in the currently active window
-      driver.browser.activeWindow.navigator.navigateTo('http://example.com');
+      driver.browser.activeWindow.navigateTo('http://example.com');
 
       // get an element, and check that its text equals some expected value
       assert.equal(
@@ -43,7 +43,7 @@ function AsyncExample() {
       const driver = cabbie('chromedriver', {debug: true});
 
       try {
-        await driver.browser.activeWindow.navigator.navigateTo('http://example.com');
+        await driver.browser.activeWindow.navigateTo('http://example.com');
 
         const heading = await driver.browser.activeWindow.getElement('h1');
         assert.equal(

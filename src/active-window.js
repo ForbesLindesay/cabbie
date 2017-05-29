@@ -1,5 +1,7 @@
 import type {SelectorType} from './enums/selector-types';
 import type Driver from './driver';
+import depd from 'depd';
+import url from 'url';
 import Alert from './alert';
 import addDebugging from './add-debugging';
 import Element from './element';
@@ -10,6 +12,8 @@ import Navigator from './navigator';
 import SelectorTypes from './enums/selector-types';
 import BaseWindow from './base-window';
 import WindowHandle from './window-handle';
+
+const deprecate = depd('cabbie');
 
 /*
  * This is an object representing the currently active window.  You can access the navigation for that window,
@@ -28,6 +32,8 @@ class ActiveWindow extends BaseWindow {
 
   /*
    * Get the Navigator object.
+   *
+   * @private
    */
   navigator: Navigator;
 
@@ -49,6 +55,12 @@ class ActiveWindow extends BaseWindow {
     this.navigator = new Navigator(this.driver);
     this.frame = new Frame(this.driver);
     this.alert = new Alert(this.driver);
+
+    deprecate.property(
+      this,
+      'navigator',
+      'All properties of navigator are now directly available on the ActiveWindow object',
+    );
   }
 
   /*
@@ -155,6 +167,54 @@ class ActiveWindow extends BaseWindow {
    */
   async getSource(): Promise<string> {
     return await this.driver.requestJSON('GET', '/source');
+  }
+
+  /*
+   * Navigate forwards in the browser history, if possible.
+   */
+  async goForward(): Promise<void> {
+    await this.driver.requestJSON('POST', '/forward');
+  }
+
+  /*
+   * Navigate backwards in the browser history, if possible.
+   */
+  async goBackward(): Promise<void> {
+    await this.driver.requestJSON('POST', '/back');
+  }
+
+  /*
+   * Refreshes the browser
+   */
+  async refresh(): Promise<void> {
+    await this.driver.requestJSON('POST', '/refresh');
+  }
+
+  /*
+   * Get the current url that the browser is displaying
+   */
+  async getUrl(): Promise<string> {
+    return await this.driver.requestJSON('GET', '/url');
+  }
+
+  /*
+   * Navigates the browser to the specified path
+   *
+   *  - if `path` begins with a "/" it is relative to `options.base`
+   *  - if `path` begins with "http" it is absolute
+   *  - otherwise it is relative to the current path
+   */
+  async navigateTo(path: string): Promise<void> {
+    if (path[0] === '/') {
+      // $FlowFixMe: WTF!
+      path = this._options.base.replace(/\/$/, '') + path;
+    } else if (path.indexOf('http') !== 0) {
+      const base = await this.getUrl();
+      await this.navigateTo(url.resolve(base, path));
+      return;
+    }
+
+    await this.driver.requestJSON('POST', '/url', {url: path});
   }
 }
 /*

@@ -53,7 +53,7 @@ function TypeReference({type, isAsync}) {
         if (i !== 0) {
           properties.push(', ');
         }
-        properties.push(<TypeReference type={prop} isAsync={isAsync} />);
+        properties.push(<TypeReference key={i} type={prop} isAsync={isAsync} />);
       });
       return <span>{'{'}{properties}{'}'}</span>;
     }

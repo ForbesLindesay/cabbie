@@ -321,6 +321,7 @@ class ModuleGenerator {
 
     this._values.set(id, {
       type: 'type-alias',
+      leadingComments: (statement.leadingComments || []).map(extractComment),
       id,
       value: this.getTypeValue(statement.right),
       loc: new SourceLocation(statement.loc),

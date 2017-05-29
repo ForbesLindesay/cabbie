@@ -1,164 +1,36 @@
-import {inspect} from 'util';
-
-type CookieData = {
+/*
+ * Cookies are represented by plain objects of this type.  You can set/get them using the CookieStorage object.
+ */
+export type Cookie = {
+  /*
+   * The name/key of the cookie.
+   */
   name?: string,
+  /*
+   * The cookie's value.
+   */
   value?: string,
+  /*
+   * The cookie path.  If you provide this, it scopes the cookie to the given path.  By default, this is set to "/"
+   */
   path?: string,
+  /*
+   * The domain the cookie is visible to. If you don't provide this, it defaults to the domain that is currently loaded
+   * in the active window.
+   */
   domain?: string,
+  /*
+   * Whether the cookie is an httpOnly cookie.  If this is set to `true`, the cookie is not visible to JavaScript.
+   */
   httpOnly?: boolean,
+  /*
+   * Whether the cookie is a secure cookie.  If this is set to `true`, the cookie is only available over https
+   * connections
+   */
   secure?: boolean,
+  /*
+   * When the cookie expires, specified in seconds since midnight, January 1, 1970 UTC.  If this is not provided, the
+   * cookie never expires.
+   */
   expiry?: number,
 };
-
-/*
- * Cookie data-structure
- */
-class Cookie {
-  _values: CookieData;
-
-  constructor(values: CookieData = {}) {
-    this._values = values;
-    this.validate();
-  }
-
-  /*
-   * The name of the cookie.
-   */
-  getName(): string | void {
-    return this._values.name;
-  }
-
-  /*
-   * The name of the cookie.
-   */
-  setName(name: string) {
-    this._values.name = name;
-    this.validate();
-  }
-
-  /*
-   * The cookie value.
-   */
-  getValue(): string | void {
-    return this._values.value;
-  }
-
-  /*
-   * The cookie value.
-   */
-  setValue(value: string) {
-    this._values.value = value;
-    this.validate();
-  }
-
-  /*
-   * (Optional) The cookie path.
-   */
-  getPath(): string | void {
-    return this._values.path;
-  }
-
-  /*
-   * Set the cookie path.
-   */
-  setPath(path: string) {
-    this._values.path = path;
-    this.validate();
-  }
-
-  /*
-   * (Optional) The domain the cookie is visible to.
-   */
-  getDomain(): string | void {
-    return this._values.domain;
-  }
-
-  /*
-   * Set the domain the cookie is visible to.
-   */
-  setDomain(domain: string) {
-    this._values.domain = domain;
-    this.validate();
-  }
-
-  /*
-   * (Optional) Whether the cookie is a secure cookie.
-   */
-  isSecure(): boolean | void {
-    return this._values.secure;
-  }
-
-  /*
-   * Set whether the cookie is a secure cookie.
-   */
-  setSecure(secure: boolean) {
-    this._values.secure = secure;
-    this.validate();
-  }
-
-  /*
-   * (Optional) Whether the cookie is an httpOnly cookie.
-   */
-  isHttpOnly(): boolean | void {
-    return this._values.httpOnly;
-  }
-
-  /*
-   * Set whether the cookie is an httpOnly cookie.
-   */
-  setHttpOnly(httpOnly: boolean) {
-    this._values.httpOnly = httpOnly;
-    this.validate();
-  }
-
-  /*
-   * (Optional) When the cookie expires, specified in seconds since midnight, January 1, 1970 UTC.
-   */
-  getExpiry(): number | void {
-    return this._values.expiry;
-  }
-
-  /*
-   * Set when the cookie expires, specified in seconds since midnight, January 1, 1970 UTC.
-   */
-  setExpiry(expiry: number) {
-    this._values.expiry = expiry;
-    this.validate();
-  }
-
-  /*
-   * Get cookie data-structure
-   */
-  toObject(): CookieData {
-    return this._values;
-  }
-
-  /*
-   * Validate the cookie data
-   *
-   * @private
-   */
-  validate(completed: boolean = false) {
-    if (completed) {
-      if (!this._values.name) {
-        throw new Error('A cookie "name" is required.');
-      }
-      if (!this._values.value) {
-        throw new Error('a cookie "value" is required.');
-      }
-    }
-
-    if (!this._values.path) {
-      this._values.path = '/';
-    }
-
-    // localhost is a special case, the domain must be ""
-    if (this._values.domain === 'localhost') this._values.domain = '';
-  }
-
-  inspect(depth: number, options: Object) {
-    return 'Cookie(' + inspect(this._values, options) + ')';
-  }
-}
-
-export default Cookie;

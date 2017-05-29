@@ -38,7 +38,7 @@ function ClassType({params: {className}}) {
     <section>
       <Heading>{classType.name}</Heading>
       <CodeBlock>
-        <ImportDeclaration local={classType.name} isType={false} />
+        <ImportDeclaration local={classType.name} isType={classType.isType} />
       </CodeBlock>
       <DocumentationComments comments={classType.leadingComments || []} />
       {classType.properties.length ? <h2>Properties</h2> : null}

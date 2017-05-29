@@ -1,7 +1,7 @@
 // @flow
 
 import type {Driver} from 'cabbie-async';
-import {getSessions, getStatus, MouseButtons, SelectorTypes, Cookie} from 'cabbie-async';
+import {getSessions, getStatus, MouseButtons, SelectorTypes} from 'cabbie-async';
 import chalk from 'chalk';
 import assert from 'assert';
 
@@ -367,55 +367,15 @@ async function run(driver: Driver, location: string) {
     assert(buffer instanceof Buffer);
   });
 
-  await test('create a cookie object', async () => {
-    const cookie = new Cookie();
-
-    cookie.setName('testKey');
-    cookie.setValue('2468');
-
-    assert.equal(cookie.getName(), 'testKey');
-    assert.equal(cookie.getValue(), '2468');
-
-    assert.equal(cookie.getDomain(), undefined);
-    cookie.setDomain('www.google.com');
-    assert.equal(cookie.getDomain(), 'www.google.com');
-
-    assert.equal(cookie.getPath(), '/');
-    cookie.setPath('/test');
-    assert.equal(cookie.getPath(), '/test');
-
-    assert.equal(cookie.isSecure(), undefined);
-    cookie.setSecure(true);
-    assert.equal(cookie.isSecure(), true);
-
-    assert.equal(cookie.isHttpOnly(), undefined);
-    cookie.setHttpOnly(false);
-    assert.equal(cookie.isHttpOnly(), false);
-
-    assert.equal(cookie.getExpiry(), undefined);
-    cookie.setExpiry(500);
-    assert.equal(cookie.getExpiry(), 500);
-
-    assert.deepEqual(cookie.toObject(), {
-      path: '/test',
+  await test('set a value in cookie-storage', async () => {
+    const cookie1 = {
       name: 'testKey',
       value: '2468',
-      domain: 'www.google.com',
-      secure: true,
-      httpOnly: false,
-      expiry: 500,
-    });
-  });
-
-  await test('set a value in cookie-storage', async () => {
-    const cookie1 = new Cookie();
-    const cookie2 = new Cookie();
-
-    cookie1.setName('testKey');
-    cookie1.setValue('2468');
-
-    cookie2.setName('testKeySecond');
-    cookie2.setValue('hello');
+    };
+    const cookie2 = {
+      name: 'testKeySecond',
+      value: 'hello',
+    };
 
     await driver.browser.cookieStorage.setCookie(cookie1);
     await driver.browser.cookieStorage.setCookie(cookie2);
@@ -426,8 +386,8 @@ async function run(driver: Driver, location: string) {
     if (!cookie) {
       throw new Error('Cookie should not be undefined');
     }
-    assert.equal(cookie.getName(), 'testKey');
-    assert.equal(cookie.getValue(), '2468');
+    assert.equal(cookie.name, 'testKey');
+    assert.equal(cookie.value, '2468');
   });
 
   await test('get the size of cookie-storage', async () => {

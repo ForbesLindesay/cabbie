@@ -100,6 +100,7 @@ function toJson(inference) {
     // TOOD: constructor
     output.classes.push({
       type: 'class',
+      isType: false,
       leadingComments: cls.leadingComments,
       name,
       properties,
@@ -128,7 +129,16 @@ function toJson(inference) {
             typeAnnotation: onValue(entry.typeAnnotation),
           });
         });
-        output.classes.push({type: 'class', name, properties, methods: [], staticProperties: [], staticMethods: []});
+        output.classes.push({
+          type: 'class',
+          isType: true,
+          leadingComments: alias.leadingComments,
+          name,
+          properties,
+          methods: [],
+          staticProperties: [],
+          staticMethods: [],
+        });
         return clsReference;
       }
       case 'union':

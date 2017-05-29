@@ -1,8 +1,33 @@
+import type {Cookie} from './cookie';
 import type Driver from './driver';
 import addDebugging from './add-debugging';
 import url from 'url';
-import Cookie from './cookie';
 import BaseClass from './base-class';
+
+/*
+ * Validate the cookie data
+ *
+ * @private
+ */
+function validateCookie(cookie: Cookie, completed: boolean = false) {
+  if (completed) {
+    if (!cookie.name) {
+      throw new Error('A cookie "name" is required.');
+    }
+    if (!cookie.value) {
+      throw new Error('a cookie "value" is required.');
+    }
+  }
+
+  if (!cookie.path) {
+    cookie.path = '/';
+  }
+
+  // localhost is a special case, the domain must be ""
+  if (cookie.domain === 'localhost') cookie.domain = '';
+
+  return cookie;
+}
 
 /*
  * Managing cookie-storage
@@ -16,8 +41,7 @@ class CookieStorage extends BaseClass {
    * Retrieve all cookies visible to the current page.
    */
   async getCookies(): Promise<Array<Cookie>> {
-    const cookies = await this.requestJSON('GET', '');
-    return cookies.map(cookie => new Cookie(cookie));
+    return await this.requestJSON('GET', '');
   }
 
   /*
@@ -34,7 +58,7 @@ class CookieStorage extends BaseClass {
   async getCookie(name: string): Promise<Cookie | void> {
     let cookies = await this.getCookies();
     cookies = cookies.filter(cookie => {
-      return cookie.getName() == name;
+      return cookie.name == name;
     });
     return cookies.length ? cookies[0] : undefined;
   }
@@ -43,16 +67,19 @@ class CookieStorage extends BaseClass {
    * Set a cookie that is visible to the current page.
    */
   async setCookie(cookie: Cookie): Promise<void> {
-    cookie.validate(true);
+    validateCookie(cookie, true);
 
-    if (cookie.getDomain() != null) {
-      await this.requestJSON('POST', '', {cookie: cookie.toObject()});
+    if (cookie.domain != null) {
+      await this.requestJSON('POST', '', {cookie});
     } else {
       const base = await this.driver.browser.activeWindow.getUrl();
-      // $FlowFixMe: hostname should never be undefined
-      const hostname: string = url.parse(base).hostname;
-      cookie.setDomain(hostname);
-      await this.requestJSON('POST', '', {cookie: cookie.toObject()});
+      const hostname = url.parse(base).hostname;
+      if (hostname == null) {
+        throw new Error('The hostname should never be undefined. This should never happen.');
+      }
+      cookie.domain = hostname;
+      validateCookie(cookie, true);
+      await this.requestJSON('POST', '', {cookie});
     }
   }
 

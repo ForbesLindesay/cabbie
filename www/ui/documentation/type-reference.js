@@ -69,7 +69,11 @@ function TypeReference({type, isAsync}) {
       });
       return <span>({params}) => {<TypeReference type={type.returnType} isAsync={isAsync} />}</span>;
     case 'param':
-      return <span>{type.name}{type.optional ? '?' : ''}: <TypeReference type={type.typeAnnotation} isAsync={isAsync} /></span>;
+      return (
+        <span>
+          {type.name}{type.optional ? '?' : ''}: <TypeReference type={type.typeAnnotation} isAsync={isAsync} />
+        </span>
+      );
     default:
       return <pre>{JSON.stringify(type)}</pre>;
   }

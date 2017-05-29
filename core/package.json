@@ -1,7 +1,7 @@
 {
   "name": "cabbie",
   "description": "An asynchronous and synchronous webdriver client",
-  "version": "0.5.3",
+  "version": "0.6.0",
   "keywords": [
     "cabbie",
     "webdriver"
@@ -13,7 +13,7 @@
   "author": "ForbesLindesay",
   "license": "MIT",
   "dependencies": {
-    "cabbie-async": "0.5.3",
-    "cabbie-sync": "0.5.3"
+    "cabbie-async": "0.6.0",
+    "cabbie-sync": "0.6.0"
   }
 }

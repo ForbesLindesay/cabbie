@@ -3,32 +3,17 @@ import type {LogLevel} from './enums/log-levels';
 /*
  * Remote log-entry
  */
-class LogEntry {
-  _values: Object;
-  constructor(values: Object) {
-    this._values = values;
-  }
-
+export type LogEntry = {
   /*
    * The timestamp of the entry.
    */
-  getTimestamp(): number {
-    return this._values.timestamp;
-  }
-
+  timestamp: number,
   /*
    * The log level of the entry.
    */
-  getLevel(): LogLevel {
-    return this._values.level;
-  }
-
+  level: LogLevel,
   /*
    * The log message.
    */
-  getMessage(): string {
-    return this._values.message;
-  }
-}
-
-export default LogEntry;
+  message: string,
+};

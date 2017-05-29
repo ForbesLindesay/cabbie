@@ -2,6 +2,7 @@ import type {ApplicationCacheStatus} from './enums/application-cache-statuses';
 import type {HttpMethod} from './flow-types/http-method';
 import type {Options} from './flow-types/options';
 import type {Session} from './flow-types/session-data';
+import type {LogEntry} from './log-entry';
 import util from 'util';
 import url from 'url';
 import {readFileSync} from 'fs';
@@ -14,7 +15,6 @@ import Browser from './browser';
 import Debug from './debug';
 import TimeOut from './time-out';
 import Status from './status';
-import LogEntry from './log-entry';
 import parseResponse from './utils/parse-response';
 
 function getVariables(names: Array<string>): Object {
@@ -142,9 +142,7 @@ class Driver {
    * Get the log for a given log type. Log buffer is reset after each request.
    */
   async getLogs(logType: string): Promise<Array<LogEntry>> {
-    const logs = await this.requestJSON('POST', '/log', {type: logType});
-
-    return logs.map(logEntry => new LogEntry(logEntry));
+    return await this.requestJSON('POST', '/log', {type: logType});
   }
 
   /*

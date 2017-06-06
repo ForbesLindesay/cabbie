@@ -5,6 +5,9 @@ module.exports = ({types: t}) => {
         if (path.node.value === 'then-request') {
           path.replaceWith(t.stringLiteral('sync-request'));
         }
+        if (path.node.value === './utils/then-sleep') {
+          path.replaceWith(t.stringLiteral('thread-sleep'));
+        }
         if (path.node.value === 'cabbie-async') {
           path.replaceWith(t.stringLiteral('cabbie-sync'));
         }

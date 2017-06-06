@@ -60,4 +60,28 @@ export type Options = {
    * This field is ignored unless you are using the combined async/sync cabbie
    */
   mode?: Mode,
+  /*
+   * Sauce Labs username (normally you should just set the SAUCE_USERNAME environment variable)
+   */
+  sauceUsername?: string,
+  /*
+   * Sauce Labs access key (normally you should just set the SAUCE_ACCESS_KEY environment variable)
+   */
+  sauceAccessKey?: string,
+  /*
+   * Browser stack username (normally you should just set the BROWSER_STACK_USERNAME environment variable)
+   */
+  browserStackUsername?: string,
+  /*
+   * Browser stack access key (normally you should just set the BROWSER_STACK_ACCESS_KEY environment variable)
+   */
+  browserStackAccessKey?: string,
+  /*
+   * Testing bot key (normally you should just set the TESTING_BOT_KEY environment variable)
+   */
+  testingBotKey?: string,
+  /*
+   * Testing bot secret (normally you should just set the TESTING_BOT_SECRET environment variable)
+   */
+  testingBotSecret?: string,
 };

@@ -33,6 +33,7 @@ export default function copyFiles(mode) {
     'flow-runtime',
     'ms',
     'sync-request',
+    'thread-sleep',
     'babel-runtime',
   ]);
   const asyncPackage = getPackage({name: 'cabbie-async', description: 'An asynchronous webdriver client'}, [

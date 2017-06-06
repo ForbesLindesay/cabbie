@@ -17,18 +17,6 @@ import TimeOut from './time-out';
 import Status from './status';
 import parseResponse from './utils/parse-response';
 
-function getVariables(names: Array<string>): Object {
-  const result = {};
-
-  names.forEach(key => result[key] = process.env[key]);
-
-  try {
-    const parsedObj = parseEnv(readFileSync('.env', 'utf8'));
-    names.forEach(key => result[key] = result[key] || parsedObj[key]);
-  } catch (e) {}
-
-  return result;
-}
 /*
  * Create a new Driver session, remember to call `.dispose()`
  * at the end to terminate the session.
@@ -72,6 +60,7 @@ class Driver {
   timeOut: TimeOut;
 
   constructor(remote: string, options: Options = {}) {
+    options = addEnvironment(options);
     this.remote = remote;
     this.options = options;
     this.debug = new Debug(options);
@@ -82,40 +71,40 @@ class Driver {
         remoteURI = 'http://localhost:9515/';
         break;
       case 'saucelabs':
-        const {SAUCE_USERNAME, SAUCE_ACCESS_KEY} = getVariables(['SAUCE_USERNAME', 'SAUCE_ACCESS_KEY']);
-        if (!SAUCE_USERNAME || !SAUCE_ACCESS_KEY) {
+        const {sauceUsername, sauceAccessKey} = options;
+        if (!sauceUsername || !sauceAccessKey) {
           throw new Error(
-            'To use sauce labs, you must specify SAUCE_USERNAME and SAUCE_ACCESS_KEY in enviornment variables.',
+            'To use sauce labs, you must specify SAUCE_USERNAME and SAUCE_ACCESS_KEY in enviornment variables or ' +
+              'provide sauceUsername and sauceAccessKey as options.',
           );
         }
-        remoteURI = `http://${SAUCE_USERNAME}:${SAUCE_ACCESS_KEY}@ondemand.saucelabs.com/wd/hub`;
+        remoteURI = `http://${sauceUsername}:${sauceAccessKey}@ondemand.saucelabs.com/wd/hub`;
         break;
       case 'browserstack':
-        const {BROWSER_STACK_USERNAME, BROWSER_STACK_ACCESS_KEY} = getVariables([
-          'BROWSER_STACK_USERNAME',
-          'BROWSER_STACK_ACCESS_KEY',
-        ]);
-        if (!BROWSER_STACK_USERNAME || !BROWSER_STACK_ACCESS_KEY) {
+        const {browserStackUsername, browserStackAccessKey} = options;
+        if (!browserStackUsername || !browserStackAccessKey) {
           throw new Error(
-            'To use browserstack, you must specify BROWSER_STACK_USERNAME and SAUCE_ACCESS_KEY in enviornment variables.',
+            'To use browserstack, you must specify BROWSER_STACK_USERNAME and BROWSER_STACK_ACCESS_KEY in ' +
+              'enviornment variables or provide browserStackUsername and browserStackAccessKey as options.',
           );
         }
         remoteURI = 'http://hub-cloud.browserstack.com/wd/hub';
-        capabilities['browserstack.user'] = BROWSER_STACK_USERNAME;
-        capabilities['browserstack.key'] = BROWSER_STACK_ACCESS_KEY;
+        capabilities['browserstack.user'] = browserStackUsername;
+        capabilities['browserstack.key'] = browserStackAccessKey;
         break;
       case 'testingbot':
-        const {TESTINGBOT_KEY, TESTINGBOT_SECRET} = getVariables(['TESTINGBOT_KEY', 'TESTINGBOT_SECRET']);
-        if (!TESTINGBOT_KEY || !TESTINGBOT_SECRET) {
+        const {testingBotKey, testingBotSecret} = options;
+        if (!testingBotKey || !testingBotSecret) {
           throw new Error(
-            'To use testingbot, you must specify TESTINGBOT_KEY and TESTINGBOT_SECRET in enviornment variables.',
+            'To use testingbot, you must specify TESTING_BOT_KEY and TESTING_BOT_SECRET in enviornment ' +
+              'variables or provide testingBotKey and testingBotSecret as options.',
           );
         }
-        remoteURI = `http://${TESTINGBOT_KEY}:${TESTINGBOT_SECRET}@hub.testingbot.com/wd/hub`;
+        remoteURI = `http://${testingBotKey}:${testingBotSecret}@hub.testingbot.com/wd/hub`;
         break;
     }
-    this._connection = new Connection(remoteURI, this.debug);
-    this.session = createSession(this._connection, {...options, capabilities});
+    this._connection = new Connection(remote, remoteURI, this.debug);
+    this.session = createSession(remote, this._connection, {...options, capabilities});
 
     this.browser = new Browser(this);
     this.timeOut = new TimeOut(this);
@@ -200,7 +189,7 @@ class Driver {
  */
 (Driver.prototype: any).quit = Driver.prototype.dispose;
 
-async function createSession(connection: Connection, options: Options): Promise<Session> {
+async function createSession(remote: string, connection: Connection, options: Options): Promise<Session> {
   if (options.session !== undefined) {
     return options.session;
   }
@@ -213,9 +202,51 @@ async function createSession(connection: Connection, options: Options): Promise<
   const res = await connection.request('POST', '/session', {json: capabilities});
 
   if (res.statusCode !== 200) {
-    console.dir(res.headers);
+    switch (remote) {
+      case 'saucelabs':
+        if (res.statusCode === 401) {
+          const err = new Error(
+            'Sauce Labs Authentication Failed.\r\nCheck the value of the SAUCE_USERNAME and SAUCE_ACCESS_KEY ' +
+              'environment variables exactly match your credentials, you passed in: ' +
+              JSON.stringify(options.sauceUsername) +
+              ' and ' +
+              JSON.stringify(options.sauceAccessKey) +
+              '.',
+          );
+          throw err;
+        }
+        break;
+      case 'browserstack':
+        if (res.statusCode === 401) {
+          const err = new Error(
+            'Browser Stack Authentication Failed.\r\nCheck the value of the BROWSER_STACK_USERNAME and BROWSER_STACK_ACCESS_KEY ' +
+              'environment variables exactly match your credentials, you passed in: ' +
+              JSON.stringify(options.browserStackUsername) +
+              ' and ' +
+              JSON.stringify(options.browserStackAccessKey) +
+              '.',
+          );
+          throw err;
+        }
+        break;
+      case 'testingbot':
+        if (res.statusCode === 401) {
+          const err = new Error(
+            'Testing Bot Authentication Failed.\r\nCheck the value of the TESTING_BOT_KEY and TESTING_BOT_SECRET ' +
+              'environment variables exactly match your credentials, you passed in: ' +
+              JSON.stringify(options.testingBotKey) +
+              ' and ' +
+              JSON.stringify(options.testingBotSecret) +
+              '.',
+          );
+          throw err;
+        }
+        break;
+    }
     throw new Error(
-      'Failed to start a Selenium session. Server responded with status code ' +
+      'Failed to start a Selenium session. ' +
+        remote +
+        ' responded with status code ' +
         res.statusCode +
         ':\n' +
         res.body.toString('utf8'),
@@ -228,6 +259,48 @@ async function createSession(connection: Connection, options: Options): Promise<
   } else {
     throw fromBody(body);
   }
+}
+
+const environmentAliases = {
+  SAUCE_USERNAME: 'sauceUsername',
+  SAUCE_ACCESS_KEY: 'sauceAccessKey',
+  BROWSER_STACK_USERNAME: 'browserStackUsername',
+  BROWSER_STACK_ACCESS_KEY: 'browserStackAccessKey',
+  TESTING_BOT_KEY: 'testingBotkey',
+  TESTING_BOT_SECRET: 'testingBotSecret',
+
+  // deprecated aliases
+  TESTINGBOT_KEY: 'testingBotkey',
+  TESTINGBOT_SECRET: 'testingBotSecret',
+};
+function addEnvironment(options: Options): Options {
+  const result = {...options};
+
+  Object.keys(environmentAliases).forEach(key => {
+    if (result[environmentAliases[key]] === undefined && process.env[key]) {
+      result[environmentAliases[key]] = process.env[key];
+    }
+  });
+
+  try {
+    const parsedObj = parseEnv(readFileSync('.env.local', 'utf8'));
+    Object.keys(environmentAliases).forEach(key => {
+      if (result[environmentAliases[key]] === undefined && parsedObj[key]) {
+        result[environmentAliases[key]] = parsedObj[key];
+      }
+    });
+  } catch (e) {}
+
+  try {
+    const parsedObj = parseEnv(readFileSync('.env', 'utf8'));
+    Object.keys(environmentAliases).forEach(key => {
+      if (result[environmentAliases[key]] === undefined && parsedObj[key]) {
+        result[environmentAliases[key]] = parsedObj[key];
+      }
+    });
+  } catch (e) {}
+
+  return result;
 }
 
 addDebugging(Driver);

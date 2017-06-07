@@ -118,7 +118,7 @@ class ActiveWindow extends BaseWindow {
    */
   async getActiveElement(): Promise<Element> {
     const elementHandle = await this.driver.requestJSON('POST', '/element/active');
-    return new Element(this.driver, this.driver.browser, '<active>', elementHandle);
+    return new Element(this.driver, this.driver, '<active>', elementHandle);
   }
 
   /*
@@ -127,7 +127,7 @@ class ActiveWindow extends BaseWindow {
    */
   async getElement(selector: string, selectorType: SelectorType = SelectorTypes.CSS): Promise<Element> {
     const elementHandle = await this.driver.requestJSON('POST', '/element', {using: selectorType, value: selector});
-    return new Element(this.driver, this.driver.browser, selector, elementHandle);
+    return new Element(this.driver, this.driver, selector, elementHandle);
   }
 
   /*
@@ -136,7 +136,7 @@ class ActiveWindow extends BaseWindow {
   async getElements(selector: string, selectorType: SelectorType = SelectorTypes.CSS): Promise<Array<Element>> {
     const elementHandles = await this.driver.requestJSON('POST', '/elements', {using: selectorType, value: selector});
     return elementHandles.map(elementHandle => {
-      return new Element(this.driver, this.driver.browser, selector, elementHandle);
+      return new Element(this.driver, this.driver, selector, elementHandle);
     });
   }
 

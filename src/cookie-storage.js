@@ -72,7 +72,7 @@ class CookieStorage extends BaseClass {
     if (cookie.domain != null) {
       await this.requestJSON('POST', '', {cookie});
     } else {
-      const base = await this.driver.browser.activeWindow.getUrl();
+      const base = await this.driver.activeWindow.getUrl();
       const hostname = url.parse(base).hostname;
       if (hostname == null) {
         throw new Error('The hostname should never be undefined. This should never happen.');

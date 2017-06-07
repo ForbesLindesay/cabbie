@@ -1,5 +1,4 @@
 import {inspect} from 'util';
-import type Browser from './browser';
 import type Driver from './driver';
 import type {ElementHandle} from './flow-types/element-handle';
 import type {SelectorType} from './enums/selector-types';
@@ -13,13 +12,13 @@ import Touch from './touch';
  * A representation of a remote element.  You can use it to click on, type text into and check the attributes of.
  *
  * ```js
- * const element = await driver.browser.activeWindow.getElement('[data-test-id="my-test-element"]');
+ * const element = await driver.activeWindow.getElement('[data-test-id="my-test-element"]');
  *
- * const elements = await driver.browser.activeWindow.getElements('.some-class-name');
+ * const elements = await driver.activeWindow.getElements('.some-class-name');
  * ```
  */
 class Element extends BaseClass {
-  _parent: Element | Browser;
+  _parent: Element | Driver;
   _selector: string;
 
   /*
@@ -34,7 +33,7 @@ class Element extends BaseClass {
    * Methods for interacting with the element via touch
    */
   touch: Touch;
-  constructor(driver: Driver, parent: Element | Browser, selector: string, elementHandle: ElementHandle) {
+  constructor(driver: Driver, parent: Element | Driver, selector: string, elementHandle: ElementHandle) {
     const prefix = '/element/' + elementHandle.ELEMENT;
     super(driver, prefix);
     this._parent = parent;

@@ -22,7 +22,7 @@ class WindowHandle extends BaseWindow {
    */
   async activate(): Promise<ActiveWindow> {
     await this.driver.requestJSON('POST', '/window', {name: this.id});
-    return this.driver.browser.activeWindow;
+    return this.driver.activeWindow;
   }
 }
 addDebugging(WindowHandle);

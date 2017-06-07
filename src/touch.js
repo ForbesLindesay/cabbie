@@ -27,21 +27,21 @@ class Touch {
    * Tap with the finger on the element
    */
   async tap(): Promise<void> {
-    await this.driver.browser.activeWindow.touch._tap(this._parent.elementID);
+    await this.driver.activeWindow.touch._tap(this._parent.elementID);
   }
 
   /*
    * Double tap with the finger on the element
    */
   async doubleTap(): Promise<void> {
-    await this.driver.browser.activeWindow.touch._doubleTap(this._parent.elementID);
+    await this.driver.activeWindow.touch._doubleTap(this._parent.elementID);
   }
 
   /*
    * Long tap with the finger on the element
    */
   async longTap(): Promise<void> {
-    await this.driver.browser.activeWindow.touch._longTap(this._parent.elementID);
+    await this.driver.activeWindow.touch._longTap(this._parent.elementID);
   }
 
   /*
@@ -49,7 +49,7 @@ class Touch {
    */
   async down(xOffset: number, yOffset: number): Promise<void> {
     const location = await this._parent.getPosition();
-    await this.driver.browser.activeWindow.touch.down(location.x + xOffset, location.y + yOffset);
+    await this.driver.activeWindow.touch.down(location.x + xOffset, location.y + yOffset);
   }
 
   /*
@@ -57,7 +57,7 @@ class Touch {
    */
   async downAtCenter(): Promise<void> {
     const center = await this._parent.getAbsoluteCenter();
-    await this.driver.browser.activeWindow.touch.down(center.x, center.y);
+    await this.driver.activeWindow.touch.down(center.x, center.y);
   }
 
   /*
@@ -65,7 +65,7 @@ class Touch {
    */
   async up(xOffset: number, yOffset: number): Promise<void> {
     const location = await this._parent.getPosition();
-    await this.driver.browser.activeWindow.touch.down(location.x + xOffset, location.y + yOffset);
+    await this.driver.activeWindow.touch.down(location.x + xOffset, location.y + yOffset);
   }
 
   /*
@@ -73,7 +73,7 @@ class Touch {
    */
   async upAtCenter(): Promise<void> {
     const center = await this._parent.getAbsoluteCenter();
-    await this.driver.browser.activeWindow.touch.down(center.x, center.y);
+    await this.driver.activeWindow.touch.down(center.x, center.y);
   }
 
   /*
@@ -81,7 +81,7 @@ class Touch {
    */
   async moveTo(xOffset: number, yOffset: number): Promise<void> {
     const location = await this._parent.getPosition();
-    await this.driver.browser.activeWindow.touch.move(location.x + xOffset, location.y + yOffset);
+    await this.driver.activeWindow.touch.move(location.x + xOffset, location.y + yOffset);
   }
 
   /*
@@ -89,7 +89,7 @@ class Touch {
    */
   async moveToCenter(): Promise<void> {
     const center = await this._parent.getAbsoluteCenter();
-    await this.driver.browser.activeWindow.touch.move(center.x, center.y);
+    await this.driver.activeWindow.touch.move(center.x, center.y);
   }
 
   //TODO: Element touch flick

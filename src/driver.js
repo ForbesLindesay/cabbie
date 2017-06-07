@@ -1,4 +1,5 @@
 import type {ApplicationCacheStatus} from './enums/application-cache-statuses';
+import type {BrowserOrientation} from './enums/browser-orientations';
 import type {HttpMethod} from './flow-types/http-method';
 import type {Options} from './flow-types/options';
 import type {Session} from './flow-types/session-data';
@@ -7,6 +8,7 @@ import util from 'util';
 import url from 'url';
 import {readFileSync} from 'fs';
 import {parse as parseEnv} from 'dotenv';
+import depd from 'depd';
 import addDebugging from './add-debugging';
 import autoRequest from 'then-request';
 import {fromBody} from './utils/errors';
@@ -16,6 +18,14 @@ import Debug from './debug';
 import TimeOut from './time-out';
 import Status from './status';
 import parseResponse from './utils/parse-response';
+import ActiveWindow from './active-window';
+import IME from './ime';
+import CookieStorage from './cookie-storage';
+import LocalStorage from './local-storage';
+import SessionStorage from './session-storage';
+import WindowHandle from './window-handle';
+
+const deprecate = depd('cabbie');
 
 /*
  * Create a new Driver session, remember to call `.dispose()`
@@ -31,14 +41,17 @@ class Driver {
    * ```
    */
   session: Promise<Session>;
+
   /*
    * @private
    */
   debug: Debug;
+
   /*
    * @private
    */
   _connection: Connection;
+
   /*
    * The location of the selenium server
    */
@@ -51,6 +64,8 @@ class Driver {
 
   /*
    * The browser object.
+   *
+   * @private
    */
   browser: Browser;
 
@@ -58,6 +73,32 @@ class Driver {
    * Timeout configuration
    */
   timeOut: TimeOut;
+
+  /*
+   * The currently active window.  This has most of the methods to interact with
+   * the the current page.
+   */
+  activeWindow: ActiveWindow;
+
+  /*
+   * Get the IME object.
+   */
+  ime: IME;
+
+  /*
+   * Get the Cookie-Storage object.
+   */
+  cookieStorage: CookieStorage;
+
+  /*
+   * Get the Local-Storage object.
+   */
+  localStorage: LocalStorage;
+
+  /*
+   * Get the Session-Storage object.
+   */
+  sessionStorage: SessionStorage;
 
   constructor(remote: string, options: Options = {}) {
     options = addEnvironment(options);
@@ -108,6 +149,14 @@ class Driver {
 
     this.browser = new Browser(this);
     this.timeOut = new TimeOut(this);
+
+    this.activeWindow = new ActiveWindow(this);
+    this.ime = new IME(this);
+    this.cookieStorage = new CookieStorage(this);
+    this.localStorage = new LocalStorage(this);
+    this.sessionStorage = new SessionStorage(this);
+
+    deprecate.property(this, 'browser', 'All properties of browser are now directly available on the Driver object');
   }
 
   /*
@@ -118,6 +167,44 @@ class Driver {
   async requestJSON(method: HttpMethod, path: string, body?: Object): Promise<any> {
     const session = await this.session;
     return this._connection.requestWithSession(session, method, path, {json: body});
+  }
+
+  /*
+   * Get an array of windows for all available windows
+   */
+  async getWindows(): Promise<Array<WindowHandle>> {
+    const windowHandles = await this.requestJSON('GET', '/window_handles');
+    return windowHandles.map(windowHandle => {
+      return new WindowHandle(this, windowHandle);
+    });
+  }
+
+  /*
+   * Get the current browser orientation
+   */
+  async getOrientation(): Promise<BrowserOrientation> {
+    return this.requestJSON('GET', '/orientation');
+  }
+
+  /*
+   * Get the current browser orientation
+   */
+  async setOrientation(orientation: BrowserOrientation): Promise<void> {
+    await this.requestJSON('POST', '/orientation', {orientation});
+  }
+
+  /*
+   * Get the current geo location
+   */
+  async getGeoLocation(): Promise<{latitude: number, longitude: number, altitude: number}> {
+    return await this.requestJSON('GET', '/location');
+  }
+
+  /*
+   * Set the current geo location
+   */
+  async setGeoLocation(loc: {latitude: number, longitude: number, altitude: number}): Promise<void> {
+    await this.requestJSON('POST', '/location', loc);
   }
 
   /*

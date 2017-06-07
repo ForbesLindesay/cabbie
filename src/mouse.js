@@ -38,7 +38,7 @@ class Mouse {
   async click(button: MouseButton = MouseButtons.LEFT): Promise<void> {
     if (button !== MouseButtons.LEFT) {
       await this.moveToCenter();
-      await this.driver.browser.activeWindow.mouse.click(button);
+      await this.driver.activeWindow.mouse.click(button);
     } else {
       await this.requestJSON('POST', '/click');
     }
@@ -49,21 +49,21 @@ class Mouse {
    */
   async clickAt(xOffset: number, yOffset: number, button: MouseButton = MouseButtons.LEFT): Promise<void> {
     await this.moveTo(xOffset, yOffset);
-    await this.driver.browser.activeWindow.mouse.click(button);
+    await this.driver.activeWindow.mouse.click(button);
   }
 
   /*
    * Move the mouse by an offset of the element
    */
   async moveTo(xOffset: number, yOffset: number): Promise<void> {
-    await this.driver.browser.activeWindow.mouse._moveTo(this._parent.elementID, xOffset, yOffset);
+    await this.driver.activeWindow.mouse._moveTo(this._parent.elementID, xOffset, yOffset);
   }
 
   /*
    * Move the mouse to the center of the element
    */
   async moveToCenter(): Promise<void> {
-    await this.driver.browser.activeWindow.mouse._moveTo(this._parent.elementID, undefined, undefined);
+    await this.driver.activeWindow.mouse._moveTo(this._parent.elementID, undefined, undefined);
   }
 
   /*
@@ -71,7 +71,7 @@ class Mouse {
    */
   async doubleClick(): Promise<void> {
     await this.moveToCenter();
-    await this.driver.browser.activeWindow.mouse.doubleClick();
+    await this.driver.activeWindow.mouse.doubleClick();
   }
 
   /*
@@ -79,7 +79,7 @@ class Mouse {
    */
   async doubleClickAt(xOffset: number, yOffset: number): Promise<void> {
     await this.moveTo(xOffset, yOffset);
-    await this.driver.browser.activeWindow.mouse.doubleClick();
+    await this.driver.activeWindow.mouse.doubleClick();
   }
 
   /*
@@ -87,7 +87,7 @@ class Mouse {
    */
   async buttonDown(button: MouseButton = MouseButtons.LEFT): Promise<void> {
     await this.moveToCenter();
-    await this.driver.browser.activeWindow.mouse.buttonDown(button);
+    await this.driver.activeWindow.mouse.buttonDown(button);
   }
 
   /*
@@ -95,7 +95,7 @@ class Mouse {
    */
   async buttonDownAt(xOffset: number, yOffset: number, button: MouseButton = MouseButtons.LEFT): Promise<void> {
     await this.moveTo(xOffset, yOffset);
-    await this.driver.browser.activeWindow.mouse.buttonDown(button);
+    await this.driver.activeWindow.mouse.buttonDown(button);
   }
 
   /*
@@ -103,7 +103,7 @@ class Mouse {
    */
   async buttonUp(button: MouseButton = MouseButtons.LEFT): Promise<void> {
     await this.moveToCenter();
-    await this.driver.browser.activeWindow.mouse.buttonUp(button);
+    await this.driver.activeWindow.mouse.buttonUp(button);
   }
 
   /*
@@ -111,7 +111,7 @@ class Mouse {
    */
   async buttonUpAt(xOffset: number, yOffset: number, button: MouseButton = MouseButtons.LEFT): Promise<void> {
     await this.moveTo(xOffset, yOffset);
-    await this.driver.browser.activeWindow.mouse.buttonUp(button);
+    await this.driver.activeWindow.mouse.buttonUp(button);
   }
 
   /*

@@ -1,6 +1,27 @@
 import type {Mode} from '../enums/modes';
 import type {Session} from './session-data';
 
+/*
+ * Selected browser, if using Browser Stack, Sauce Labs or Testing Bot. See
+ * [Available Browsers](/browsers) for usage.
+ */
+type Browser = {
+  /*
+   * The name of the browser to use, e.g. "chrome"
+   */
+  name: string,
+  /*
+   * The version of the browser to use, defaults to the latest version available on all platforms
+   */
+  version?: string,
+  /*
+   * The operating system (for desktop browsers) or mobile phone emulator (for mobile browsers).
+   * Defaults to the latest supported windows version for all desktop browsers except safari,
+   * which defaults to the latest Mac OS version.
+   */
+  platform?: string,
+};
+
 export type Options = {
   [key: string]: void,
   /*
@@ -23,6 +44,11 @@ export type Options = {
    * This makes it easier to port tests between development/staging/production
    */
   base?: string,
+  /*
+   * Selected browser, if using Browser Stack, Sauce Labs or Testing Bot. See
+   * [Available Browsers](/browsers) for usage.
+   */
+  browser?: Browser,
   /*
    * Desired capabilities are passed to selenium when setting up the session
    */

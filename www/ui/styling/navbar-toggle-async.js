@@ -18,12 +18,12 @@ function renderAsyncToggle({location: {pathname}}) {
     const syncPathname = pathname.replace(/^\/async\/?/, '/');
     return (
       <NavBarLink to={syncPathname}>
-        Show Sync API
+        Show Sync <MinWidth minWidth={700}>{' '}API</MinWidth>
       </NavBarLink>
     );
   } else {
     const asyncPathname = '/async' + pathname.replace(/\/$/, '');
-    return <NavBarLink to={asyncPathname}>Show Async<MinWidth minWidth={400}>{' '}API</MinWidth></NavBarLink>;
+    return <NavBarLink to={asyncPathname}>Show Async<MinWidth minWidth={700}>{' '}API</MinWidth></NavBarLink>;
   }
 }
 function NavBarToggleAsync() {

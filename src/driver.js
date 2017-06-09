@@ -9,6 +9,7 @@ import url from 'url';
 import {readFileSync} from 'fs';
 import {parse as parseEnv} from 'dotenv';
 import depd from 'depd';
+import getBrowser from 'available-browsers';
 import addDebugging from './add-debugging';
 import autoRequest from 'then-request';
 import {fromBody} from './utils/errors';
@@ -106,7 +107,12 @@ class Driver {
     this.options = options;
     this.debug = new Debug(options);
     let remoteURI = remote;
-    const capabilities = {...(options.capabilities || {})};
+    const capabilities = {
+      ...(options.browser && (remote === 'saucelabs' || remote === 'browserstack' || remote === 'testingbot')
+        ? getBrowser(remote, options.browser.name, options.browser.version, options.browser.platform)
+        : {}),
+      ...(options.capabilities || {}),
+    };
     switch (remote) {
       case 'chromedriver':
         remoteURI = 'http://localhost:9515/';

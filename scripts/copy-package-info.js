@@ -27,6 +27,7 @@ export default function copyFiles(mode) {
     return options;
   }
   const syncPackage = getPackage({name: 'cabbie-sync', description: 'A synchronous webdriver client'}, [
+    'available-browsers',
     'chalk',
     'depd',
     'dotenv',
@@ -37,6 +38,7 @@ export default function copyFiles(mode) {
     'babel-runtime',
   ]);
   const asyncPackage = getPackage({name: 'cabbie-async', description: 'An asynchronous webdriver client'}, [
+    'available-browsers',
     'chalk',
     'depd',
     'dotenv',

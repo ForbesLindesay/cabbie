@@ -14,9 +14,12 @@ export const NavBarLinkContainer = styled.li`
     padding: 0 5px;
     font-weight: 200;
     @media (min-width: 300px) {
-      font-size: 5vw;
+      font-size: 3.5vw;
     }
-    @media (min-width: 500px) {
+    @media (min-width: 400px) {
+      font-size: 3.9vw;
+    }
+    @media (min-width: 650px) {
       font-size: 1.5em;
       padding: 0 10px;
     }

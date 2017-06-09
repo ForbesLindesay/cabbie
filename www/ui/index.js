@@ -12,6 +12,7 @@ import MinWidth from './styling/min-width';
 import Logo from './logo';
 import GettingStarted from './getting-started';
 import Api from './api';
+import Browsers from './browsers';
 
 injectGlobal`
   html, body {
@@ -66,8 +67,9 @@ function Application() {
             <Logo height="40" width="40" fill="#95a2ff" style={{margin: '10px 10px 0 0'}} />
           </NavBarLink>
           <NavBarLink exactly to="/" minWidth={600}>Home</NavBarLink>
-          <NavBarLink to="/getting-started">Get<MinWidth minWidth={450}>ting</MinWidth>{' '}Started</NavBarLink>
+          <NavBarLink to="/getting-started">Get<MinWidth minWidth={900}>ting</MinWidth>{' '}Started</NavBarLink>
           <NavBarLink to="/api">API</NavBarLink>
+          <NavBarLink to="/browsers"><MinWidth minWidth={900}>Available{' '}</MinWidth>Browsers</NavBarLink>
           <NavBarToggleAsync />
         </NavBarItems>
       </NavBar>
@@ -75,6 +77,7 @@ function Application() {
         <Match pattern="/" component={Home} />
         <Match exactly={false} pattern="/getting-started" component={GettingStarted} />
         <Match exactly={false} pattern="/api" component={Api} />
+        <Match pattern="/browsers" component={Browsers} />
       </Container>
     </Root>
   );

@@ -301,6 +301,9 @@ class ModuleGenerator {
   }
 
   onFunctionDeclaration(statement) {
+    if (!statement.id) {
+      throw this.getError(statement, 'Function Declarations must have an id', {});
+    }
     assert.equal(statement.id.type, 'Identifier');
     const id = statement.id.name;
     const returnType = statement.returnType ? this.getTypeValue(statement.returnType) : null;

@@ -165,7 +165,7 @@ class Browsers extends Component {
           <Indent /><Indent />name: <String>'{browserName}'</String>{useDefaultVersion ? '' : ','}<br />
           {useDefaultVersion
             ? null
-              : <span>
+            : <span>
                 <Indent />
                 <Indent />
                 version:{' '}
@@ -175,7 +175,7 @@ class Browsers extends Component {
               </span>}
           {selectedPlatform === 'DEFAULT'
             ? null
-              : <span><Indent /><Indent />platform: <String>'{platform}'</String><br /></span>}
+            : <span><Indent /><Indent />platform: <String>'{platform}'</String><br /></span>}
           <Indent />{'}'}<br />
           {'}'});
         </CodeBlock>
@@ -183,8 +183,10 @@ class Browsers extends Component {
         <CodeBlock>
           {'{'}
           {Object.keys(capabilities).map((key, i, list) => (
-            <div key={key}><Indent/>'{key}': <String>'{capabilities[key]}'</String>{i < list.length - 1 ? ',' : ''}</div>
-              ))}
+            <div key={key}>
+              <Indent />'{key}': <String>'{capabilities[key]}'</String>{i < list.length - 1 ? ',' : ''}
+            </div>
+          ))}
           {'}'}
         </CodeBlock>
       </div>

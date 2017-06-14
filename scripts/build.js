@@ -21,7 +21,7 @@ function execute(description, name, args, options = {}) {
     child.stderr.on('data', buf => result.push({n: 'stderr', buf}));
     child.on('close', exitCode => {
       const end = Date.now();
-      if (!exitCode && !options.silent) {
+      if (!options.silent) {
         console.log(description + ' ' + chalk.magenta('(' + ms(end - start) + ')'));
         console.log();
       }
@@ -145,6 +145,55 @@ function exposeAllTypes(mode) {
   );
 }
 
+async function typescript(directory) {
+  const tsc = require.resolve('.bin/tsc');
+  const args = [];
+  fs.writeFileSync(directory + '/tsconfig.json', fs.readFileSync(__dirname + '/../tsconfig.json'));
+  lsr.sync(directory + '/src').forEach(entry => {
+    if (entry.isFile() && /\.js$/.test(entry.path)) {
+      let src = fs
+        .readFileSync(entry.fullPath, 'utf8')
+        .replace(/\@flow/g, '')
+        .replace(/^import type /gm, 'import ')
+        .replace(/^export type \{/gm, 'export {')
+        .replace(/\: any\)\./, ' as any).')
+        .replace(/\(require\: any\)/, '(require as any)')
+        .replace(/\bmixed\b/g, 'any')
+        .replace(/err\.code/g, '(err as any).code')
+        .replace(/ex\.code/g, '(ex as any).code')
+        .replace(/\: Object\b/g, ': any')
+        .replace(/\[key\: TimeOutType\]/g, '[key: string]')
+        .split('[key: string]: void;')
+        .join('');
+      if (/\/enums\//.test(entry.path)) {
+        const type = /^export type [^\;]*\;/m.exec(src)[0];
+        const obj = require(directory + '/lib/' + entry.path.substr(1)).default;
+        const name = /const (.*Enum)/.exec(src)[1];
+        const output = [type, '', 'export interface I' + name + '{'];
+        Object.keys(obj).forEach(key => {
+          output.push(`  readonly ${key}: ${require('util').inspect(obj[key])};`);
+        });
+        output.push('}');
+        output.push('');
+        output.push(`const ${name} = {`);
+        Object.keys(obj).forEach(key => {
+          output.push(`  ${key}: ${require('util').inspect(obj[key])},`);
+        });
+        output.push('};');
+        output.push('');
+        output.push(`export default (${name} as I${name});`);
+        // const objectCode = Object.keys(obj).map(key => {
+        //   return `  ${key}: ${require('util').inspect(obj[key])},`;
+        // });
+        // src = src.split('{')[0] + objectCode + src.split('}')[1];
+        src = output.join('\n');
+      }
+      fs.writeFileSync(entry.fullPath.replace(/\.js$/, '.ts'), src);
+    }
+  });
+  await execute(`CWD=${directory} tsc ${args.join(' ')}`, tsc, args, {cwd: directory});
+}
+
 async function build(mode) {
   await babel(['src', '--out-dir', 'output/' + mode + '/src'], mode);
   exposeAllTypes(mode);
@@ -165,6 +214,7 @@ async function build(mode) {
     fs.writeFileSync(file.fullPath, file.src);
   });
   flowFiles.failedPaths.forEach(path => console.log(chalk.red(path)));
+  await typescript(__dirname + '/../output/' + mode);
   rimraf.sync(__dirname + '/../output/' + mode + '/src');
   rimraf.sync(__dirname + '/../output/' + mode + '/.babelrc');
 }

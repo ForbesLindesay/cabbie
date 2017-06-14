@@ -30,7 +30,7 @@ class Debug {
 
   onResponse(res: Object) {
     if (this.options.httpDebug) {
-      const copy = {};
+      const copy: Object = {};
       Object.keys(res).forEach(key => {
         copy[key] = res[key];
       });

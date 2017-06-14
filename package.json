@@ -3,12 +3,14 @@
   "private": true,
   "version": "0.7.0",
   "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
   "description": "A webdriver client",
   "keywords": [
     "cabbie",
     "webdriver"
   ],
   "dependencies": {
+    "@types/node": "^7.0.31",
     "available-browsers": "^1.0.3",
     "depd": "^1.1.0",
     "dotenv": "^4.0.0"
@@ -53,7 +55,8 @@
     "sync-request": "^4.1.0",
     "then-request": "^2.0.1",
     "thread-sleep": "^2.0.0",
-    "throat": "^3.0.0"
+    "throat": "^3.0.0",
+    "typescript": "^2.3.4"
   },
   "scripts": {
     "prettier": "babel-node scripts/prettier",

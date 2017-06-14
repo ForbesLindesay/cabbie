@@ -24,3 +24,4 @@ const LogLevelEnum = {
    */
   OFF: 'OFF',
 };
+export default LogLevelEnum;

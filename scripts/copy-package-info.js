@@ -13,7 +13,7 @@ export function copyCoreVersions() {
 export default function copyFiles(mode) {
   mkdirp.sync(__dirname + '/../output/' + mode);
 
-  const FIELDS_TO_COPY = ['version', 'main', 'keywords', 'repository', 'author', 'constributors', 'license'];
+  const FIELDS_TO_COPY = ['version', 'main', 'types', 'keywords', 'repository', 'author', 'constributors', 'license'];
   function getPackage(options, dependencies) {
     FIELDS_TO_COPY.forEach(field => {
       options[field] = pkg[field];
@@ -27,6 +27,7 @@ export default function copyFiles(mode) {
     return options;
   }
   const syncPackage = getPackage({name: 'cabbie-sync', description: 'A synchronous webdriver client'}, [
+    '@types/node',
     'available-browsers',
     'chalk',
     'depd',
@@ -38,6 +39,7 @@ export default function copyFiles(mode) {
     'babel-runtime',
   ]);
   const asyncPackage = getPackage({name: 'cabbie-async', description: 'An asynchronous webdriver client'}, [
+    '@types/node',
     'available-browsers',
     'chalk',
     'depd',

@@ -5,7 +5,7 @@ import type {Session} from './session-data';
  * Selected browser, if using Browser Stack, Sauce Labs or Testing Bot. See
  * [Available Browsers](/browsers) for usage.
  */
-type Browser = {
+export type Browser = {
   /*
    * The name of the browser to use, e.g. "chrome"
    */

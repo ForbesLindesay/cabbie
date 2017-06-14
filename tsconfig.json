@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "declarationDir": "lib",
+    "lib":[
+      "es2015",
+      "es2016",
+      "es2017"
+    ]
+  }
+}

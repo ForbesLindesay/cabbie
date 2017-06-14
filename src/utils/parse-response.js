@@ -54,7 +54,7 @@ function parseResponse(res: HttpResponse): WebdriverResponse {
 /*
  * Turns a selenium stack-trace into a string
  */
-function stringifyStackTrace(stackTrace: Array<Object>): string {
+function stringifyStackTrace(stackTrace: Array<any>): string {
   var i, len, result = [];
 
   for (i = 0, len = stackTrace.length; i < len; i++) {

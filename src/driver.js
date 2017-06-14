@@ -4,8 +4,7 @@ import type {HttpMethod} from './flow-types/http-method';
 import type {Options} from './flow-types/options';
 import type {Session} from './flow-types/session-data';
 import type {LogEntry} from './log-entry';
-import util from 'util';
-import url from 'url';
+import {parse as parseURL} from 'url';
 import {readFileSync} from 'fs';
 import {parse as parseEnv} from 'dotenv';
 import depd from 'depd';
@@ -153,10 +152,10 @@ class Driver {
     this._connection = new Connection(remote, remoteURI, this.debug);
     this.session = createSession(remote, this._connection, {...options, capabilities});
 
-    this.browser = new Browser(this);
+    this.browser = new Browser(this, options);
     this.timeOut = new TimeOut(this);
 
-    this.activeWindow = new ActiveWindow(this);
+    this.activeWindow = new ActiveWindow(this, options);
     this.ime = new IME(this);
     this.cookieStorage = new CookieStorage(this);
     this.localStorage = new LocalStorage(this);
@@ -258,7 +257,7 @@ class Driver {
     if (body === undefined) {
       return true;
     }
-    const auth = url.parse(remote).auth;
+    const auth = parseURL(remote).auth;
     if (typeof auth !== 'string') {
       throw new Error('Could not find sauce labs authentication in remote');
     }
@@ -286,7 +285,7 @@ async function createSession(remote: string, connection: Connection, options: Op
   if (options.session !== undefined) {
     return options.session;
   }
-  const capabilities = {};
+  const capabilities: Object = {};
   capabilities.desiredCapabilities = options.capabilities || {};
   if (options.requiredCapabilities) {
     capabilities.requiredCapabilities = options.requiredCapabilities;

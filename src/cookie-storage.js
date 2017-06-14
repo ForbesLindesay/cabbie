@@ -1,7 +1,7 @@
 import type {Cookie} from './cookie';
 import type Driver from './driver';
 import addDebugging from './add-debugging';
-import url from 'url';
+import {parse} from 'url';
 import BaseClass from './base-class';
 
 /*
@@ -73,7 +73,7 @@ class CookieStorage extends BaseClass {
       await this.requestJSON('POST', '', {cookie});
     } else {
       const base = await this.driver.activeWindow.getUrl();
-      const hostname = url.parse(base).hostname;
+      const hostname = parse(base).hostname;
       if (hostname == null) {
         throw new Error('The hostname should never be undefined. This should never happen.');
       }

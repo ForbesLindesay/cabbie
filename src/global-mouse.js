@@ -15,7 +15,7 @@ class GlobalMouse extends BaseClass {
    * is not visible, it will be scrolled into view.
    */
   async _moveTo(elementId?: string, xOffset?: number, yOffset?: number): Promise<void> {
-    var params = {};
+    var params: Object = {};
 
     if (elementId !== undefined) {
       params.element = elementId;

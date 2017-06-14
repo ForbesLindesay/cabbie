@@ -1,7 +1,8 @@
 import type {SelectorType} from './enums/selector-types';
 import type Driver from './driver';
+import type {Options} from './flow-types/options';
 import depd from 'depd';
-import url from 'url';
+import {resolve} from 'url';
 import Alert from './alert';
 import addDebugging from './add-debugging';
 import Element from './element';
@@ -47,14 +48,18 @@ class ActiveWindow extends BaseWindow {
    */
   alert: Alert;
 
-  constructor(driver: Driver) {
+  _options: Options;
+
+  constructor(driver: Driver, options: Options) {
     super(driver, 'current');
 
     this.touch = new GlobalTouch(this.driver);
     this.mouse = new GlobalMouse(this.driver);
-    this.navigator = new Navigator(this.driver);
+    this.navigator = new Navigator(this.driver, options);
     this.frame = new Frame(this.driver);
     this.alert = new Alert(this.driver);
+
+    this._options = options;
 
     deprecate.property(
       this,
@@ -206,11 +211,14 @@ class ActiveWindow extends BaseWindow {
    */
   async navigateTo(path: string): Promise<void> {
     if (path[0] === '/') {
-      // $FlowFixMe: WTF!
-      path = this._options.base.replace(/\/$/, '') + path;
+      const base = this._options.base;
+      if (!base) {
+        throw new Error('You must provide a "base" option to use urls starting with "/"');
+      }
+      path = base.replace(/\/$/, '') + path;
     } else if (path.indexOf('http') !== 0) {
       const base = await this.getUrl();
-      await this.navigateTo(url.resolve(base, path));
+      await this.navigateTo(resolve(base, path));
       return;
     }
 

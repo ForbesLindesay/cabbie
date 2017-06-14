@@ -1,4 +1,6 @@
-import url from 'url';
+import type {Options} from './flow-types/options';
+import type Driver from './driver';
+import {resolve} from 'url';
 import addDebugging from './add-debugging';
 import BaseClass from './base-class';
 
@@ -8,6 +10,13 @@ import BaseClass from './base-class';
  * @deprecated These methods all now live directly on the "ActiveWindow" object.
  */
 class Navigator extends BaseClass {
+  _options: Options;
+
+  constructor(driver: Driver, options: Options) {
+    super(driver);
+    this._options = options;
+  }
+
   /*
    * Navigate forwards in the browser history, if possible.
    */
@@ -45,15 +54,18 @@ class Navigator extends BaseClass {
    */
   async navigateTo(path: string): Promise<void> {
     if (path[0] === '/') {
-      // $FlowFixMe: WTF!
-      path = this._options.base.replace(/\/$/, '') + path;
+      const base = this._options.base;
+      if (!base) {
+        throw new Error('You must provide a "base" option to use urls starting with "/"');
+      }
+      path = base.replace(/\/$/, '') + path;
     } else if (path.indexOf('http') !== 0) {
       const base = await this.getUrl();
-      await this.navigateTo(url.resolve(base, path));
+      await this.navigateTo(resolve(base, path));
       return;
     }
 
-    await this.requestJSON('POST', '/url', {url: path});
+    await this.driver.requestJSON('POST', '/url', {url: path});
   }
 }
 

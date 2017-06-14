@@ -1,12 +1,18 @@
 import type {TimeOutType} from './enums/time-out-types';
 import type Driver from './driver';
 import addDebugging from './add-debugging';
-import url from 'url';
 import ms from 'ms';
 import BaseClass from './base-class';
 import TimeOutTypes from './enums/time-out-types';
 
-type TimeoutValue = number | string;
+export type TimeoutValue = number | string;
+
+export type TimeOutsConfig = {
+  'script'?: TimeoutValue,
+  'async'?: TimeoutValue,
+  'page load'?: TimeoutValue,
+  'implicit'?: TimeoutValue,
+};
 
 /*
  * Managing time-out
@@ -45,10 +51,18 @@ class TimeOut extends BaseClass {
   /*
    * Set multiple time-outs at once
    */
-  async setTimeOuts(timeOuts: {[key: TimeOutType]: TimeoutValue}): Promise<void> {
-    for (const key of Object.keys(timeOuts)) {
-      // $FlowFixMe: flow cannot tell that this key is in timeOuts
-      await this.setTimeOut(key, timeOuts[key]);
+  async setTimeOuts(timeOuts: TimeOutsConfig): Promise<void> {
+    if (timeOuts['script'] != null) {
+      this.setTimeOut('script', timeOuts['script']);
+    }
+    if (timeOuts['implicit'] != null) {
+      this.setTimeOut('implicit', timeOuts['implicit']);
+    }
+    if (timeOuts['async'] != null) {
+      this.setTimeOut('async', timeOuts['async']);
+    }
+    if (timeOuts['page load'] != null) {
+      this.setTimeOut('page load', timeOuts['page load']);
     }
   }
 

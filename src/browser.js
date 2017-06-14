@@ -1,5 +1,6 @@
 import type {BrowserOrientation} from './enums/browser-orientations';
 import type Driver from './driver';
+import type {Options} from './flow-types/options';
 import ActiveWindow from './active-window';
 import addDebugging from './add-debugging';
 import BaseClass from './base-class';
@@ -39,10 +40,10 @@ class Browser extends BaseClass {
    */
   sessionStorage: SessionStorage;
 
-  constructor(driver: Driver) {
+  constructor(driver: Driver, options: Options) {
     super(driver);
 
-    this.activeWindow = new ActiveWindow(this.driver);
+    this.activeWindow = new ActiveWindow(this.driver, options);
     this.ime = new IME(this.driver);
     this.cookieStorage = new CookieStorage(this.driver);
     this.localStorage = new LocalStorage(this.driver);

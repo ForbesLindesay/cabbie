@@ -146,6 +146,58 @@ class ActiveWindow extends BaseWindow {
   }
 
   /*
+   * Get elements by its text content, optionally narrowed down using a selector.
+   *
+   * N.B. this is **much** slower than getting elements by ID or css selector.
+   */
+  async getElementsByTextContent(
+    textContent: string,
+    selector: string = '*',
+    selectorType: SelectorType = SelectorTypes.CSS,
+  ): Promise<Array<Element>> {
+    if (selector === 'a' && (selectorType === SelectorTypes.CSS || selectorType === SelectorTypes.TAG)) {
+      selector = textContent;
+      selectorType = SelectorTypes.PARTIAL_LINK_TEXT;
+    }
+    textContent = textContent.trim();
+    const elements = await this.getElements(selector, selectorType);
+    const elementsToReturn = [];
+    for (let i = 0; i < elements.length; i++) {
+      if (textContent === (await elements[i].getText()).trim()) {
+        elementsToReturn.push(elements[i]);
+      }
+    }
+    return elementsToReturn;
+  }
+
+  /*
+   * Get elements by its text content, optionally narrowed down using a selector.
+   *
+   * N.B. this is **much** slower than getting elements by ID or css selector.
+   */
+  async getElementByTextContent(
+    textContent: string,
+    selector: string = '*',
+    selectorType: SelectorType = SelectorTypes.CSS,
+  ): Promise<Element> {
+    if (selector === 'a' && (selectorType === SelectorTypes.CSS || selectorType === SelectorTypes.TAG)) {
+      selector = textContent;
+      selectorType = SelectorTypes.PARTIAL_LINK_TEXT;
+    }
+    textContent = textContent.trim();
+    const elements = await this.getElements(selector, selectorType);
+    for (let i = 0; i < elements.length; i++) {
+      if (textContent === (await elements[i].getText()).trim()) {
+        return elements[i];
+      }
+    }
+    const err = new Error('Could not find an element with the text content: ' + textContent);
+    err.name = 'NoSuchElement';
+    (err: any).code = 'NoSuchElement';
+    throw err;
+  }
+
+  /*
    * Does a specific element exist?
    */
   async hasElement(selector: string, selectorType: SelectorType = SelectorTypes.CSS): Promise<boolean> {

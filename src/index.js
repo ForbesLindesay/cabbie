@@ -66,3 +66,30 @@ export function startChromedriver(): void {
   });
   chromedriverRunning = true;
 }
+
+// fool flow runtime checks
+type T = any;
+/**
+ * Retry a function until it stops returning null/undefined, up to a default timeout of 5 seconds.
+ */
+export async function waitFor<T>(fn: () => Promise<T>, timeout: number = 5000): Promise<T> {
+  const timeoutEnd = Date.now() + timeout;
+  while (Date.now() < timeout) {
+    try {
+      const value = await fn();
+      if (value !== null && value !== undefined) {
+        return value;
+      }
+    } catch (ex) {
+      if (
+        !(ex.code === 'NoSuchElement' ||
+          ex.code === 'ElementNotVisible' ||
+          ex.code === 'ElementIsNotSelectable' ||
+          ex.code === 'NoAlertOpenError')
+      ) {
+        throw ex;
+      }
+    }
+  }
+  return fn();
+}

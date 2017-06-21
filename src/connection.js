@@ -89,8 +89,8 @@ function improveError(remote: string, err: Error) {
       if (err.code === 'ECONNREFUSED') {
         return new Error(
           'Could not connect to taxirank.\r\nThe easiest way to use taxirank is to run:\r\n\r\n' +
-          '  npm install -g taxi-rank\r\n  taxi-rank\r\n\r\n' +
-          'in your command line/terminal application.',
+            '  npm install -g taxi-rank\r\n  taxi-rank\r\n\r\n' +
+            'in your command line/terminal application.',
         );
       }
       break;

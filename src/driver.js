@@ -116,6 +116,9 @@ class Driver {
       case 'chromedriver':
         remoteURI = 'http://localhost:9515/';
         break;
+      case 'taxirank':
+        remoteURI = 'http://localhost:9516';
+        break;
       case 'saucelabs':
         const {sauceUsername, sauceAccessKey} = options;
         if (!sauceUsername || !sauceAccessKey) {

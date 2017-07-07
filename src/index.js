@@ -74,7 +74,7 @@ type T = any;
  */
 export async function waitFor<T>(fn: () => Promise<T>, timeout: number = 5000): Promise<T> {
   const timeoutEnd = Date.now() + timeout;
-  while (Date.now() < timeout) {
+  while (Date.now() < timeoutEnd) {
     try {
       const value = await fn();
       if (value !== null && value !== undefined) {

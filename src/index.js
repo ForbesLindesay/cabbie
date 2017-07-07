@@ -5,6 +5,8 @@ import Debug from './debug';
 import Driver from './driver';
 import parseResponse from './utils/parse-response';
 import Status from './status';
+import {startBufferingLogs, discardBufferedLogs, printBufferedLogs} from './debug';
+import autoSleep from './utils/then-sleep';
 
 export {Connection, Debug, Driver, Status};
 
@@ -74,10 +76,13 @@ type T = any;
  */
 export async function waitFor<T>(fn: () => Promise<T>, timeout: number = 5000): Promise<T> {
   const timeoutEnd = Date.now() + timeout;
+  let count = 0;
   while (Date.now() < timeoutEnd) {
     try {
+      startBufferingLogs();
       const value = await fn();
       if (value !== null && value !== undefined) {
+        printBufferedLogs();
         return value;
       }
     } catch (ex) {
@@ -87,9 +92,12 @@ export async function waitFor<T>(fn: () => Promise<T>, timeout: number = 5000): 
           ex.code === 'ElementIsNotSelectable' ||
           ex.code === 'NoAlertOpenError')
       ) {
+        printBufferedLogs();
         throw ex;
       }
     }
+    discardBufferedLogs();
+    await autoSleep(count * 20);
   }
   return fn();
 }

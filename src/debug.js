@@ -3,11 +3,22 @@ import chalk from 'chalk';
 import ms from 'ms';
 import type {Options} from './flow-types/options';
 
+export type CallEvent = {
+  obj: Object,
+  name: string,
+  args: Array<any>,
+  duration: number,
+  success: boolean,
+  result: any,
+  err: any,
+};
+
 function stringFill(filler: string, length: number): string {
   const buffer = new Buffer(length);
   buffer.fill(filler);
   return buffer.toString();
 }
+const logBufferStack: Array<Array<{d: Debug, e: CallEvent}>> = [];
 class Debug {
   indentation: number = 0;
   options: Options;
@@ -41,9 +52,10 @@ class Debug {
       this.options.onResponse(res);
     }
   }
-  onCall(
-    event: {obj: Object, name: string, args: Array<any>, duration: number, success: boolean, result: any, err: any},
-  ) {
+  onCall(event: CallEvent) {
+    if (logBufferStack.length) {
+      return logBufferStack[logBufferStack.length - 1].push({d: this, e: event});
+    }
     if (this.options.debug && event.name !== 'requestJSON') {
       let message = (event.success ? chalk.magenta(' • ') : chalk.red(' ✗ ')) +
         inspect(event.obj, {
@@ -71,5 +83,17 @@ class Debug {
       this.options.onCall(event);
     }
   }
+}
+export function startBufferingLogs() {
+  logBufferStack.push([]);
+}
+export function discardBufferedLogs() {
+  logBufferStack.pop();
+}
+export function printBufferedLogs() {
+  const logs = logBufferStack.pop();
+  logs.forEach(({d, e}) => {
+    d.onCall(e);
+  });
 }
 export default Debug;

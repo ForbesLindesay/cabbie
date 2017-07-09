@@ -327,7 +327,7 @@ async function startTaxiRank(connection: Connection): Promise<() => void> {
   // this could be done in process for async mode, but must be a separate process for sync mode
   const logger = spawn(process.execPath, [require.resolve('./taxi-rank-log.js')], {
     detached: true,
-    stdio: ['ignore', 'ignore', 'ignore'],
+    stdio: ['inherit', 'inherit', 'inherit'],
   });
 
   return () => {

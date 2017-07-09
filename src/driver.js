@@ -6,7 +6,6 @@ import type {Session} from './flow-types/session-data';
 import type {LogEntry} from './log-entry';
 import {parse as parseURL} from 'url';
 import {readFileSync} from 'fs';
-import {connect} from 'net';
 import {parse as parseEnv} from 'dotenv';
 import depd from 'depd';
 import getBrowser from 'available-browsers';
@@ -324,10 +323,15 @@ async function startTaxiRank(connection: Connection): Promise<() => void> {
       stdio: ['ignore', 'ignore', 'ignore'],
     }).unref();
   }
-  const c = connect(9517, 'localhost');
-  c.pipe(process.stderr);
+
+  // this could be done in process for async mode, but must be a separate process for sync mode
+  const logger = spawn(process.execPath, [require.resolve('./taxi-rank-log.js')], {
+    detached: true,
+    stdio: ['ignore', 'ignore', 'ignore'],
+  });
+
   return () => {
-    c.end();
+    logger.kill();
   };
 }
 async function createSession(remote: string, connection: Connection, options: Options): Promise<Session> {

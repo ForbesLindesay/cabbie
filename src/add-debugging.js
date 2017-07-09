@@ -7,6 +7,9 @@ function addLogging(cls: any, options: {baseClass: boolean} = {baseClass: false}
     if (name === 'inspect') {
       return;
     }
+    if (name[0] === '_') {
+      return;
+    }
     const fun = proto[name];
     proto[name] = async function(...args) {
       const start = Date.now();

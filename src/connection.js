@@ -54,7 +54,8 @@ class Connection {
     }
 
     let lastEx = null;
-    for (let i = 0; i < 10; i++) {
+    const maxAttempts = options && options.noRetries ? 1 : 10;
+    for (let i = 0; i < maxAttempts; i++) {
       try {
         this.debug.onRequest({method, uri, options});
         const response = await autoRequest(method, uri, options);
@@ -70,7 +71,9 @@ class Connection {
       // this code sould be unreachable
       throw new Error('Unknown error');
     }
-    throw improveError(this.remote, lastEx);
+    const err = improveError(this.remote, lastEx);
+    (err: any).code = (lastEx: any).code;
+    throw err;
   }
 }
 

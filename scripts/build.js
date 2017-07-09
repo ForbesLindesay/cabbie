@@ -156,7 +156,7 @@ async function typescript(directory) {
         .replace(/\@flow/g, '')
         .replace(/^import type /gm, 'import ')
         .replace(/^export type \{/gm, 'export {')
-        .replace(/\: any\)\./, ' as any).')
+        .replace(/\: any\)\./g, ' as any).')
         .replace(/\(require\: any\)/, '(require as any)')
         .replace(/\bmixed\b/g, 'any')
         .replace(/err\.code/g, '(err as any).code')

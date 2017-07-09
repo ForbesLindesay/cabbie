@@ -30,6 +30,7 @@ export default function copyFiles(mode) {
     '@types/node',
     'available-browsers',
     'chalk',
+    'cross-spawn',
     'depd',
     'dotenv',
     'flow-runtime',
@@ -37,17 +38,20 @@ export default function copyFiles(mode) {
     'sync-request',
     'thread-sleep',
     'babel-runtime',
+    'taxi-rank',
   ]);
   const asyncPackage = getPackage({name: 'cabbie-async', description: 'An asynchronous webdriver client'}, [
     '@types/node',
     'available-browsers',
     'chalk',
+    'cross-spawn',
     'depd',
     'dotenv',
     'flow-runtime',
     'ms',
     'then-request',
     'babel-runtime',
+    'taxi-rank',
   ]);
 
   fs.writeFileSync(

@@ -98,6 +98,7 @@ export async function waitFor<T>(fn: () => Promise<T>, timeout: number = 5000): 
     }
     discardBufferedLogs();
     await autoSleep(count * 20);
+    count++;
   }
   return fn();
 }

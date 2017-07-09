@@ -6,9 +6,11 @@ import type {Session} from './flow-types/session-data';
 import type {LogEntry} from './log-entry';
 import {parse as parseURL} from 'url';
 import {readFileSync} from 'fs';
+import {connect} from 'net';
 import {parse as parseEnv} from 'dotenv';
 import depd from 'depd';
 import getBrowser from 'available-browsers';
+import spawn from 'cross-spawn';
 import addDebugging from './add-debugging';
 import autoRequest from 'then-request';
 import {fromBody} from './utils/errors';
@@ -100,6 +102,8 @@ class Driver {
    */
   sessionStorage: SessionStorage;
 
+  _closeTaxiRank: any;
+
   constructor(remote: string, options: Options = {}) {
     options = addEnvironment(options);
     this.remote = remote;
@@ -112,6 +116,16 @@ class Driver {
         : {}),
       ...(options.capabilities || {}),
     };
+    const remoteAliases = {
+      'chrome-driver': 'chromedriver',
+      'taxi-rank': 'taxirank',
+      'sauce-labs': 'saucelabs',
+      'browser-stack': 'browserstack',
+      'testing-bot': 'testingbot',
+    };
+    if (remote in remoteAliases) {
+      remote = remoteAliases[remote];
+    }
     switch (remote) {
       case 'chromedriver':
         remoteURI = 'http://localhost:9515/';
@@ -153,7 +167,7 @@ class Driver {
         break;
     }
     this._connection = new Connection(remote, remoteURI, this.debug);
-    this.session = createSession(remote, this._connection, {...options, capabilities});
+    this.session = this._createSession(remote, this._connection, {...options, capabilities});
 
     this.browser = new Browser(this, options);
     this.timeOut = new TimeOut(this);
@@ -165,6 +179,12 @@ class Driver {
     this.sessionStorage = new SessionStorage(this);
 
     deprecate.property(this, 'browser', 'All properties of browser are now directly available on the Driver object');
+  }
+  async _createSession(remote: string, connection: Connection, options: Options): Promise<Session> {
+    if (remote === 'taxirank') {
+      this._closeTaxiRank = await startTaxiRank(connection);
+    }
+    return createSession(remote, this._connection, options);
   }
 
   /*
@@ -244,6 +264,9 @@ class Driver {
       await this.sauceJobUpdate(status);
     }
     await this.requestJSON('DELETE', '');
+    if (this._closeTaxiRank) {
+      this._closeTaxiRank();
+    }
   }
 
   /*
@@ -284,6 +307,29 @@ class Driver {
  */
 (Driver.prototype: any).quit = Driver.prototype.dispose;
 
+async function startTaxiRank(connection: Connection): Promise<() => void> {
+  let started = false;
+  try {
+    const res = await connection.request('GET', '/version', {noRetries: true});
+    if (res.statusCode === 200) {
+      const version = JSON.parse(res.body.toString('utf8'));
+      const expectedVersion = require('taxi-rank/package.json').version;
+      started = version === expectedVersion;
+    }
+  } catch (ex) {}
+  if (!started) {
+    console.log('starting taxi rank');
+    spawn(process.execPath, [require.resolve('./taxi-rank.js')], {
+      detached: true,
+      stdio: ['ignore', 'ignore', 'ignore'],
+    }).unref();
+  }
+  const c = connect(9517, 'localhost');
+  c.pipe(process.stderr);
+  return () => {
+    c.end();
+  };
+}
 async function createSession(remote: string, connection: Connection, options: Options): Promise<Session> {
   if (options.session !== undefined) {
     return options.session;

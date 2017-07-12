@@ -1,5 +1,7 @@
 import {connect, createServer} from 'net';
 
+const start = Date.now();
+
 function hookStream(stream, callback) {
   const oldWrite = stream.write;
 
@@ -30,12 +32,19 @@ function listen() {
     });
   });
   server.on('error', err => {
-    if (err.code === 'EADDRINUSE') {
+    if (err.code === 'EADDRINUSE' && Date.now() < start + 60 * 1000) {
       let client: any = null;
       client = connect(9517, 'localhost', () => {
+        const timeout = setTimeout(
+          () => {
+            throw err;
+          },
+          10000,
+        );
         client.write('shutdown');
         client.on('data', () => {});
         client.on('end', () => {
+          clearTimeout(timeout);
           listen();
         });
       });

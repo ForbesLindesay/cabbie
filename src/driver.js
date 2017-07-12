@@ -316,6 +316,13 @@ async function startTaxiRank(connection: Connection): Promise<() => void> {
       started = version === expectedVersion;
     }
   } catch (ex) {}
+  if (process.env.CI) {
+    if (started) return () => {};
+    const taxiRank = spawn(process.execPath, [require.resolve('./taxi-rank-ci.js')], {
+      stdio: ['inherit', 'inherit', 'inherit'],
+    });
+    return () => taxiRank.kill();
+  }
   if (!started) {
     console.log('starting taxi rank');
     spawn(process.execPath, [require.resolve('./taxi-rank.js')], {

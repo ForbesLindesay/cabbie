@@ -210,7 +210,6 @@ async function build(mode) {
     }
   });
   flowFiles.successPaths.forEach(file => {
-    console.log(chalk.green(file.path));
     fs.writeFileSync(file.fullPath, file.src);
   });
   flowFiles.failedPaths.forEach(path => console.log(chalk.red(path)));

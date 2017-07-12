@@ -1,6 +1,6 @@
-import {readFile, writeFile} from 'fs';
-import {sync as lsr} from 'lsr';
-import {format} from 'prettier';
+const {readFile, writeFile} = require('fs');
+const {sync: lsr} = require('lsr');
+const {format} = require('prettier');
 
 [
   ...lsr(__dirname + '/../core'),
@@ -14,7 +14,6 @@ import {format} from 'prettier';
   }
   readFile(file.fullPath, 'utf8', (err, src) => {
     if (err) throw err;
-    console.log(file.fullPath);
     if (/@disable-prettier/.test(src)) {
       return;
     }
@@ -39,6 +38,7 @@ import {format} from 'prettier';
         bracketSpacing: false
       });
       if (src !== output) {
+        console.log(file.fullPath);
         writeFile(file.fullPath, output, err => { if (err) throw err; });
       }
     } catch (ex) {

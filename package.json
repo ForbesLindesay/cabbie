@@ -1,7 +1,7 @@
 {
   "name": "cabbie",
   "private": true,
-  "version": "0.10.3",
+  "version": "0.9.1",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "description": "A webdriver client",

@@ -1,3 +1,8 @@
 import {connect} from 'net';
 
-connect(9517, 'localhost').pipe(process.stderr);
+const connection = connect(9517, 'localhost');
+connection.on('error', err => {
+  console.error('Taxi rank may have crashed.');
+  console.error(err.stack || err.message || err);
+});
+connection.pipe(process.stderr);

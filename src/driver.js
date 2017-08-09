@@ -329,6 +329,17 @@ async function startTaxiRank(connection: Connection): Promise<() => void> {
       detached: true,
       stdio: ['ignore', 'ignore', 'ignore'],
     }).unref();
+    const startTime = Date.now();
+    try {
+      await connection.request('GET', '/version');
+    } catch (ex) {
+      const endTime = Date.now();
+      console.log('Failed to start a detached server after ' + Math.round((endTime - startTime) / 1000) + ' seconds.');
+      console.log('Starting slower, attached server.');
+      spawn(process.execPath, [require.resolve('./taxi-rank.js')], {
+        stdio: ['inherit', 'inherit', 'inherit'],
+      });
+    }
   }
 
   // this could be done in process for async mode, but must be a separate process for sync mode

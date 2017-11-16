@@ -184,10 +184,10 @@ class ActiveWindow extends BaseWindow {
       selector = textContent;
       selectorType = SelectorTypes.PARTIAL_LINK_TEXT;
     }
-    textContent = textContent.trim();
+    textContent = textContent.trim().toLowerCase();
     const elements = await this.getElements(selector, selectorType);
     for (let i = 0; i < elements.length; i++) {
-      if (textContent === (await elements[i].getText()).trim()) {
+      if (textContent === (await elements[i].getText()).trim().toLowerCase()) {
         return elements[i];
       }
     }

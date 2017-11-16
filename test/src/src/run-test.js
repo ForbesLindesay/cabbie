@@ -54,8 +54,8 @@ async function run(driver: Driver, location: string) {
 
   await test('selecting an element that does not exist throws an exception', async () => {
     assert(
-      null === await driver.activeWindow.tryGetElement('#does_not_exist'),
-      'Expected getting a non-existent element to return null'
+      null === (await driver.activeWindow.tryGetElement('#does_not_exist')),
+      'Expected getting a non-existent element to return null',
     );
   });
 

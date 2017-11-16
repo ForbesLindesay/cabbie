@@ -13,6 +13,7 @@ import Navigator from './navigator';
 import SelectorTypes from './enums/selector-types';
 import BaseWindow from './base-window';
 import WindowHandle from './window-handle';
+import waitFor from './utils/wait-for';
 
 const deprecate = depd('cabbie');
 
@@ -131,8 +132,25 @@ class ActiveWindow extends BaseWindow {
    * Will throw an error if the element does not exist.
    */
   async getElement(selector: string, selectorType: SelectorType = SelectorTypes.CSS): Promise<Element> {
-    const elementHandle = await this.driver.requestJSON('POST', '/element', {using: selectorType, value: selector});
+    const elementHandle = await waitFor(() =>
+      this.driver.requestJSON('POST', '/element', {using: selectorType, value: selector}));
     return new Element(this.driver, this.driver, selector, elementHandle);
+  }
+
+  /*
+   * Get an element via a selector.
+   * Will return null if the element does not exist
+   */
+  async tryGetElement(selector: string, selectorType: SelectorType = SelectorTypes.CSS): Promise<Element | null> {
+    try {
+      const elementHandle = await this.driver.requestJSON('POST', '/element', {using: selectorType, value: selector});
+      return new Element(this.driver, this.driver, selector, elementHandle);
+    } catch (ex) {
+      if (ex.code === 'NoSuchElement' || ex.code === 'ElementNotVisible' || ex.code === 'ElementIsNotSelectable') {
+        return null;
+      }
+      throw ex;
+    }
   }
 
   /*
@@ -180,6 +198,26 @@ class ActiveWindow extends BaseWindow {
     selector: string = '*',
     selectorType: SelectorType = SelectorTypes.CSS,
   ): Promise<Element> {
+    const element = await waitFor(() => this.tryGetElementByTextContent(textContent, selector, selectorType));
+    if (element) {
+      return element;
+    }
+    const err = new Error('Could not find an element with the text content: ' + textContent);
+    err.name = 'NoSuchElement';
+    (err: any).code = 'NoSuchElement';
+    throw err;
+  }
+
+  /*
+   * Get elements by its text content, optionally narrowed down using a selector.
+   *
+   * N.B. this is **much** slower than getting elements by ID or css selector.
+   */
+  async tryGetElementByTextContent(
+    textContent: string,
+    selector: string = '*',
+    selectorType: SelectorType = SelectorTypes.CSS,
+  ): Promise<Element | null> {
     if (selector === 'a' && (selectorType === SelectorTypes.CSS || selectorType === SelectorTypes.TAG)) {
       selector = textContent;
       selectorType = SelectorTypes.PARTIAL_LINK_TEXT;
@@ -191,10 +229,7 @@ class ActiveWindow extends BaseWindow {
         return elements[i];
       }
     }
-    const err = new Error('Could not find an element with the text content: ' + textContent);
-    err.name = 'NoSuchElement';
-    (err: any).code = 'NoSuchElement';
-    throw err;
+    return null;
   }
 
   /*

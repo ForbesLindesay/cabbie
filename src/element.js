@@ -7,6 +7,7 @@ import BaseClass from './base-class';
 import Mouse from './mouse';
 import SelectorTypes from './enums/selector-types';
 import Touch from './touch';
+import waitFor from './utils/wait-for';
 
 /*
  * A representation of a remote element.  You can use it to click on, type text into and check the attributes of.
@@ -186,8 +187,25 @@ class Element extends BaseClass {
    * Will throw an error if the element does not exist.
    */
   async getElement(selector: string, selectorType: SelectorType = SelectorTypes.CSS): Promise<Element> {
-    const elementHandle = await this.requestJSON('POST', '/element', {using: selectorType, value: selector});
+    const elementHandle = await waitFor(() =>
+      this.requestJSON('POST', '/element', {using: selectorType, value: selector}));
     return new Element(this.driver, this, [this._selector, selector].join(' '), elementHandle);
+  }
+
+  /*
+   * Get an element via a selector.
+   * Will return null if the element does not exist
+   */
+  async tryGetElement(selector: string, selectorType: SelectorType = SelectorTypes.CSS): Promise<Element | null> {
+    try {
+      const elementHandle = await this.requestJSON('POST', '/element', {using: selectorType, value: selector});
+      return new Element(this.driver, this, [this._selector, selector].join(' '), elementHandle);
+    } catch (ex) {
+      if (ex.code === 'NoSuchElement' || ex.code === 'ElementNotVisible' || ex.code === 'ElementIsNotSelectable') {
+        return null;
+      }
+      throw ex;
+    }
   }
 
   /*
@@ -235,6 +253,26 @@ class Element extends BaseClass {
     selector: string = '*',
     selectorType: SelectorType = SelectorTypes.CSS,
   ): Promise<Element> {
+    const element = await waitFor(() => this.tryGetElementByTextContent(textContent, selector, selectorType));
+    if (element) {
+      return element;
+    }
+    const err = new Error('Could not find an element with the text content: ' + textContent);
+    err.name = 'NoSuchElement';
+    (err: any).code = 'NoSuchElement';
+    throw err;
+  }
+
+  /*
+   * Get elements by its text content, optionally narrowed down using a selector.
+   *
+   * N.B. this is **much** slower than getting elements by ID or css selector.
+   */
+  async tryGetElementByTextContent(
+    textContent: string,
+    selector: string = '*',
+    selectorType: SelectorType = SelectorTypes.CSS,
+  ): Promise<Element | null> {
     if (selector === 'a' && (selectorType === SelectorTypes.CSS || selectorType === SelectorTypes.TAG)) {
       selector = textContent;
       selectorType = SelectorTypes.PARTIAL_LINK_TEXT;
@@ -246,10 +284,7 @@ class Element extends BaseClass {
         return elements[i];
       }
     }
-    const err = new Error('Could not find an element with the text content: ' + textContent);
-    err.name = 'NoSuchElement';
-    (err: any).code = 'NoSuchElement';
-    throw err;
+    return null;
   }
 
   /*

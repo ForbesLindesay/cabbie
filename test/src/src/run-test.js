@@ -41,14 +41,22 @@ async function run(driver: Driver, location: string) {
     assert(alertButton && typeof alertButton === 'object');
   });
 
+  // this is very slow:
+  // await test('selecting an element that does not exist throws an exception', async () => {
+  //   try {
+  //     await driver.activeWindow.getElement('#does_not_exist');
+  //   } catch (ex) {
+  //     assert.equal(ex.code, 'NoSuchElement');
+  //     return;
+  //   }
+  //   assert(false, 'Expected getting a non-existent element to throw an error');
+  // });
+
   await test('selecting an element that does not exist throws an exception', async () => {
-    try {
-      await driver.activeWindow.getElement('#does_not_exist');
-    } catch (ex) {
-      assert.equal(ex.code, 'NoSuchElement');
-      return;
-    }
-    assert(false, 'Expected getting a non-existent element to throw an error');
+    assert(
+      null === await driver.activeWindow.tryGetElement('#does_not_exist'),
+      'Expected getting a non-existent element to return null'
+    );
   });
 
   await test("select a single element's id", async () => {

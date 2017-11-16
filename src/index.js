@@ -5,8 +5,7 @@ import Debug from './debug';
 import Driver from './driver';
 import parseResponse from './utils/parse-response';
 import Status from './status';
-import {startBufferingLogs, discardBufferedLogs, printBufferedLogs} from './debug';
-import autoSleep from './utils/then-sleep';
+import waitFor from './utils/wait-for';
 
 export {Connection, Debug, Driver, Status};
 
@@ -69,36 +68,4 @@ export function startChromedriver(): void {
   chromedriverRunning = true;
 }
 
-// fool flow runtime checks
-type T = any;
-/**
- * Retry a function until it stops returning null/undefined, up to a default timeout of 5 seconds.
- */
-export async function waitFor<T>(fn: () => Promise<T>, timeout: number = 5000): Promise<T> {
-  const timeoutEnd = Date.now() + timeout;
-  let count = 0;
-  while (Date.now() < timeoutEnd) {
-    try {
-      startBufferingLogs();
-      const value = await fn();
-      if (value !== null && value !== undefined) {
-        printBufferedLogs();
-        return value;
-      }
-    } catch (ex) {
-      if (
-        !(ex.code === 'NoSuchElement' ||
-          ex.code === 'ElementNotVisible' ||
-          ex.code === 'ElementIsNotSelectable' ||
-          ex.code === 'NoAlertOpenError')
-      ) {
-        printBufferedLogs();
-        throw ex;
-      }
-    }
-    discardBufferedLogs();
-    await autoSleep(count * 20);
-    count++;
-  }
-  return fn();
-}
+export {waitFor};

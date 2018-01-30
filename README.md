@@ -1,4 +1,7 @@
-![Cabbie](logo/logo.svg)
+
+<a href="https://cabbiejs.org">
+  <img src="logo/logo.svg" width="100%" height="144">
+</a>
 
 # Cabbie
 

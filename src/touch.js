@@ -95,12 +95,10 @@ class Touch {
 
   //TODO: Element touch flick
   //TODO: Element touch scroll
-  /*
-   * @private
-   */
-  [inspect.custom || 'inspect'](depth: number, options: Object) {
-    return this._parent[inspect.custom || 'inspect'](depth, options) + '.touch';
-  }
 }
-addDebugging(Touch);
+addDebugging(Touch, {
+  inspect(obj, depth, options) {
+    return obj._parent[inspect.custom || 'inspect'](depth, options) + '.touch';
+  },
+});
 export default Touch;

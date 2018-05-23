@@ -10,7 +10,7 @@
     "webdriver"
   ],
   "dependencies": {
-    "@types/node": "^7.0.31",
+    "@types/node": "^10.1.2",
     "available-browsers": "^1.0.3",
     "cross-spawn": "^5.0.1",
     "depd": "^1.1.0",

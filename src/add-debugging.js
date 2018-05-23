@@ -1,10 +1,14 @@
-function addLogging(cls: any, options: {baseClass: boolean} = {baseClass: false}) {
+import {inspect} from 'util';
+
+const inspectKey = inspect.custom || 'inspect';
+
+function addLogging(
+  cls: any,
+  options: {baseClass?: boolean, inspect?: (obj: any, depth: number, options: Object) => string} = {baseClass: false},
+) {
   const proto = cls.prototype;
   Object.getOwnPropertyNames(proto).forEach(name => {
     if (typeof proto[name] !== 'function') {
-      return;
-    }
-    if (name === 'inspect') {
       return;
     }
     if (name[0] === '_') {
@@ -24,8 +28,10 @@ function addLogging(cls: any, options: {baseClass: boolean} = {baseClass: false}
       return result;
     };
   });
-  if (!proto.inspect && !options.baseClass) {
-    proto.inspect = () => cls.name;
+  if (options.inspect) {
+    proto[inspectKey] = options.inspect;
+  } else if (!proto[inspectKey] && !options.baseClass) {
+    proto[inspectKey] = () => cls.name;
   }
 }
 export default addLogging;

@@ -114,13 +114,10 @@ class Mouse {
     await this.moveTo(xOffset, yOffset);
     await this.driver.activeWindow.mouse.buttonUp(button);
   }
-
-  /*
-   * @private
-   */
-  [inspect.custom || 'inspect'](depth: number, options: Object) {
-    return this._parent[inspect.custom || 'inspect'](depth, options) + '.mouse';
-  }
 }
-addDebugging(Mouse);
+addDebugging(Mouse, {
+  inspect(obj, depth, options) {
+    return obj._parent[inspect.custom || 'inspect'](depth, options) + '.mouse';
+  },
+});
 export default Mouse;

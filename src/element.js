@@ -294,13 +294,10 @@ class Element extends BaseClass {
     const elements = await this.getElements(selector, selectorType);
     return elements.length > 0;
   }
-
-  /*
-   * @private
-   */
-  [inspect.custom || 'inspect'](depth: number, options: Object) {
-    return 'Element(' + inspect(this._selector, options) + ')';
-  }
 }
-addDebugging(Element);
+addDebugging(Element, {
+  inspect(obj, depth, options) {
+    return 'Element(' + inspect(obj._selector, options) + ')';
+  },
+});
 export default Element;

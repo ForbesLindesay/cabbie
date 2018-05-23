@@ -1,3 +1,4 @@
+import * as assert from 'assert';
 import {inspect} from 'util';
 
 const inspectKey = inspect.custom || 'inspect';
@@ -29,7 +30,11 @@ function addLogging(
     };
   });
   if (options.inspect) {
-    proto[inspectKey] = options.inspect;
+    const ins = options.inspect;
+    assert.equal(typeof options.inspect, 'function');
+    proto[inspectKey] = function(depth: number, options: Object): string {
+      return ins(this, depth, options);
+    };
   } else if (!proto[inspectKey] && !options.baseClass) {
     proto[inspectKey] = () => cls.name;
   }

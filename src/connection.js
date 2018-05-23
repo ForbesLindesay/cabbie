@@ -83,8 +83,8 @@ function improveError(remote: string, err: Error) {
       if (err.code === 'ECONNREFUSED') {
         return new Error(
           'Could not connect to chromedriver.\r\nThe easiest way to use chromedriver is to download the latest  ' +
-            'release from https://chromedriver.storage.googleapis.com/index.html (just look for the highest version ' +
-            'number), then run `chromedriver` in a separate terminal.',
+            'release from http://chromedriver.chromium.org/downloads (just look for the highest version ' +
+            'number), then run `./chromedriver` in a separate terminal.',
         );
       }
       break;

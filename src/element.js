@@ -298,7 +298,7 @@ class Element extends BaseClass {
   /*
    * @private
    */
-  inspect(depth: number, options: Object) {
+  [inspect.custom || 'inspect'](depth: number, options: Object) {
     return 'Element(' + inspect(this._selector, options) + ')';
   }
 }

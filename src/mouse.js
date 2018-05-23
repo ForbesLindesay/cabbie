@@ -3,6 +3,7 @@ import type {HttpMethod} from './flow-types/http-method';
 import type Debug from './debug';
 import type Driver from './driver';
 import type Element from './element';
+import {inspect} from 'util';
 import addDebugging from './add-debugging';
 import MouseButtons from './enums/mouse-buttons';
 
@@ -117,8 +118,8 @@ class Mouse {
   /*
    * @private
    */
-  inspect(depth: number, options: Object) {
-    return this._parent.inspect(depth, options) + '.mouse';
+  [inspect.custom || 'inspect'](depth: number, options: Object) {
+    return this._parent[inspect.custom || 'inspect'](depth, options) + '.mouse';
   }
 }
 addDebugging(Mouse);

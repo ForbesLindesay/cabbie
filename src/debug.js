@@ -14,9 +14,11 @@ export type CallEvent = {
 };
 
 function stringFill(filler: string, length: number): string {
-  const buffer = new Buffer(length);
-  buffer.fill(filler);
-  return buffer.toString();
+  let result = '';
+  for (let i = 0; i < length; i++) {
+    result += filler;
+  }
+  return result;
 }
 const logBufferStack: Array<Array<{d: Debug, e: CallEvent}>> = [];
 class Debug {

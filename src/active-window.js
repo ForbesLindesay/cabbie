@@ -116,7 +116,7 @@ class ActiveWindow extends BaseWindow {
    */
   async takeScreenshot(): Promise<Buffer> {
     const base64data = await this.driver.requestJSON('GET', '/screenshot');
-    return new Buffer(base64data, 'base64');
+    return Buffer.from ? Buffer.from(base64Data, 'base64') : new Buffer(base64data, 'base64');
   }
 
   /*

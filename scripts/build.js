@@ -202,7 +202,7 @@ async function build(mode) {
   copyFiles(mode);
   await install(__dirname + '/../output/' + mode);
   await flow(__dirname + '/../output/' + mode, ['stop']);
-  await flow(__dirname + '/../output/' + mode);
+  await flow(__dirname + '/../output/' + mode, ['--retries', '100']);
   await flow(__dirname + '/../output/' + mode, ['stop']);
   const flowFiles = await generateFlowFiles(mode);
   await babel(['output/' + mode + '/src', '--out-dir', 'output/' + mode + '/lib'], mode);
@@ -222,7 +222,7 @@ async function build(mode) {
 async function buildTest(mode) {
   await babel(['test/src/src', '--out-dir', 'test/' + mode + '/src'], mode);
   await flow(__dirname + '/../test/' + mode, ['stop']);
-  await flow(__dirname + '/../test/' + mode);
+  await flow(__dirname + '/../test/' + mode, ['--retries', '100']);
   await flow(__dirname + '/../test/' + mode, ['stop']);
 }
 

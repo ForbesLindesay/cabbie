@@ -23,9 +23,9 @@ class Status {
   }
 
   /*
-   * A timestamp from when the server was built.
+   * A timestamp or ISO8601 string from when the server was built.
    */
-  getBuildTime(): number | void {
+  getBuildTime(): string | number | void {
     return this._values.build && this._values.build.time;
   }
 

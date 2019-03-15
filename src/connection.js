@@ -80,7 +80,7 @@ class Connection {
 function improveError(remote: string, err: Error) {
   switch (remote) {
     case 'chromedriver':
-      if (err.code === 'ECONNREFUSED') {
+      if ((err: any).code === 'ECONNREFUSED') {
         return new Error(
           'Could not connect to chromedriver.\r\nThe easiest way to use chromedriver is to download the latest  ' +
             'release from http://chromedriver.chromium.org/downloads (just look for the highest version ' +
@@ -89,7 +89,7 @@ function improveError(remote: string, err: Error) {
       }
       break;
     case 'taxirank':
-      if (err.code === 'ECONNREFUSED') {
+      if ((err: any).code === 'ECONNREFUSED') {
         return new Error(
           'Could not connect to taxirank.\r\nThe easiest way to use taxirank is to run:\r\n\r\n' +
             '  npm install -g taxi-rank\r\n  taxi-rank\r\n\r\n' +
@@ -98,7 +98,7 @@ function improveError(remote: string, err: Error) {
       }
       break;
     case 'saucelabs':
-      if (err.code === 'ECONNREFUSED' || err.code === 'ENOTFOUND') {
+      if ((err: any).code === 'ECONNREFUSED' || (err: any).code === 'ENOTFOUND') {
         return new Error(
           'Could not connect to saucelabs.\r\nMake sure you are connected to the internet. If you are connected to ' +
             'the internet, you could check their status page at https://status.saucelabs.com/',
@@ -106,7 +106,7 @@ function improveError(remote: string, err: Error) {
       }
       break;
     case 'browserstack':
-      if (err.code === 'ECONNREFUSED' || err.code === 'ENOTFOUND') {
+      if ((err: any).code === 'ECONNREFUSED' || (err: any).code === 'ENOTFOUND') {
         return new Error(
           'Could not connect to browserstack.\r\nMake sure you are connected to the internet. If you are connected to ' +
             'the internet, you could check their twitter feed at https://twitter.com/browserstack',
@@ -114,7 +114,7 @@ function improveError(remote: string, err: Error) {
       }
       break;
     case 'testingbot':
-      if (err.code === 'ECONNREFUSED' || err.code === 'ENOTFOUND') {
+      if ((err: any).code === 'ECONNREFUSED' || (err: any).code === 'ENOTFOUND') {
         return new Error(
           'Could not connect to testingbot.\r\nMake sure you are connected to the internet. If you are connected to ' +
             'the internet, you could check their status page at https://testingbot.statuspage.io/',

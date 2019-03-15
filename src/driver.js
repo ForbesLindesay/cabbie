@@ -109,7 +109,7 @@ class Driver {
     this.options = options;
     this.debug = new Debug(options);
     let remoteURI = remote;
-    const capabilities = {
+    const capabilities: any = {
       ...(options.browser && (remote === 'saucelabs' || remote === 'browserstack' || remote === 'testingbot')
         ? getBrowser(remote, options.browser.name, options.browser.version, options.browser.platform)
         : {}),
@@ -370,9 +370,9 @@ async function createSession(remote: string, connection: Connection, options: Op
           const err = new Error(
             'Sauce Labs Authentication Failed.\r\nCheck the value of the SAUCE_USERNAME and SAUCE_ACCESS_KEY ' +
               'environment variables exactly match your credentials, you passed in: ' +
-              JSON.stringify(options.sauceUsername) +
+              JSON.stringify((options.sauceUsername: any)) +
               ' and ' +
-              JSON.stringify(options.sauceAccessKey) +
+              JSON.stringify((options.sauceAccessKey: any)) +
               '.',
           );
           throw err;
@@ -383,9 +383,9 @@ async function createSession(remote: string, connection: Connection, options: Op
           const err = new Error(
             'Browser Stack Authentication Failed.\r\nCheck the value of the BROWSER_STACK_USERNAME and BROWSER_STACK_ACCESS_KEY ' +
               'environment variables exactly match your credentials, you passed in: ' +
-              JSON.stringify(options.browserStackUsername) +
+              JSON.stringify((options.browserStackUsername: any)) +
               ' and ' +
-              JSON.stringify(options.browserStackAccessKey) +
+              JSON.stringify((options.browserStackAccessKey: any)) +
               '.',
           );
           throw err;
@@ -396,9 +396,9 @@ async function createSession(remote: string, connection: Connection, options: Op
           const err = new Error(
             'Testing Bot Authentication Failed.\r\nCheck the value of the TESTING_BOT_KEY and TESTING_BOT_SECRET ' +
               'environment variables exactly match your credentials, you passed in: ' +
-              JSON.stringify(options.testingBotKey) +
+              JSON.stringify((options.testingBotKey: any)) +
               ' and ' +
-              JSON.stringify(options.testingBotSecret) +
+              JSON.stringify((options.testingBotSecret: any)) +
               '.',
           );
           throw err;

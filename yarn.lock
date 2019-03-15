@@ -2554,10 +2554,10 @@ findit2@~2.2.3:
   resolved "https://registry.yarnpkg.com/findit2/-/findit2-2.2.3.tgz#58a466697df8a6205cdfdbf395536b8bd777a5f6"
   integrity sha1-WKRmaX34piBc39vzlVNri9d3pfY=
 
-flow-bin@^0.40.0:
-  version "0.40.0"
-  resolved "https://registry.yarnpkg.com/flow-bin/-/flow-bin-0.40.0.tgz#e10d60846d923124e47f548f16ba60fd8baff5a5"
-  integrity sha1-4Q1ghG2SMSTkf1SPFrpg/Yuv9aU=
+flow-bin@^0.95.0:
+  version "0.95.0"
+  resolved "https://registry.yarnpkg.com/flow-bin/-/flow-bin-0.95.0.tgz#2f1d299a35769c0aec3b8fa1b9290ddfba75894d"
+  integrity sha512-CaYIYSE4feCuTrKPsfdzJ7kAej7QISbhTpnl0Jmp+6Qj1XgA0spaLQrVzMgjPNn5L/iWqtuvZQA+ouRTpxEwdw==
 
 flow-config-parser@^0.3.0:
   version "0.3.0"

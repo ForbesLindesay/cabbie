@@ -157,6 +157,7 @@ async function typescript(directory) {
         .replace(/^import type /gm, 'import ')
         .replace(/^export type \{/gm, 'export {')
         .replace(/\: any\)\./g, ' as any).')
+        .replace(/\: any\)\)/g, ' as any))')
         .replace(/\(value: any\)/g, '(value as any)')
         .replace(/\(require\: any\)/, '(require as any)')
         .replace(/\bmixed\b/g, 'any')

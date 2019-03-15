@@ -1,6 +1,5 @@
 [options]
 module.use_strict=true
-unsafe.enable_getters_and_setters=true
 munge_underscores=true
 
 [ignore]

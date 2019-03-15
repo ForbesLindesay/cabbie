@@ -1,3 +1,3 @@
-export default function threadSleep(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
+export default (async function threadSleep(ms: number) {
+  await new Promise(resolve => setTimeout(resolve, ms));
+});

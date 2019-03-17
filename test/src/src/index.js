@@ -89,30 +89,56 @@ async function onProxyReady() {
     process.exit(1);
   }
 }
-if (LOCAL) {
-  const proxyArgs = RECORD ? ['--record'] : [];
-  const proxy = fork(require.resolve('../../record'), proxyArgs, {stdio: ['inherit', 'inherit', 'inherit', 'ipc']});
+// if (LOCAL) {
+//   const proxyArgs = RECORD ? ['--record'] : [];
+//   const proxy = fork(require.resolve('../../record'), proxyArgs, {stdio: ['inherit', 'inherit', 'inherit', 'ipc']});
 
-  process.on('exit', () => {
-    proxy.kill();
-  });
-  proxy.unref();
-  proxy.on('error', err => {
-    dispose();
-    throw err;
-  });
-  proxy.on('exit', status => {
-    dispose();
-    if (status) {
-      console.error('proxy exited with non-zero status code');
-      process.exit(status);
-    }
-  });
-  proxy.on('message', message => {
-    if (message.status === 'started') {
-      onProxyReady();
-    }
-  });
-} else {
-  onProxyReady();
+//   process.on('exit', () => {
+//     proxy.kill();
+//   });
+//   proxy.unref();
+//   proxy.on('error', err => {
+//     dispose();
+//     throw err;
+//   });
+//   proxy.on('exit', status => {
+//     dispose();
+//     if (status) {
+//       console.error('proxy exited with non-zero status code');
+//       process.exit(status);
+//     }
+//   });
+//   proxy.on('message', message => {
+//     if (message.status === 'started') {
+//       onProxyReady();
+//     }
+//   });
+// } else {
+//   onProxyReady();
+// }
+
+async function run() {
+  const options = {debug: true, httpDebug: true, capabilities: {browserName: 'chrome'}};
+  console.log('creating driver');
+
+  const remote = 'http://localhost:4444/wd/hub';
+  const driver = createCabbie(remote, options);
+  try {
+    const location = createPage(__dirname + '/../../demoPage.html', {
+      '{{linked-page}}': createPage(__dirname + '/../../linkedTo.html'),
+    });
+    await runTest(driver, location);
+  } finally {
+    await driver.dispose();
+  }
 }
+async function onProxyReady() {
+  try {
+    await run();
+    process.exit(0);
+  } catch (ex) {
+    console.error(ex.stack || ex.message || ex);
+    process.exit(1);
+  }
+}
+onProxyReady();

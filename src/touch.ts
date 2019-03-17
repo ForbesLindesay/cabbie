@@ -4,15 +4,15 @@ import Element from './element';
 import {inspect} from 'util';
 import addDebugging from './add-debugging';
 
-/*
+/**
  * Touch commands relative to a DOM-element
  */
 class Touch {
-  /*
+  /**
    * @private
    */
   debug: Debug;
-  /*
+  /**
    * @private
    */
   driver: Driver;
@@ -24,28 +24,28 @@ class Touch {
     this._parent = parent;
   }
 
-  /*
+  /**
    * Tap with the finger on the element
    */
   async tap(): Promise<void> {
     await this.driver.activeWindow.touch._tap(this._parent.elementID);
   }
 
-  /*
+  /**
    * Double tap with the finger on the element
    */
   async doubleTap(): Promise<void> {
     await this.driver.activeWindow.touch._doubleTap(this._parent.elementID);
   }
 
-  /*
+  /**
    * Long tap with the finger on the element
    */
   async longTap(): Promise<void> {
     await this.driver.activeWindow.touch._longTap(this._parent.elementID);
   }
 
-  /*
+  /**
    * Finger down on the screen at an offset relative to the element
    */
   async down(xOffset: number, yOffset: number): Promise<void> {
@@ -53,7 +53,7 @@ class Touch {
     await this.driver.activeWindow.touch.down(location.x + xOffset, location.y + yOffset);
   }
 
-  /*
+  /**
    * Finger down on the screen at the center of the element
    */
   async downAtCenter(): Promise<void> {
@@ -61,7 +61,7 @@ class Touch {
     await this.driver.activeWindow.touch.down(center.x, center.y);
   }
 
-  /*
+  /**
    * Finger up on the screen at an offset relative to the element
    */
   async up(xOffset: number, yOffset: number): Promise<void> {
@@ -69,7 +69,7 @@ class Touch {
     await this.driver.activeWindow.touch.down(location.x + xOffset, location.y + yOffset);
   }
 
-  /*
+  /**
    * Finger up on the screen at the center of the element
    */
   async upAtCenter(): Promise<void> {
@@ -77,7 +77,7 @@ class Touch {
     await this.driver.activeWindow.touch.down(center.x, center.y);
   }
 
-  /*
+  /**
    * Move finger to an offset relative to the element
    */
   async moveTo(xOffset: number, yOffset: number): Promise<void> {
@@ -85,7 +85,7 @@ class Touch {
     await this.driver.activeWindow.touch.move(location.x + xOffset, location.y + yOffset);
   }
 
-  /*
+  /**
    * Move finger to the center of the element
    */
   async moveToCenter(): Promise<void> {

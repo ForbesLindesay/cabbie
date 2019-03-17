@@ -4,7 +4,7 @@ import {resolve} from 'url';
 import addDebugging from './add-debugging';
 import BaseClass from './base-class';
 
-/*
+/**
  * Navigation object
  *
  * @deprecated These methods all now live directly on the "ActiveWindow" object.
@@ -17,35 +17,35 @@ class Navigator extends BaseClass {
     this._options = options;
   }
 
-  /*
+  /**
    * Navigate forwards in the browser history, if possible.
    */
   async forward(): Promise<void> {
     await this.requestJSON('POST', '/forward');
   }
 
-  /*
+  /**
    * Navigate backwards in the browser history, if possible.
    */
   async backward(): Promise<void> {
     await this.requestJSON('POST', '/back');
   }
 
-  /*
+  /**
    * Refreshes the browser
    */
   async refresh(): Promise<void> {
     await this.requestJSON('POST', '/refresh');
   }
 
-  /*
+  /**
    * Get the current url that the browser is displaying
    */
   async getUrl(): Promise<string> {
     return await this.requestJSON('GET', '/url');
   }
 
-  /*
+  /**
    * Navigates the browser to the specified path
    *
    *  - if `path` begins with a "/" it is relative to `options.base`
@@ -69,7 +69,7 @@ class Navigator extends BaseClass {
   }
 }
 
-/*
+/**
  * Navigates the browser to the specified path
  *
  * Alias for `navigateTo`

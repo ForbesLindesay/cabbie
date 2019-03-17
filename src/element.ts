@@ -8,7 +8,7 @@ import Mouse from './mouse';
 import Touch from './touch';
 import waitFor from './utils/wait-for';
 
-/*
+/**
  * A representation of a remote element.  You can use it to click on, type text into and check the attributes of.
  *
  * ```js
@@ -21,15 +21,15 @@ class Element extends BaseClass {
   _parent: Element | Driver;
   _selector: string;
 
-  /*
+  /**
    * The selenium id of the element
    */
   elementID: string;
-  /*
+  /**
    * Utility methods for clicking on the element
    */
   mouse: Mouse;
-  /*
+  /**
    * Methods for interacting with the element via touch
    */
   touch: Touch;
@@ -44,14 +44,14 @@ class Element extends BaseClass {
     this.touch = new Touch(this.driver, this);
   }
 
-  /*
+  /**
    * Get the value of an attribute.
    */
   async getAttribute(attribute: string): Promise<string> {
     return await this.requestJSON('GET', '/attribute/' + attribute);
   }
 
-  /*
+  /**
    * Test if the element have a specific class
    */
   async hasClass(className: string): Promise<boolean> {
@@ -59,21 +59,21 @@ class Element extends BaseClass {
     return !!classNames.match(new RegExp('\\b' + className + '\\b'));
   }
 
-  /*
+  /**
    * Get the text body of an element.
    */
   async getText(): Promise<string> {
     return await this.requestJSON('GET', '/text');
   }
 
-  /*
+  /**
    * Get the tag-name of an element.
    */
   async getTagName(): Promise<string> {
     return await this.requestJSON('GET', '/name');
   }
 
-  /*
+  /**
    * Query the value of an element's computed CSS property. The CSS property to query
    * should be specified using the CSS property name, not the JavaScript property name
    * (e.g. background-color instead of backgroundColor).
@@ -82,35 +82,35 @@ class Element extends BaseClass {
     return await this.requestJSON('GET', '/css/' + property);
   }
 
-  /*
+  /**
    * Return true if the element is currently displayed on the page
    */
   async isDisplayed(): Promise<boolean> {
     return await this.requestJSON('GET', '/displayed');
   }
 
-  /*
+  /**
    * Return true if the form element is selected
    */
   async isSelected(): Promise<boolean> {
     return await this.requestJSON('GET', '/selected');
   }
 
-  /*
+  /**
    * Return true if the current element is equal to the supplied element
    */
   async isEqual(element: Element): Promise<boolean> {
     return await this.requestJSON('GET', '/equals/' + element.elementID);
   }
 
-  /*
+  /**
    * Return true if the form element is enabled
    */
   async isEnabled(): Promise<boolean> {
     return await this.requestJSON('GET', '/enabled');
   }
 
-  /*
+  /**
    * Return true if the form element is disabled
    */
   async isDisabled(): Promise<boolean> {
@@ -119,28 +119,28 @@ class Element extends BaseClass {
   }
 
   // todo: uploading files ala wd.Element.sendKeys
-  /*
+  /**
    * Type a string of characters into an input
    */
   async sendKeys(str: string | Array<string>): Promise<void> {
     await this.requestJSON('POST', '/value', {value: Array.isArray(str) ? str : [str]});
   }
 
-  /*
+  /**
    * Clear the value of an input
    */
   async clear(): Promise<void> {
     await this.requestJSON('POST', '/clear');
   }
 
-  /*
+  /**
    * Submit a form element
    */
   async submit(): Promise<void> {
     await this.requestJSON('POST', '/submit');
   }
 
-  /*
+  /**
    * Get the size of an element
    */
   async getSize(): Promise<{width: number, height: number}> {
@@ -148,7 +148,7 @@ class Element extends BaseClass {
     return {width: size.width, height: size.height};
   }
 
-  /*
+  /**
    * Get the position of an element
    */
   async getPosition(): Promise<{x: number, y: number}> {
@@ -156,7 +156,7 @@ class Element extends BaseClass {
     return {x: position.x, y: position.y};
   }
 
-  /*
+  /**
    * Get the frame of an element
    */
   async getFrame(): Promise<{x: number, y: number, width: number, height: number}> {
@@ -165,7 +165,7 @@ class Element extends BaseClass {
     return {x: position.x, y: position.y, width: size.width, height: size.height};
   }
 
-  /*
+  /**
    * Get the absolute center of an element
    */
   async getAbsoluteCenter(): Promise<{x: number, y: number}> {
@@ -173,7 +173,7 @@ class Element extends BaseClass {
     return {x: Math.floor(frame.width / 2) + frame.x, y: Math.floor(frame.height / 2) + frame.y};
   }
 
-  /*
+  /**
    * Get the relative center of an element
    */
   async getRelativeCenter(): Promise<{x: number, y: number}> {
@@ -181,7 +181,7 @@ class Element extends BaseClass {
     return {x: Math.floor(size.width / 2), y: Math.floor(size.height / 2)};
   }
 
-  /*
+  /**
    * Get an element via a selector.
    * Will throw an error if the element does not exist.
    */
@@ -191,7 +191,7 @@ class Element extends BaseClass {
     return new Element(this.driver, this, [this._selector, selector].join(' '), elementHandle);
   }
 
-  /*
+  /**
    * Get an element via a selector.
    * Will return null if the element does not exist
    */
@@ -207,7 +207,7 @@ class Element extends BaseClass {
     }
   }
 
-  /*
+  /**
    * Get elements via a selector.
    */
   async getElements(selector: string, selectorType: SelectorType = SelectorType.CSS): Promise<Array<Element>> {
@@ -217,7 +217,7 @@ class Element extends BaseClass {
     });
   }
 
-  /*
+  /**
    * Get elements by its text content, optionally narrowed down using a selector.
    *
    * N.B. this is **much** slower than getting elements by ID or css selector.
@@ -242,7 +242,7 @@ class Element extends BaseClass {
     return elementsToReturn;
   }
 
-  /*
+  /**
    * Get elements by its text content, optionally narrowed down using a selector.
    *
    * N.B. this is **much** slower than getting elements by ID or css selector.
@@ -262,7 +262,7 @@ class Element extends BaseClass {
     throw err;
   }
 
-  /*
+  /**
    * Get elements by its text content, optionally narrowed down using a selector.
    *
    * N.B. this is **much** slower than getting elements by ID or css selector.
@@ -286,7 +286,7 @@ class Element extends BaseClass {
     return null;
   }
 
-  /*
+  /**
    * Does a specific element exist?
    */
   async hasElement(selector: string, selectorType: SelectorType = SelectorType.CSS): Promise<boolean> {

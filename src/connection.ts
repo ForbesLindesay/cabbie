@@ -8,16 +8,16 @@ import autoSleep from './utils/then-sleep';
 import parseResponse from './utils/parse-response';
 
 class Connection {
-  /*
+  /**
    * The name or url of the selenium webdriver server (e.g. 'chromedriver')
    */
   remote: string;
-  /*
+  /**
    * The url of the selenium web-driver server
    */
   remoteURI: string;
 
-  /*
+  /**
    * Reference to the debug context
    *
    * @private
@@ -28,7 +28,7 @@ class Connection {
     this.remoteURI = remoteURI.replace(/\/$/, '');
     this.debug = debug;
   }
-  /*
+  /**
    * Session request with automatic parsing for errors
    */
   async requestWithSession(
@@ -45,7 +45,7 @@ class Connection {
     return parseResponse(response);
   }
 
-  /*
+  /**
    * Make a request without using the current session.
    */
   async request(method: HttpMethod, uri: string, options?: any): Promise<HttpResponse> {

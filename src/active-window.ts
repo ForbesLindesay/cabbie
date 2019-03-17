@@ -16,34 +16,34 @@ import waitFor from './utils/wait-for';
 
 const deprecate = depd('cabbie');
 
-/*
+/**
  * This is an object representing the currently active window.  You can access the navigation for that window,
  * touch and mouse objects for interacting via screen coordinates, and (most imporatantly) getElement and getElements.
  */
 class ActiveWindow extends BaseWindow {
-  /*
+  /**
    * The global-touch object.
    */
   touch: GlobalTouch;
 
-  /*
+  /**
    * Get the global-mouse object.
    */
   mouse: GlobalMouse;
 
-  /*
+  /**
    * Get the Navigator object.
    *
    * @private
    */
   navigator: Navigator;
 
-  /*
+  /**
    * Get the Frame object.
    */
   frame: Frame;
 
-  /*
+  /**
    * Get the Alert object.
    */
   alert: Alert;
@@ -68,7 +68,7 @@ class ActiveWindow extends BaseWindow {
     );
   }
 
-  /*
+  /**
    * Get a handle for the current window
    */
   async getWindowHandle(): Promise<WindowHandle> {
@@ -76,7 +76,7 @@ class ActiveWindow extends BaseWindow {
     return new WindowHandle(this.driver, windowHandle);
   }
 
-  /*
+  /**
    * Execute a script on the browser and return the result.
    *
    * Source should be either a function body as a string or a function.
@@ -87,7 +87,7 @@ class ActiveWindow extends BaseWindow {
     return this.driver.requestJSON('POST', '/execute', {script: codeToString(script), args});
   }
 
-  /*
+  /**
    * Execute a script asynchronously on the browser.
    *
    * Source should be either a function body as a string or a function.
@@ -98,7 +98,7 @@ class ActiveWindow extends BaseWindow {
     await this.driver.requestJSON('POST', '/execute_async', {script: codeToString(script), args});
   }
 
-  /*
+  /**
    * Type a string of characters into the browser
    *
    * Note: Modifier keys is kept between calls, so mouse interactions can be performed
@@ -108,7 +108,7 @@ class ActiveWindow extends BaseWindow {
     await this.driver.requestJSON('POST', '/keys', {value: Array.isArray(str) ? str : [str]});
   }
 
-  /*
+  /**
    * Take a screenshot of the current page
    *
    * This returns the result as a buffer containing the binary image data
@@ -118,7 +118,7 @@ class ActiveWindow extends BaseWindow {
     return Buffer.from ? Buffer.from(base64data, 'base64') : new Buffer(base64data, 'base64');
   }
 
-  /*
+  /**
    * Get the element on the page that currently has focus
    */
   async getActiveElement(): Promise<Element> {
@@ -126,7 +126,7 @@ class ActiveWindow extends BaseWindow {
     return new Element(this.driver, this.driver, '<active>', elementHandle);
   }
 
-  /*
+  /**
    * Get an element via a selector.
    * Will throw an error if the element does not exist.
    */
@@ -136,7 +136,7 @@ class ActiveWindow extends BaseWindow {
     return new Element(this.driver, this.driver, selector, elementHandle);
   }
 
-  /*
+  /**
    * Get an element via a selector.
    * Will return null if the element does not exist
    */
@@ -152,7 +152,7 @@ class ActiveWindow extends BaseWindow {
     }
   }
 
-  /*
+  /**
    * Get elements via a selector.
    */
   async getElements(selector: string, selectorType: SelectorType = SelectorType.CSS): Promise<Array<Element>> {
@@ -162,7 +162,7 @@ class ActiveWindow extends BaseWindow {
     });
   }
 
-  /*
+  /**
    * Get elements by its text content, optionally narrowed down using a selector.
    *
    * N.B. this is **much** slower than getting elements by ID or css selector.
@@ -187,7 +187,7 @@ class ActiveWindow extends BaseWindow {
     return elementsToReturn;
   }
 
-  /*
+  /**
    * Get elements by its text content, optionally narrowed down using a selector.
    *
    * N.B. this is **much** slower than getting elements by ID or css selector.
@@ -207,7 +207,7 @@ class ActiveWindow extends BaseWindow {
     throw err;
   }
 
-  /*
+  /**
    * Get elements by its text content, optionally narrowed down using a selector.
    *
    * N.B. this is **much** slower than getting elements by ID or css selector.
@@ -231,7 +231,7 @@ class ActiveWindow extends BaseWindow {
     return null;
   }
 
-  /*
+  /**
    * Does a specific element exist?
    */
   async hasElement(selector: string, selectorType: SelectorType = SelectorType.CSS): Promise<boolean> {
@@ -239,56 +239,56 @@ class ActiveWindow extends BaseWindow {
     return elements.length > 0;
   }
 
-  /*
+  /**
    * Close the current window
    */
   async close(): Promise<void> {
     await this.driver.requestJSON('DELETE', '/window');
   }
 
-  /*
+  /**
    * Get the current page title
    */
   async getTitle(): Promise<string> {
     return await this.driver.requestJSON('GET', '/title');
   }
 
-  /*
+  /**
    * Get the current page source
    */
   async getSource(): Promise<string> {
     return await this.driver.requestJSON('GET', '/source');
   }
 
-  /*
+  /**
    * Navigate forwards in the browser history, if possible.
    */
   async goForward(): Promise<void> {
     await this.driver.requestJSON('POST', '/forward');
   }
 
-  /*
+  /**
    * Navigate backwards in the browser history, if possible.
    */
   async goBackward(): Promise<void> {
     await this.driver.requestJSON('POST', '/back');
   }
 
-  /*
+  /**
    * Refreshes the browser
    */
   async refresh(): Promise<void> {
     await this.driver.requestJSON('POST', '/refresh');
   }
 
-  /*
+  /**
    * Get the current url that the browser is displaying
    */
   async getUrl(): Promise<string> {
     return await this.driver.requestJSON('GET', '/url');
   }
 
-  /*
+  /**
    * Navigates the browser to the specified path
    *
    *  - if `path` begins with a "/" it is relative to `options.base`
@@ -311,7 +311,7 @@ class ActiveWindow extends BaseWindow {
     await this.driver.requestJSON('POST', '/url', {url: path});
   }
 }
-/*
+/**
  * Convert code to string before execution
  */
 function codeToString(code: string | Function): string {

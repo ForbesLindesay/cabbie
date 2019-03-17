@@ -1,4 +1,4 @@
-/*
+/**
  * An object representing the session state.  You can pass a session to createCabbieDriver to create a new
  * driver from an existing session.  e.g.
  *
@@ -7,11 +7,11 @@
  * ```
  */
 export type Session = {
-  /*
+  /**
    * The selenium ID of the current session
    */
   sessionID: string,
-  /*
+  /**
    * An object representing the capabilities that the selenium server says it supports.
    */
   capabilities: any,

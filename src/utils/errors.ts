@@ -8,7 +8,7 @@
 // Enumerations //
 //////////////////
 
-/*
+/**
  * List of errors
  *
  * @type {Object}
@@ -42,7 +42,7 @@ export const names = {
 ////////////////////
 // Public Methods //
 ////////////////////
-/*
+/**
  * Extracts the error message from a response body
  */
 export function fromBody(body: any): Error {

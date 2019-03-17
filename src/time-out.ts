@@ -17,7 +17,7 @@ export type TimeOutsConfig = {
   [key in TimeOutTypes]?: TimeoutValue;
 }
 
-/*
+/**
  * Managing time-out
  */
 class TimeOut extends BaseClass {
@@ -25,7 +25,7 @@ class TimeOut extends BaseClass {
     super(driver, '/timeouts');
   }
 
-  /*
+  /**
    * Set a time-out
    */
   async setTimeOut(timeOutType: TimeOutType, ms: TimeoutValue): Promise<void> {
@@ -51,7 +51,7 @@ class TimeOut extends BaseClass {
     }
   }
 
-  /*
+  /**
    * Set multiple time-outs at once
    */
   async setTimeOuts(timeOuts: TimeOutsConfig): Promise<void> {
@@ -67,7 +67,7 @@ class TimeOut extends BaseClass {
     }));
   }
 
-  /*
+  /**
    * Set the amount of time, in milliseconds, that scripts are permitted
    * to run before they are aborted and a "Timeout" error is returned to the client.
    */
@@ -76,7 +76,7 @@ class TimeOut extends BaseClass {
     await this.requestJSON('POST', '', {type: TimeOutTypes.SCRIPT, ms: timeout});
   }
 
-  /*
+  /**
    * Set the amount of time, in milliseconds, that asynchronous scripts are permitted
    * to run before they are aborted and a "Timeout" error is returned to the client.
    */
@@ -85,7 +85,7 @@ class TimeOut extends BaseClass {
     await this.requestJSON('POST', '/async_script', {ms: timeout});
   }
 
-  /*
+  /**
    * Set the amount of time, in milliseconds, that a page is permitted to be loaded
    * before they it is aborted and a "Timeout" error is returned to the client.
    */
@@ -94,7 +94,7 @@ class TimeOut extends BaseClass {
     await this.requestJSON('POST', '', {type: TimeOutTypes.PAGE_LOAD, ms: timeout});
   }
 
-  /*
+  /**
    * Set the amount of time, in milliseconds, that scripts executed are permitted
    * to run before they are aborted and a "Timeout" error is returned to the client.
    */

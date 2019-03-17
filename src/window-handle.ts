@@ -3,11 +3,11 @@ import ActiveWindow from './active-window';
 import addDebugging from './add-debugging';
 import BaseWindow from './base-window';
 
-/*
+/**
  * Window object
  */
 class WindowHandle extends BaseWindow {
-  /*
+  /**
    * The internal selenium id
    */
   id: string;
@@ -17,7 +17,7 @@ class WindowHandle extends BaseWindow {
     this.id = id;
   }
 
-  /*
+  /**
    * Shift the focus to this window (after calling this, browser.activeWindow refers to this window)
    */
   async activate(): Promise<ActiveWindow> {

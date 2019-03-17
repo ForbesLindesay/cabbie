@@ -9,7 +9,7 @@ import waitFor from './utils/wait-for';
 
 export {Connection, Debug, Driver, Status};
 
-/*
+/**
  * Create a new cabbie Driver. See [getting started](/getting-started) for examples.
  */
 export default function createCabbieDriver(remote: string, options: Options = {}): Driver {
@@ -17,7 +17,7 @@ export default function createCabbieDriver(remote: string, options: Options = {}
 }
 
 export {Options};
-/*
+/**
  * Returns a list of the currently active sessions
  *
  * Note: Appears not to be supported by the selenium-standalone-server!
@@ -29,7 +29,7 @@ export async function getSessions(remote: string, options: Options = {}): Promis
   return sessions.map(session => ({sessionID: session.id, capabilities: session.capabilities}));
 }
 
-/*
+/**
  * Gets the selenium-system status
  */
 export async function getStatus(remote: string, options: Options = {}): Promise<Status> {
@@ -40,7 +40,7 @@ export async function getStatus(remote: string, options: Options = {}): Promise<
 }
 
 let chromedriverRunning = false;
-/*
+/**
  * Start a chromedriver instance.  You must have installed chromedriver to use this:
  *
  * ```

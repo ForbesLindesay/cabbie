@@ -4,7 +4,7 @@ import addDebugging from './add-debugging';
 import {parse} from 'url';
 import BaseClass from './base-class';
 
-/*
+/**
  * Validate the cookie data
  *
  * @private
@@ -29,7 +29,7 @@ function validateCookie(cookie: Cookie, completed: boolean = false) {
   return cookie;
 }
 
-/*
+/**
  * Managing cookie-storage
  */
 class CookieStorage extends BaseClass {
@@ -37,14 +37,14 @@ class CookieStorage extends BaseClass {
     super(driver, '/cookie');
   }
 
-  /*
+  /**
    * Retrieve all cookies visible to the current page.
    */
   async getCookies(): Promise<Array<Cookie>> {
     return await this.requestJSON('GET', '');
   }
 
-  /*
+  /**
    * Retrieve all cookie names visible to the current page.
    */
   async getKeys(): Promise<Array<string>> {
@@ -52,7 +52,7 @@ class CookieStorage extends BaseClass {
     return cookies.map(cookie => cookie.name);
   }
 
-  /*
+  /**
    * Retrieve a specific cookie by name that is visible to the current page.
    */
   async getCookie(name: string): Promise<Cookie | void> {
@@ -63,7 +63,7 @@ class CookieStorage extends BaseClass {
     return cookies.length ? cookies[0] : undefined;
   }
 
-  /*
+  /**
    * Set a cookie that is visible to the current page.
    */
   async setCookie(cookie: Cookie): Promise<void> {
@@ -83,21 +83,21 @@ class CookieStorage extends BaseClass {
     }
   }
 
-  /*
+  /**
    * Delete the cookie with the given name.
    */
   async removeCookie(name: string): Promise<void> {
     await this.requestJSON('DELETE', '/' + name);
   }
 
-  /*
+  /**
    * Delete all cookies visible to the current page.
    */
   async clear(): Promise<void> {
     await this.requestJSON('DELETE', '');
   }
 
-  /*
+  /**
    * Get the number of items in the storage
    */
   async getSize(): Promise<number> {

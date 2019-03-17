@@ -4,14 +4,14 @@ import Debug from './debug';
 import Driver from './driver';
 
 class BaseClass {
-  /*
+  /**
    * Reference to the debug context
    *
    * @private
    */
   debug: Debug;
 
-  /*
+  /**
    * Reference to the driver object
    *
    * @private
@@ -26,7 +26,7 @@ class BaseClass {
     this._prefix = prefix || '';
   }
 
-  /*
+  /**
    * Make a request with session info and the path prefix
    *
    * @private

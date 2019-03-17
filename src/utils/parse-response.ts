@@ -2,7 +2,7 @@ import {HttpResponse} from '../flow-types/http-response';
 import {WebdriverResponse} from '../flow-types/webdriver-response';
 import {fromBody} from './errors';
 
-/*
+/**
  * Parse a webdriver response, throwing errors if the status suggests it
  */
 function parseResponse(res: HttpResponse): WebdriverResponse {
@@ -51,7 +51,7 @@ function parseResponse(res: HttpResponse): WebdriverResponse {
   }
 }
 
-/*
+/**
  * Turns a selenium stack-trace into a string
  */
 function stringifyStackTrace(stackTrace: Array<any>): string {

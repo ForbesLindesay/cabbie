@@ -28,12 +28,12 @@ import WindowHandle from './window-handle';
 
 const deprecate = depd('cabbie');
 
-/*
+/**
  * Create a new Driver session, remember to call `.dispose()`
  * at the end to terminate the session.
  */
 class Driver {
-  /*
+  /**
    * The current session.  You can pass this session to createCabbieDriver to convert
    * between sync and async drivers.  e.g.
    *
@@ -43,60 +43,60 @@ class Driver {
    */
   session: Promise<Session>;
 
-  /*
+  /**
    * @private
    */
   debug: Debug;
 
-  /*
+  /**
    * @private
    */
   _connection: Connection;
 
-  /*
+  /**
    * The location of the selenium server
    */
   remote: string;
 
-  /*
+  /**
    * The options that were originally passed in to createCabbieDriver
    */
   options: Options;
 
-  /*
+  /**
    * The browser object.
    *
    * @private
    */
   browser: Browser;
 
-  /*
+  /**
    * Timeout configuration
    */
   timeOut: TimeOut;
 
-  /*
+  /**
    * The currently active window.  This has most of the methods to interact with
    * the the current page.
    */
   activeWindow: ActiveWindow;
 
-  /*
+  /**
    * Get the IME object.
    */
   ime: IME;
 
-  /*
+  /**
    * Get the Cookie-Storage object.
    */
   cookieStorage: CookieStorage;
 
-  /*
+  /**
    * Get the Local-Storage object.
    */
   localStorage: LocalStorage;
 
-  /*
+  /**
    * Get the Session-Storage object.
    */
   sessionStorage: SessionStorage;
@@ -186,7 +186,7 @@ class Driver {
     return createSession(remote, this._connection, options);
   }
 
-  /*
+  /**
    * Performs a context dependent JSON request for the current session.
    * The result is parsed for errors.
    * @private
@@ -196,7 +196,7 @@ class Driver {
     return this._connection.requestWithSession(session, method, path, {json: body});
   }
 
-  /*
+  /**
    * Get an array of windows for all available windows
    */
   async getWindows(): Promise<Array<WindowHandle>> {
@@ -206,56 +206,56 @@ class Driver {
     });
   }
 
-  /*
+  /**
    * Get the current browser orientation
    */
   async getOrientation(): Promise<BrowserOrientation> {
     return this.requestJSON('GET', '/orientation');
   }
 
-  /*
+  /**
    * Get the current browser orientation
    */
   async setOrientation(orientation: BrowserOrientation): Promise<void> {
     await this.requestJSON('POST', '/orientation', {orientation});
   }
 
-  /*
+  /**
    * Get the current geo location
    */
   async getGeoLocation(): Promise<{latitude: number, longitude: number, altitude: number}> {
     return await this.requestJSON('GET', '/location');
   }
 
-  /*
+  /**
    * Set the current geo location
    */
   async setGeoLocation(loc: {latitude: number, longitude: number, altitude: number}): Promise<void> {
     await this.requestJSON('POST', '/location', loc);
   }
 
-  /*
+  /**
    * Get the status of the html5 application cache
    */
   async getApplicationCacheStatus(): Promise<ApplicationCacheStatus> {
     return await this.requestJSON('GET', '/application_cache/status');
   }
 
-  /*
+  /**
    * Get the log for a given log type. Log buffer is reset after each request.
    */
   async getLogs(logType: string): Promise<Array<LogEntry>> {
     return await this.requestJSON('POST', '/log', {type: logType});
   }
 
-  /*
+  /**
    * Get available log types
    */
   async getLogTypes(): Promise<Array<string>> {
     return await this.requestJSON('GET', '/log/types');
   }
 
-  /*
+  /**
    * End this Driver session
    */
   async dispose(status?: any): Promise<void> {
@@ -268,7 +268,7 @@ class Driver {
     }
   }
 
-  /*
+  /**
    * Sauce Labs Methods
    */
   async sauceJobUpdate(body: any): Promise<boolean> {
@@ -298,7 +298,7 @@ class Driver {
   // TODO: provide instructions for converting async driver to sync driver and visa versersa
 }
 
-/*
+/**
  * End this Driver session
  *
  * Alias for `dispose`

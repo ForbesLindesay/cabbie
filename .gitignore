@@ -16,3 +16,5 @@ node_modules
 /output
 /test/async
 /test/sync
+
+/lib/

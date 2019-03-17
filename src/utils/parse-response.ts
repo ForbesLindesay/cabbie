@@ -1,11 +1,11 @@
-import {HttpResponse} from '../flow-types/http-response';
 import {WebdriverResponse} from '../flow-types/webdriver-response';
 import {fromBody} from './errors';
+import { Response } from 'then-request';
 
 /**
  * Parse a webdriver response, throwing errors if the status suggests it
  */
-function parseResponse(res: HttpResponse): WebdriverResponse {
+function parseResponse(res: Response): WebdriverResponse {
   const bodyString = res.body.toString('utf8');
 
   if (res.statusCode >= 0 && res.statusCode < 100) {

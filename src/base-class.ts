@@ -1,7 +1,7 @@
-import {HttpMethod} from './flow-types/http-method';
 import {WebdriverResponse} from './flow-types/webdriver-response';
 import Debug from './debug';
 import Driver from './driver';
+import { HttpVerb } from 'http-basic';
 
 class BaseClass {
   /**
@@ -31,7 +31,7 @@ class BaseClass {
    *
    * @private
    */
-  requestJSON(method: HttpMethod, path: string, body?: any): Promise<WebdriverResponse> {
+  requestJSON(method: HttpVerb, path: string, body?: any): Promise<WebdriverResponse> {
     return this.driver.requestJSON(method, this._prefix + path, body);
   }
 }

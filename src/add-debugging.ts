@@ -16,7 +16,7 @@ function addLogging(
       return;
     }
     const fun = proto[name];
-    proto[name] = async function(...args) {
+    proto[name] = async function(...args: any) {
       const start = Date.now();
       let result;
       try {

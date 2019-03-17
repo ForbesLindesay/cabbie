@@ -212,7 +212,7 @@ class Element extends BaseClass {
    */
   async getElements(selector: string, selectorType: SelectorType = SelectorType.CSS): Promise<Array<Element>> {
     const elementHandles = await this.requestJSON('POST', '/elements', {using: selectorType, value: selector});
-    return elementHandles.map(elementHandle => {
+    return elementHandles.map((elementHandle: ElementHandle) => {
       return new Element(this.driver, this, [this._selector, selector].join(' '), elementHandle);
     });
   }
@@ -295,7 +295,7 @@ class Element extends BaseClass {
   }
 }
 addDebugging(Element, {
-  inspect(obj, depth, options) {
+  inspect(obj, _depth, options) {
     return 'Element(' + inspect(obj._selector, options) + ')';
   },
 });

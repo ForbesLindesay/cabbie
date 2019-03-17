@@ -1,6 +1,6 @@
 import {inspect} from 'util';
 import chalk from 'chalk';
-import ms from 'ms';
+import ms = require('ms');
 import {Options} from './flow-types/options';
 
 export type CallEvent = {
@@ -56,7 +56,8 @@ class Debug {
   }
   onCall(event: CallEvent) {
     if (logBufferStack.length) {
-      return logBufferStack[logBufferStack.length - 1].push({d: this, e: event});
+      logBufferStack[logBufferStack.length - 1].push({d: this, e: event});
+      return;
     }
     if (this.options.debug && event.name !== 'requestJSON') {
       let message = (event.success ? chalk.magenta(' • ') : chalk.red(' ✗ ')) +
@@ -94,8 +95,10 @@ export function discardBufferedLogs() {
 }
 export function printBufferedLogs() {
   const logs = logBufferStack.pop();
-  logs.forEach(({d, e}) => {
-    d.onCall(e);
-  });
+  if (logs) {
+    logs.forEach(({d, e}) => {
+      d.onCall(e);
+    });
+  }
 }
 export default Debug;

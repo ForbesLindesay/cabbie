@@ -49,7 +49,7 @@ class CookieStorage extends BaseClass {
    */
   async getKeys(): Promise<Array<string>> {
     const cookies = await this.requestJSON('GET', '');
-    return cookies.map(cookie => cookie.name);
+    return cookies.map((cookie: {name: string}) => cookie.name);
   }
 
   /**

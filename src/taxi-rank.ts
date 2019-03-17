@@ -1,13 +1,15 @@
 import {connect, createServer} from 'net';
+import { Writable } from 'stream';
 
 const start = Date.now();
 
-function hookStream(stream, callback) {
+function hookStream(stream: Writable, callback: (d: any) => void) {
   const oldWrite = stream.write;
 
-  (stream as any).write = function() {
-    oldWrite.apply(stream, arguments);
-    callback.apply(null, arguments);
+  stream.write = function(...args: any) {
+    const result = oldWrite.apply(stream, args);
+    callback.apply(null, args);
+    return result;
   };
 
   return () => {

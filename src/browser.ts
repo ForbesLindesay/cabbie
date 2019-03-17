@@ -55,7 +55,7 @@ class Browser extends BaseClass {
    */
   async getWindows(): Promise<Array<WindowHandle>> {
     const windowHandles = await this.requestJSON('GET', '/window_handles');
-    return windowHandles.map(windowHandle => {
+    return windowHandles.map((windowHandle: string) => {
       return new WindowHandle(this.driver, windowHandle);
     });
   }

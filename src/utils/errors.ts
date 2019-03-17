@@ -48,7 +48,7 @@ export const names = {
 export function fromBody(body: any): Error {
   const msg = body.value && body.value.message ? body.value.message : body.value;
   const err = new Error(msg);
-  err.name = names[body.status] || 'UnknownSeleniumError';
-  (err as any).code = names[body.status] || 'UnknownSeleniumError';
+  err.name = (names as any)[body.status] || 'UnknownSeleniumError';
+  (err as any).code = (names as any)[body.status] || 'UnknownSeleniumError';
   return err;
 }

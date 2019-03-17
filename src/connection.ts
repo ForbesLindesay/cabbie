@@ -1,9 +1,7 @@
-import {HttpMethod} from './flow-types/http-method';
 import {WebdriverResponse} from './flow-types/webdriver-response';
-import {HttpResponse} from './flow-types/http-response';
 import {Session} from './flow-types/session-data';
 import Debug from './debug';
-import autoRequest from 'then-request';
+import autoRequest, {Response, HttpVerb} from 'then-request';
 import autoSleep from './utils/then-sleep';
 import parseResponse from './utils/parse-response';
 
@@ -33,7 +31,7 @@ class Connection {
    */
   async requestWithSession(
     session: Session,
-    method: HttpMethod,
+    method: HttpVerb,
     uri: string,
     options?: any,
   ): Promise<WebdriverResponse> {
@@ -48,7 +46,7 @@ class Connection {
   /**
    * Make a request without using the current session.
    */
-  async request(method: HttpMethod, uri: string, options?: any): Promise<HttpResponse> {
+  async request(method: HttpVerb, uri: string, options?: any): Promise<Response> {
     if (!/^https?\:\:\/\//.test(uri)) {
       uri = this.remoteURI + uri;
     }

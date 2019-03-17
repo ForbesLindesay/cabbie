@@ -1,30 +1,27 @@
 import ApplicationCacheStatus from './enums/application-cache-statuses';
 import BrowserOrientation from './enums/browser-orientations';
-import {HttpMethod} from './flow-types/http-method';
 import {Options} from './flow-types/options';
 import {Session} from './flow-types/session-data';
 import {LogEntry} from './log-entry';
 import {parse as parseURL} from 'url';
 import {readFileSync} from 'fs';
 import {parse as parseEnv} from 'dotenv';
-import depd from 'depd';
-import getBrowser from 'available-browsers';
-import spawn from 'cross-spawn';
+import depd = require('depd');
+import spawn = require('cross-spawn');
 import addDebugging from './add-debugging';
-import autoRequest from 'then-request';
+import autoRequest, {HttpVerb} from 'then-request';
 import {fromBody} from './utils/errors';
 import Connection from './connection';
 import Browser from './browser';
 import Debug from './debug';
 import TimeOut from './time-out';
-import Status from './status';
-import parseResponse from './utils/parse-response';
 import ActiveWindow from './active-window';
 import IME from './ime';
 import CookieStorage from './cookie-storage';
 import LocalStorage from './local-storage';
 import SessionStorage from './session-storage';
 import WindowHandle from './window-handle';
+const getBrowser = require('available-browsers');
 
 const deprecate = depd('cabbie');
 
@@ -115,7 +112,7 @@ class Driver {
         : {}),
       ...(options.capabilities || {}),
     };
-    const remoteAliases = {
+    const remoteAliases: {[key: string]: string} = {
       'chrome-driver': 'chromedriver',
       'taxi-rank': 'taxirank',
       'sauce-labs': 'saucelabs',
@@ -191,7 +188,7 @@ class Driver {
    * The result is parsed for errors.
    * @private
    */
-  async requestJSON(method: HttpMethod, path: string, body?: any): Promise<any> {
+  async requestJSON(method: HttpVerb, path: string, body?: any): Promise<any> {
     const session = await this.session;
     return this._connection.requestWithSession(session, method, path, {json: body});
   }
@@ -201,7 +198,7 @@ class Driver {
    */
   async getWindows(): Promise<Array<WindowHandle>> {
     const windowHandles = await this.requestJSON('GET', '/window_handles');
-    return windowHandles.map(windowHandle => {
+    return windowHandles.map((windowHandle: string) => {
       return new WindowHandle(this, windowHandle);
     });
   }
@@ -423,16 +420,16 @@ async function createSession(remote: string, connection: Connection, options: Op
   }
 }
 
-const environmentAliases = {
+const environmentAliases: {[key: string]: keyof Options} = {
   SAUCE_USERNAME: 'sauceUsername',
   SAUCE_ACCESS_KEY: 'sauceAccessKey',
   BROWSER_STACK_USERNAME: 'browserStackUsername',
   BROWSER_STACK_ACCESS_KEY: 'browserStackAccessKey',
-  TESTING_BOT_KEY: 'testingBotkey',
+  TESTING_BOT_KEY: 'testingBotKey',
   TESTING_BOT_SECRET: 'testingBotSecret',
 
   // deprecated aliases
-  TESTINGBOT_KEY: 'testingBotkey',
+  TESTINGBOT_KEY: 'testingBotKey',
   TESTINGBOT_SECRET: 'testingBotSecret',
 };
 function addEnvironment(options: Options): Options {

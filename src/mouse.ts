@@ -1,10 +1,10 @@
 import MouseButton from './enums/mouse-buttons';
-import {HttpMethod} from './flow-types/http-method';
 import Debug from './debug';
 import Driver from './driver';
 import Element from './element';
 import {inspect} from 'util';
 import addDebugging from './add-debugging';
+import { HttpVerb } from 'then-request';
 
 /**
  * Mouse commands relative to a DOM-element
@@ -28,7 +28,7 @@ class Mouse {
   /**
    * @private
    */
-  async requestJSON(method: HttpMethod, path: string, body?: any): Promise<any> {
+  async requestJSON(method: HttpVerb, path: string, body?: any): Promise<any> {
     return await this._parent.requestJSON(method, path, body);
   }
 

@@ -26,7 +26,7 @@ export async function getSessions(remote: string, options: Options = {}): Promis
   const connection = new Connection(remote, remote, new Debug(options));
   const rawSessions = await connection.request('GET', '/sessions');
   const sessions = parseResponse(rawSessions);
-  return sessions.map(session => ({sessionID: session.id, capabilities: session.capabilities}));
+  return sessions.map((session: any) => ({sessionID: session.id, capabilities: session.capabilities}));
 }
 
 /**
@@ -62,7 +62,7 @@ export function startChromedriver(): void {
   }
   const cd = chromedriver;
   cd.start().unref();
-  process.once('exit', code => {
+  process.once('exit', () => {
     cd.stop();
   });
   chromedriverRunning = true;

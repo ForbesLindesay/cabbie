@@ -1,18 +1,12 @@
 import TimeOutType from './enums/time-out-types';
 import Driver from './driver';
 import addDebugging from './add-debugging';
-import ms from 'ms';
+import ms = require('ms');
 import BaseClass from './base-class';
 import TimeOutTypes from './enums/time-out-types';
 
 export type TimeoutValue = number | string;
 
-// export type TimeOutsConfig = {
-//   'script'?: TimeoutValue,
-//   'async'?: TimeoutValue,
-//   'page load'?: TimeoutValue,
-//   'implicit'?: TimeoutValue,
-// };
 export type TimeOutsConfig = {
   [key in TimeOutTypes]?: TimeoutValue;
 }
@@ -61,8 +55,9 @@ class TimeOut extends BaseClass {
       TimeOutType.ASYNC_SCRIPT,
       TimeOutType.PAGE_LOAD,
     ].map(async timeOutType => {
-      if (timeOuts[timeOutType] != null) {
-        await this.setTimeOut(timeOutType, timeOuts[timeOutType]);
+      const timeOutValue = timeOuts[timeOutType];
+      if (timeOutValue != null) {
+        await this.setTimeOut(timeOutType, timeOutValue);
       }
     }));
   }

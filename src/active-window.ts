@@ -1,7 +1,7 @@
 import SelectorType from './enums/selector-types';
 import Driver from './driver';
 import {Options} from './flow-types/options';
-import depd from 'depd';
+import depd = require('depd');
 import {resolve} from 'url';
 import Alert from './alert';
 import addDebugging from './add-debugging';
@@ -13,6 +13,7 @@ import Navigator from './navigator';
 import BaseWindow from './base-window';
 import WindowHandle from './window-handle';
 import waitFor from './utils/wait-for';
+import { ElementHandle } from './flow-types/element-handle';
 
 const deprecate = depd('cabbie');
 
@@ -157,7 +158,7 @@ class ActiveWindow extends BaseWindow {
    */
   async getElements(selector: string, selectorType: SelectorType = SelectorType.CSS): Promise<Array<Element>> {
     const elementHandles = await this.driver.requestJSON('POST', '/elements', {using: selectorType, value: selector});
-    return elementHandles.map(elementHandle => {
+    return elementHandles.map((elementHandle: ElementHandle) => {
       return new Element(this.driver, this.driver, selector, elementHandle);
     });
   }
@@ -316,7 +317,6 @@ class ActiveWindow extends BaseWindow {
  */
 function codeToString(code: string | Function): string {
   if (typeof code === 'function') {
-    // $FlowFixMe: intentionally concatenating string onto end of code
     return 'return (' + code + ').apply(null, arguments);';
   } else {
     return code;

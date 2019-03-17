@@ -1,13 +1,26 @@
 {
   "compilerOptions": {
-    "declaration": true,
+    "target": "es2018",
+    "module": "commonjs",
+    "moduleResolution": "Node",
+    "noImplicitAny": true,
+    "skipLibCheck": true,
+    "experimentalDecorators": false,
+    "importHelpers": false,
+    "pretty": true,
+    "sourceMap": true,
+    "strict": true,
+    "esModuleInterop": false,
     "outDir": "lib",
-    "lib":[
-      "es2015",
-      "es2016",
-      "es2017",
-      "dom"
-    ]
+    "forceConsistentCasingInFileNames": true,
+    "noEmitOnError": false,
+    "noErrorTruncation": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "declaration": true,
+    "lib": ["es2018"]
   },
   "include": ["src"]
 }

@@ -1,11 +1,10 @@
-
 <a href="https://cabbiejs.org">
   <img src="logo/logo.svg" width="100%" height="144">
 </a>
 
 # Cabbie
 
-A synchronous and asynchronous webdriver client for node.js.  This client is completely standalone so you can use your choice of test framework: jest, mocha, jasmine, tap.......you decide!
+A synchronous and asynchronous webdriver client for node.js. This client is completely standalone so you can use your choice of test framework: jest, mocha, jasmine, tap.......you decide!
 
 [![Build Status](https://img.shields.io/travis/ForbesLindesay/cabbie/master.svg)](https://travis-ci.org/ForbesLindesay/cabbie)
 [![Dependency Status](https://img.shields.io/david/ForbesLindesay/cabbie.svg)](https://david-dm.org/ForbesLindesay/cabbie)
@@ -33,4 +32,4 @@ To write sync tests, see https://cabbiejs.org
 
 ## License
 
-  MIT
+MIT

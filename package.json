@@ -1,6 +1,11 @@
 {
-  "name": "cabbie",
+  "name": "cabbie-monorepo",
   "private": true,
+  "bolt": {
+    "workspaces": [
+      "packages/*"
+    ]
+  },
   "version": "0.12.1",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -10,18 +15,15 @@
     "webdriver"
   ],
   "dependencies": {
+    "@babel/core": "^7.3.4",
+    "@types/babel__core": "^7.1.0",
     "@types/cross-spawn": "^6.0.0",
     "@types/depd": "^1.1.32",
     "@types/dotenv": "^6.1.0",
+    "@types/mkdirp": "^0.5.2",
     "@types/ms": "^0.7.30",
     "@types/node": "^10.1.2",
     "available-browsers": "^1.0.3",
-    "cross-spawn": "^6.0.5",
-    "depd": "^2.0.0",
-    "dotenv": "^7.0.0",
-    "taxi-rank": "^2.1.0"
-  },
-  "devDependencies": {
     "babel-cli": "^6.18.0",
     "babel-core": "^6.22.1",
     "babel-live": "^4.0.1",
@@ -34,22 +36,27 @@
     "babel-runtime": "^6.20.0",
     "babelify": "^7.3.0",
     "body-parser": "^1.16.0",
+    "bolt": "^0.22.6",
     "browserify-middleware": "^7.1.0",
     "chalk": "^2.4.2",
     "chromedriver": "^2.21.2",
     "concurrently": "^3.5.0",
+    "cross-spawn": "^6.0.5",
     "deep-equal": "^1.0.1",
+    "depd": "^2.0.0",
+    "dotenv": "^7.0.0",
     "envify": "^4.0.0",
     "express": "^4.14.0",
     "flow-bin": "^0.95.0",
     "flow-runtime": "0.6.0",
+    "flowgen2": "^2.2.0",
     "highlight.js": "^9.9.0",
-    "lsr": "^1.0.0",
+    "lsr": "^2.0.0",
     "markdown-it": "^8.2.2",
     "mkdirp": "^0.5.1",
     "ms": "^0.7.2",
     "pluralize": "^3.1.0",
-    "prettier": "0.19.0",
+    "prettier": "^1.16.4",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
     "react-router": "4.0.0-alpha.6",
@@ -58,19 +65,20 @@
     "s3": "^4.4.0",
     "stop": "^3.1.0",
     "styled-components": "^2.0.0",
-    "sync-request": "^4.1.0",
+    "sync-request": "^6.1.0",
+    "taxi-rank": "^2.1.0",
     "then-request": "^6.0.0",
-    "thread-sleep": "^2.0.0",
+    "thread-sleep": "^2.2.0",
     "throat": "^3.0.0",
     "typescript": "^3.3.3333"
   },
   "scripts": {
-    "prettier": "node scripts/prettier",
+    "prettier": "prettier --write 'packages/*/{src,scripts}/**/*.{ts,tsx,js,jsx,json,yml,md}' '*.{ts,tsx,js,jsx,json,yml,md}' '.circleci/config.yml'",
     "prewww": "npm run prettier",
     "www": "babel-node www",
     "www:publish": "NODE_ENV=production babel-node www/publish",
     "prebuild": "npm run prettier",
-    "build": "babel-node scripts/build",
+    "build": "bolt ws run build",
     "pretest": "babel-node scripts/build --only-tests",
     "test": "babel-node test/sync/src && babel-node test/async/src",
     "test:record": "npm run pretest && babel-node test/async/src --record",
@@ -92,5 +100,8 @@
       "email": "marcel.erz@gmail.com"
     }
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "ts-node": "^8.0.3"
+  }
 }

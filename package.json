@@ -79,6 +79,7 @@
     "www:publish": "NODE_ENV=production babel-node www/publish",
     "prebuild": "npm run prettier",
     "build": "bolt ws run build",
+    "postbuild": "mkdirp tarballs && cd tarballs && npm pack ./../packages/*",
     "pretest": "babel-node scripts/build --only-tests",
     "test": "babel-node test/sync/src && babel-node test/async/src",
     "test:record": "npm run pretest && babel-node test/async/src --record",

@@ -81,3 +81,61 @@ export function startChromedriver(): void {
 }
 
 export {waitFor};
+
+// BEGIN_GENERATED_CODE
+
+import ActiveWindow from './active-window';
+import Alert from './alert';
+import ApplicationCacheStatuses from './enums/application-cache-statuses';
+import Browser from './browser';
+import BrowserOrientations from './enums/browser-orientations';
+import Capabilities from './enums/capabilities';
+import CookieStorage from './cookie-storage';
+import Element from './element';
+import Frame from './frame';
+import GlobalMouse from './global-mouse';
+import GlobalTouch from './global-touch';
+import IME from './ime';
+import KeyboardKeys from './enums/keyboard-keys';
+import LocalStorage from './local-storage';
+import LogLevels from './enums/log-levels';
+import LogSources from './enums/log-sources';
+import Modes from './enums/modes';
+import Mouse from './mouse';
+import MouseButtons from './enums/mouse-buttons';
+import Navigator from './navigator';
+import SelectorTypes from './enums/selector-types';
+import SessionStorage from './session-storage';
+import TimeOut from './time-out';
+import TimeOutTypes from './enums/time-out-types';
+import Touch from './touch';
+import WindowHandle from './window-handle';
+
+export {
+  ActiveWindow,
+  Alert,
+  ApplicationCacheStatuses,
+  Browser,
+  BrowserOrientations,
+  Capabilities,
+  CookieStorage,
+  Element,
+  Frame,
+  GlobalMouse,
+  GlobalTouch,
+  IME,
+  KeyboardKeys,
+  LocalStorage,
+  LogLevels,
+  LogSources,
+  Modes,
+  Mouse,
+  MouseButtons,
+  Navigator,
+  SelectorTypes,
+  SessionStorage,
+  TimeOut,
+  TimeOutTypes,
+  Touch,
+  WindowHandle,
+};

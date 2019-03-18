@@ -32,10 +32,13 @@
   },
   "devDependencies": {
     "flowgen2": "^2.2.0",
+    "ts-node": "^8.0.3",
     "typescript": "^3.3.3333"
   },
   "scripts": {
+    "prebuild": "yarn expose-types",
     "build": "tsc",
-    "postbuild": "cd lib && flowgen \"**/*.d.ts\""
+    "postbuild": "cd lib && flowgen \"**/*.d.ts\"",
+    "expose-types": "cd scripts && ts-node expose-types"
   }
 }

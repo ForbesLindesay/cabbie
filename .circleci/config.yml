@@ -19,12 +19,20 @@ refs:
       command: yarn build
   - &test_async
     run:
-      name: Test Async
+      name: Test Async (TypeScript)
       command: yarn test:async:replay
   - &test_sync
     run:
-      name: Test Sync
+      name: Test Sync (TypeScript)
       command: yarn test:sync:replay
+  - &test_async_flow
+    run:
+      name: Test Async (Flow)
+      command: yarn test:async:flow:replay
+  - &test_sync_flow
+    run:
+      name: Test Sync (Flow)
+      command: yarn test:sync:flow:replay
 
 jobs:
   all:
@@ -36,6 +44,8 @@ jobs:
       - *build
       - *test_async
       - *test_sync
+      - *test_async_flow
+      - *test_sync_flow
 
   master:
     <<: *container
@@ -46,6 +56,8 @@ jobs:
       - *build
       - *test_async
       - *test_sync
+      - *test_async_flow
+      - *test_sync_flow
 
 workflows:
   version: 2

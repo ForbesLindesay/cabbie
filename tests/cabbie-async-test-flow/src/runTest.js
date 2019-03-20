@@ -1,6 +1,8 @@
+// @flow
+
 import {Driver, getStatus, MouseButtons, SelectorTypes} from 'cabbie-async';
 import chalk from 'chalk';
-import assert = require('assert');
+import assert from 'assert';
 
 async function test(name: string, fn: () => Promise<void>) {
   console.log(chalk.blue(name));

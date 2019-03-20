@@ -1,0 +1,21 @@
+{
+  "name": "cabbie-sync-test",
+  "private": true,
+  "dependencies": {
+    "@babel/core": "^7.4.0",
+    "@types/babel__core": "^7.1.0",
+    "@types/mkdirp": "^0.5.2",
+    "assert-never": "^1.1.0",
+    "babel-plugin-remove-async": "../../source/tarballs/babel-plugin-remove-async-0.12.1.tgz",
+    "cabbie-sync": "../../source/tarballs/cabbie-sync-0.12.1.tgz",
+    "chromedriver": "^2.46.0",
+    "lsr": "^2.0.0",
+    "mkdirp": "^0.5.1",
+    "ts-node": "^8.0.3",
+    "typescript": "^3.3.4000"
+  },
+  "scripts": {
+    "pretest": "cd scripts && ts-node prebuild",
+    "test": "ts-node src"
+  }
+}

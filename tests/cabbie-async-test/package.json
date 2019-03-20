@@ -2,11 +2,8 @@
   "name": "cabbie-async-test",
   "private": true,
   "dependencies": {
-    "assert-never": "^1.1.0",
     "cabbie-async": "../../source/tarballs/cabbie-async-0.12.1.tgz",
     "chromedriver": "^2.46.0",
-    "record-replay-proxy": "../../source/tarballs/record-replay-proxy-0.12.1.tgz",
-    "sync-request": "^6.1.0",
     "ts-node": "^8.0.3",
     "typescript": "^3.3.4000"
   },

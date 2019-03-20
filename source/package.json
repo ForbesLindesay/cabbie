@@ -24,6 +24,7 @@
     "@types/mkdirp": "^0.5.2",
     "@types/ms": "^0.7.30",
     "@types/node": "^10.1.2",
+    "assert-never": "^1.1.0",
     "available-browsers": "^1.0.3",
     "babel-cli": "^6.18.0",
     "babel-core": "^6.22.1",
@@ -40,7 +41,7 @@
     "bolt": "^0.22.6",
     "browserify-middleware": "^7.1.0",
     "chalk": "^2.4.2",
-    "chromedriver": "^2.21.2",
+    "chromedriver": "^2.46.0",
     "concurrently": "^3.5.0",
     "cross-spawn": "^6.0.5",
     "deep-equal": "^1.0.1",
@@ -71,7 +72,7 @@
     "then-request": "^6.0.0",
     "thread-sleep": "^2.2.0",
     "throat": "^3.0.0",
-    "typescript": "^3.3.3333"
+    "typescript": "^3.3.4000"
   },
   "scripts": {
     "prettier": "prettier --write 'packages/*/{src,scripts}/**/*.{ts,tsx,js,jsx,json,yml,md}' '*.{ts,tsx,js,jsx,json,yml,md}' '.circleci/config.yml'",

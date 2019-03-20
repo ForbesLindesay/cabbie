@@ -20,7 +20,9 @@ refs:
   - &test
     run:
       name: Test
-      command: cd tests/cabbie-async-test && npm i && npm test -- chromedriver --replay fixtures/snapshot.json
+      command:
+        cd tests/cabbie-async-test && npm i && npm test -- chromedriver --replay ../snapshot.json &&\
+        cd ../cabbie-sync-test && npm i && npm test -- chromedriver --replay ../snapshot.json
 
 jobs:
   all:

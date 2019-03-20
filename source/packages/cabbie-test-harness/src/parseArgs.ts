@@ -2,7 +2,6 @@ import {resolve} from 'path';
 import assertNever from 'assert-never';
 import {ProxyOptions, ProxyMode} from 'record-replay-proxy';
 import {statSync} from 'fs';
-import {Options} from 'cabbie-async';
 
 export enum Remote {
   chromedriver = 'chromedriver',
@@ -75,7 +74,11 @@ function getProxyOptions(remote: Remote, args: string[]) {
   }
   return proxyOptions;
 }
-function getCabbieOptions(remote: Remote): Options {
+export interface CabbieOptions {
+  capabilities?: {[key: string]: string};
+  browser?: {name: string};
+}
+function getCabbieOptions(remote: Remote): CabbieOptions {
   switch (remote) {
     case Remote.chromedriver:
     case Remote.taxirank:

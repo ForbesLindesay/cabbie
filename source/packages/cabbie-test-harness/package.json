@@ -1,0 +1,22 @@
+{
+  "name": "cabbie-test-harness",
+  "version": "0.12.1",
+  "private": true,
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "dependencies": {
+    "assert-never": "^1.1.0",
+    "chromedriver": "^2.46.0",
+    "record-replay-proxy": "0.12.1",
+    "sync-request": "^6.1.0",
+    "ts-node": "^8.0.3",
+    "typescript": "^3.3.4000"
+  },
+  "bundleDependencies": [
+    "record-replay-proxy"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "postbuild": "cd lib && flowgen \"**/*.d.ts\""
+  }
+}

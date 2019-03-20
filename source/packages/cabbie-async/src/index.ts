@@ -6,6 +6,8 @@ import Driver from './driver';
 import parseResponse from './utils/parse-response';
 import Status from './status';
 import waitFor from './utils/wait-for';
+import startChromedriver from './startChromedriver';
+import resolveConfig from './config';
 
 export {Connection, Debug, Driver, Status};
 
@@ -29,7 +31,12 @@ export async function getSessions(
   remote: string,
   options: Options = {},
 ): Promise<Array<Session>> {
-  const connection = new Connection(remote, remote, new Debug(options));
+  const resolved = resolveConfig(remote, options);
+  const connection = new Connection(
+    resolved.remote,
+    resolved.remoteURI,
+    new Debug(resolved.options),
+  );
   const rawSessions = await connection.request('GET', '/sessions');
   const sessions = parseResponse(rawSessions);
   return sessions.map((session: any) => ({
@@ -45,42 +52,18 @@ export async function getStatus(
   remote: string,
   options: Options = {},
 ): Promise<Status> {
-  const connection = new Connection(remote, remote, new Debug(options));
+  const resolved = resolveConfig(remote, options);
+  const connection = new Connection(
+    resolved.remote,
+    resolved.remoteURI,
+    new Debug(resolved.options),
+  );
   const rawResponse = await connection.request('GET', '/status');
   const response = parseResponse(rawResponse);
   return new Status(response);
 }
 
-let chromedriverRunning = false;
-/**
- * Start a chromedriver instance.  You must have installed chromedriver to use this:
- *
- * ```
- * npm install chromedriver --save-dev
- * ```
- */
-export function startChromedriver(): void {
-  if (chromedriverRunning) {
-    return;
-  }
-  let chromedriver;
-  try {
-    chromedriver = (require as any)('chromedriver');
-  } catch (ex) {
-    throw new Error(
-      'You must install the chromedriver module via "npm install chromedriver --save-dev" to call ' +
-        'cabbie.startChromedriver();',
-    );
-  }
-  const cd = chromedriver;
-  cd.start().unref();
-  process.once('exit', () => {
-    cd.stop();
-  });
-  chromedriverRunning = true;
-}
-
-export {waitFor};
+export {waitFor, startChromedriver};
 
 // BEGIN_GENERATED_CODE
 

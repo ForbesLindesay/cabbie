@@ -109,4 +109,10 @@ export type Options = {
    * Testing bot secret (normally you should just set the TESTING_BOT_SECRET environment variable)
    */
   testingBotSecret?: string;
+  /**
+   * The port number on which selenium hub is running (you can alternatively just set the SELENIUM_HUB_PORT enviornment variable).
+   *
+   * Defaults to 4444
+   */
+  seleniumHubPort?: number | string;
 };

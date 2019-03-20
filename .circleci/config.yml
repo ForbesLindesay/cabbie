@@ -5,16 +5,6 @@ refs:
     docker:
       - image: node:8.11
     working_directory: ~/repo
-  - &restore_cache
-    restore_cache:
-      keys:
-        - v1-dependencies-{{ checksum "yarn.lock" }}
-        - v1-dependencies-
-  - &save_cache
-    save_cache:
-      paths:
-        - node_modules
-      key: v1-dependencies-{{ checksum "yarn.lock" }}
   - &npm_auth
     run:
       name: NPM Auth
@@ -22,25 +12,23 @@ refs:
   - &install
     run:
       name: Yarn Install
-      command: yarn
+      command: cd source && yarn install --frozen-lockfile && npx bolt
   - &build
     run:
       name: Build
-      command: yarn build
+      command: cd source && yarn build
   - &test
     run:
       name: Test
-      command: yarn test
+      command: cd tests/cabbie-async-test && npm i && npm test -- chromedriver --replay fixtures/snapshot.json
 
 jobs:
   all:
     <<: *container
     steps:
       - checkout
-      - *restore_cache
       - *npm_auth
       - *install
-      - *save_cache
       - *build
       - *test
 
@@ -48,10 +36,8 @@ jobs:
     <<: *container
     steps:
       - checkout
-      - *restore_cache
       - *npm_auth
       - *install
-      - *save_cache
       - *build
       - *test
 

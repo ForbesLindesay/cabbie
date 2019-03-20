@@ -4,8 +4,6 @@ import {Options} from './flow-types/options';
 import {Session} from './flow-types/session-data';
 import {LogEntry} from './log-entry';
 import {parse as parseURL} from 'url';
-import {readFileSync} from 'fs';
-import {parse as parseEnv} from 'dotenv';
 import depd = require('depd');
 import spawn = require('cross-spawn');
 import addDebugging from './add-debugging';
@@ -21,7 +19,7 @@ import CookieStorage from './cookie-storage';
 import LocalStorage from './local-storage';
 import SessionStorage from './session-storage';
 import WindowHandle from './window-handle';
-const getBrowser = require('available-browsers');
+import resolveConfig from './config';
 
 const deprecate = depd('cabbie');
 
@@ -101,85 +99,25 @@ class Driver {
   _closeTaxiRank: any;
 
   constructor(remote: string, options: Options = {}) {
-    options = addEnvironment(options);
-    this.remote = remote;
-    this.options = options;
-    this.debug = new Debug(options);
-    let remoteURI = remote;
-    const capabilities: any = {
-      ...(options.browser &&
-      (remote === 'saucelabs' ||
-        remote === 'browserstack' ||
-        remote === 'testingbot')
-        ? getBrowser(
-            remote,
-            options.browser.name,
-            options.browser.version,
-            options.browser.platform,
-          )
-        : {}),
-      ...(options.capabilities || {}),
-    };
-    const remoteAliases: {[key: string]: string} = {
-      'chrome-driver': 'chromedriver',
-      'taxi-rank': 'taxirank',
-      'sauce-labs': 'saucelabs',
-      'browser-stack': 'browserstack',
-      'testing-bot': 'testingbot',
-    };
-    if (remote in remoteAliases) {
-      remote = remoteAliases[remote];
-    }
-    switch (remote) {
-      case 'chromedriver':
-        remoteURI = 'http://localhost:9515/';
-        break;
-      case 'taxirank':
-        remoteURI = 'http://localhost:9516';
-        break;
-      case 'saucelabs':
-        const {sauceUsername, sauceAccessKey} = options;
-        if (!sauceUsername || !sauceAccessKey) {
-          throw new Error(
-            'To use sauce labs, you must specify SAUCE_USERNAME and SAUCE_ACCESS_KEY in enviornment variables or ' +
-              'provide sauceUsername and sauceAccessKey as options.',
-          );
-        }
-        remoteURI = `http://${sauceUsername}:${sauceAccessKey}@ondemand.saucelabs.com/wd/hub`;
-        break;
-      case 'browserstack':
-        const {browserStackUsername, browserStackAccessKey} = options;
-        if (!browserStackUsername || !browserStackAccessKey) {
-          throw new Error(
-            'To use browserstack, you must specify BROWSER_STACK_USERNAME and BROWSER_STACK_ACCESS_KEY in ' +
-              'enviornment variables or provide browserStackUsername and browserStackAccessKey as options.',
-          );
-        }
-        remoteURI = 'http://hub-cloud.browserstack.com/wd/hub';
-        capabilities['browserstack.user'] = browserStackUsername;
-        capabilities['browserstack.key'] = browserStackAccessKey;
-        break;
-      case 'testingbot':
-        const {testingBotKey, testingBotSecret} = options;
-        if (!testingBotKey || !testingBotSecret) {
-          throw new Error(
-            'To use testingbot, you must specify TESTING_BOT_KEY and TESTING_BOT_SECRET in enviornment ' +
-              'variables or provide testingBotKey and testingBotSecret as options.',
-          );
-        }
-        remoteURI = `http://${testingBotKey}:${testingBotSecret}@hub.testingbot.com/wd/hub`;
-        break;
-    }
-    this._connection = new Connection(remote, remoteURI, this.debug);
-    this.session = this._createSession(remote, this._connection, {
-      ...options,
-      capabilities,
-    });
+    const resolved = resolveConfig(remote, options);
+    this.remote = resolved.remote;
+    this.options = resolved.options;
+    this.debug = new Debug(resolved.options);
+    this._connection = new Connection(
+      resolved.remote,
+      resolved.remoteURI,
+      this.debug,
+    );
+    this.session = this._createSession(
+      resolved.remote,
+      this._connection,
+      resolved.options,
+    );
 
-    this.browser = new Browser(this, options);
+    this.browser = new Browser(this, resolved.options);
     this.timeOut = new TimeOut(this);
 
-    this.activeWindow = new ActiveWindow(this, options);
+    this.activeWindow = new ActiveWindow(this, resolved.options);
     this.ime = new IME(this);
     this.cookieStorage = new CookieStorage(this);
     this.localStorage = new LocalStorage(this);
@@ -470,48 +408,6 @@ async function createSession(
   } else {
     throw fromBody(body);
   }
-}
-
-const environmentAliases: {[key: string]: keyof Options} = {
-  SAUCE_USERNAME: 'sauceUsername',
-  SAUCE_ACCESS_KEY: 'sauceAccessKey',
-  BROWSER_STACK_USERNAME: 'browserStackUsername',
-  BROWSER_STACK_ACCESS_KEY: 'browserStackAccessKey',
-  TESTING_BOT_KEY: 'testingBotKey',
-  TESTING_BOT_SECRET: 'testingBotSecret',
-
-  // deprecated aliases
-  TESTINGBOT_KEY: 'testingBotKey',
-  TESTINGBOT_SECRET: 'testingBotSecret',
-};
-function addEnvironment(options: Options): Options {
-  const result = {...options};
-
-  Object.keys(environmentAliases).forEach(key => {
-    if (result[environmentAliases[key]] === undefined && process.env[key]) {
-      result[environmentAliases[key]] = process.env[key];
-    }
-  });
-
-  try {
-    const parsedObj = parseEnv(readFileSync('.env.local', 'utf8'));
-    Object.keys(environmentAliases).forEach(key => {
-      if (result[environmentAliases[key]] === undefined && parsedObj[key]) {
-        result[environmentAliases[key]] = parsedObj[key];
-      }
-    });
-  } catch (e) {}
-
-  try {
-    const parsedObj = parseEnv(readFileSync('.env', 'utf8'));
-    Object.keys(environmentAliases).forEach(key => {
-      if (result[environmentAliases[key]] === undefined && parsedObj[key]) {
-        result[environmentAliases[key]] = parsedObj[key];
-      }
-    });
-  } catch (e) {}
-
-  return result;
 }
 
 addDebugging(Driver);

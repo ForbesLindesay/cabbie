@@ -47,19 +47,17 @@ class TimeOut extends BaseClass {
    * Set multiple time-outs at once
    */
   async setTimeOuts(timeOuts: TimeOutsConfig): Promise<void> {
-    await Promise.all(
-      [
-        TimeOutType.SCRIPT,
-        TimeOutType.IMPLICIT,
-        TimeOutType.ASYNC_SCRIPT,
-        TimeOutType.PAGE_LOAD,
-      ].map(async timeOutType => {
-        const timeOutValue = timeOuts[timeOutType];
-        if (timeOutValue != null) {
-          await this.setTimeOut(timeOutType, timeOutValue);
-        }
-      }),
-    );
+    for (const timeOutType of [
+      TimeOutType.SCRIPT,
+      TimeOutType.IMPLICIT,
+      TimeOutType.ASYNC_SCRIPT,
+      TimeOutType.PAGE_LOAD,
+    ]) {
+      const timeOutValue = timeOuts[timeOutType];
+      if (timeOutValue != null) {
+        await this.setTimeOut(timeOutType, timeOutValue);
+      }
+    }
   }
 
   /**

@@ -18,7 +18,7 @@ node_modules
 /test/sync
 
 /lib/
-/packages/*/lib
-/packages/cabbie-sync/src
-/packages/cabbie-sync/LICENSE
-/tarballs
+/source/packages/*/lib
+/source/packages/cabbie-sync/src
+/source/packages/cabbie-sync/LICENSE
+/source/tarballs

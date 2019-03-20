@@ -1,23 +1,19 @@
-// @flow
-
-import type {Driver} from 'cabbie-async';
-import {getSessions, getStatus, MouseButtons, SelectorTypes} from 'cabbie-async';
+import {Driver} from 'cabbie-async';
+import {
+  // getSessions,
+  getStatus,
+  MouseButtons,
+  SelectorTypes,
+} from 'cabbie-async';
 import chalk from 'chalk';
-import assert from 'assert';
+import assert = require('assert');
 
 async function test(name: string, fn: () => Promise<void>) {
   console.log(chalk.blue(name));
   await fn();
 }
 
-async function run(driver: Driver, location: string) {
-  async function checkText(elementSelector: string, expectedText: string) {
-    const element = await driver.activeWindow.getElement(elementSelector);
-    const actualText = await element.getText();
-    assert.equal(actualText, expectedText);
-    return element;
-  }
-
+export default async function run(driver: Driver, location: string) {
   await test('test timeouts', async () => {
     await driver.timeOut.setTimeOuts({implicit: '1s', async: '10s'});
   });
@@ -66,12 +62,18 @@ async function run(driver: Driver, location: string) {
   });
 
   await test('select a single element by name', async () => {
-    const element = await driver.activeWindow.getElement('q', SelectorTypes.NAME);
+    const element = await driver.activeWindow.getElement(
+      'q',
+      SelectorTypes.NAME,
+    );
     assert(element);
   });
 
   await test('select a single element by id and check tag name', async () => {
-    const inputField = await driver.activeWindow.getElement('inputField', SelectorTypes.ID);
+    const inputField = await driver.activeWindow.getElement(
+      'inputField',
+      SelectorTypes.ID,
+    );
     assert.equal(await inputField.getTagName(), 'input');
   });
 
@@ -84,36 +86,49 @@ async function run(driver: Driver, location: string) {
     const inputField = await driver.activeWindow.getElement('#inputField');
     assert(await inputField.hasClass('hasThisClass'));
     assert(await inputField.hasClass('andAnotherClass'));
-    assert(!await inputField.hasClass('doesNotHaveClass'));
+    assert(!(await inputField.hasClass('doesNotHaveClass')));
   });
 
   await test('compare elements', async () => {
     const inputField = await driver.activeWindow.getElement('#inputField');
-    const confirmButton = await driver.activeWindow.getElement('#confirm_button');
-    assert(!await inputField.isEqual(confirmButton));
-    assert(!await confirmButton.isEqual(inputField));
+    const confirmButton = await driver.activeWindow.getElement(
+      '#confirm_button',
+    );
+    assert(!(await inputField.isEqual(confirmButton)));
+    assert(!(await confirmButton.isEqual(inputField)));
 
-    const inputFieldByClass = await driver.activeWindow.getElement('hasThisClass', SelectorTypes.CLASS);
+    const inputFieldByClass = await driver.activeWindow.getElement(
+      'hasThisClass',
+      SelectorTypes.CLASS,
+    );
     assert(await inputField.isEqual(inputFieldByClass));
     assert(await inputFieldByClass.isEqual(inputField));
   });
 
   await test('check if an element is enabled', async () => {
-    const firstCheckBox = await driver.activeWindow.getElement('#firstCheckBox');
+    const firstCheckBox = await driver.activeWindow.getElement(
+      '#firstCheckBox',
+    );
     assert(await firstCheckBox.isEnabled());
-    assert(!await firstCheckBox.isDisabled());
+    assert(!(await firstCheckBox.isDisabled()));
 
-    const thirdCheckBox = await driver.activeWindow.getElement('#thirdCheckBox');
-    assert(!await thirdCheckBox.isEnabled());
+    const thirdCheckBox = await driver.activeWindow.getElement(
+      '#thirdCheckBox',
+    );
+    assert(!(await thirdCheckBox.isEnabled()));
     assert(await thirdCheckBox.isDisabled());
   });
 
   await test('check if an item is selected', async () => {
-    const firstCheckBox = await driver.activeWindow.getElement('#firstCheckBox');
+    const firstCheckBox = await driver.activeWindow.getElement(
+      '#firstCheckBox',
+    );
     assert(await firstCheckBox.isSelected());
 
-    const secondCheckBox = await driver.activeWindow.getElement('#secondCheckBox');
-    assert(!await secondCheckBox.isSelected());
+    const secondCheckBox = await driver.activeWindow.getElement(
+      '#secondCheckBox',
+    );
+    assert(!(await secondCheckBox.isSelected()));
   });
 
   await test('submit a form', async () => {
@@ -223,7 +238,7 @@ async function run(driver: Driver, location: string) {
 
   await test('check if element exist', async () => {
     assert(await driver.activeWindow.hasElement('.class-selectable'));
-    assert(!await driver.activeWindow.hasElement('.class2-selectable'));
+    assert(!(await driver.activeWindow.hasElement('.class2-selectable')));
   });
 
   await test('get a sub-element from a context', async () => {
@@ -244,7 +259,7 @@ async function run(driver: Driver, location: string) {
   await test('check if sub-elements exist', async () => {
     const container = await driver.activeWindow.getElement('#container');
     assert(await container.hasElement('.someSubElement'));
-    assert(!await container.hasElement('.somenNonExistentSubElement'));
+    assert(!(await container.hasElement('.somenNonExistentSubElement')));
   });
 
   await test('get the active element', async () => {
@@ -296,23 +311,36 @@ async function run(driver: Driver, location: string) {
   await test('accept an alert', async () => {
     const alertButton = await driver.activeWindow.getElement('#alert_button');
     await alertButton.mouse.click();
-    assert.equal(await driver.activeWindow.alert.getText(), 'This is a test alert!');
+    assert.equal(
+      await driver.activeWindow.alert.getText(),
+      'This is a test alert!',
+    );
     await driver.activeWindow.alert.accept();
     assert.equal(await alertButton.getText(), 'alerted');
   });
 
   await test('accept a confirm', async () => {
-    const confirmButton = await driver.activeWindow.getElement('#confirm_button');
+    const confirmButton = await driver.activeWindow.getElement(
+      '#confirm_button',
+    );
     await confirmButton.mouse.click();
-    assert.equal(await driver.activeWindow.alert.getText(), 'Test confirmation');
+    assert.equal(
+      await driver.activeWindow.alert.getText(),
+      'Test confirmation',
+    );
     await driver.activeWindow.alert.accept();
     assert.equal(await confirmButton.getText(), 'confirmed');
   });
 
   await test('dismiss a confirm', async () => {
-    const confirmButton = await driver.activeWindow.getElement('#confirm_button');
+    const confirmButton = await driver.activeWindow.getElement(
+      '#confirm_button',
+    );
     await confirmButton.mouse.click();
-    assert.equal(await driver.activeWindow.alert.getText(), 'Test confirmation');
+    assert.equal(
+      await driver.activeWindow.alert.getText(),
+      'Test confirmation',
+    );
     await driver.activeWindow.alert.dismiss();
     assert.equal(await confirmButton.getText(), 'denied');
   });
@@ -440,7 +468,10 @@ async function run(driver: Driver, location: string) {
   });
 
   await test('get all keys in local-storage', async () => {
-    assert.deepEqual(await driver.localStorage.getKeys(), ['testKey', 'testKeySecond']);
+    assert.deepEqual(await driver.localStorage.getKeys(), [
+      'testKey',
+      'testKeySecond',
+    ]);
   });
 
   await test('remove a key from local-storage', async () => {
@@ -468,7 +499,10 @@ async function run(driver: Driver, location: string) {
   });
 
   await test('get all keys in session-storage', async () => {
-    assert.deepEqual(await driver.sessionStorage.getKeys(), ['testKey', 'testKeySecond']);
+    assert.deepEqual(await driver.sessionStorage.getKeys(), [
+      'testKey',
+      'testKeySecond',
+    ]);
   });
 
   await test('remove a key from session-storage', async () => {
@@ -483,7 +517,10 @@ async function run(driver: Driver, location: string) {
   });
 
   await test('get the text of an element', async () => {
-    const element = await driver.activeWindow.getElement('q', SelectorTypes.NAME);
+    const element = await driver.activeWindow.getElement(
+      'q',
+      SelectorTypes.NAME,
+    );
     assert.equal(await element.getAttribute('value'), '1357');
   });
 
@@ -494,7 +531,10 @@ async function run(driver: Driver, location: string) {
   });
 
   await test('write text into an input element', async () => {
-    const element = await driver.activeWindow.getElement('q', SelectorTypes.NAME);
+    const element = await driver.activeWindow.getElement(
+      'q',
+      SelectorTypes.NAME,
+    );
     await element.sendKeys('test-45');
     assert.equal(await element.getAttribute('value'), 'test-45');
   });
@@ -525,12 +565,13 @@ async function run(driver: Driver, location: string) {
 
   await test('get an element', async () => {
     const element = await driver.activeWindow.getElement('h1');
+    assert.notStrictEqual(element, null);
   });
   await test('test whether an element is displayed', async () => {
     const element = await driver.activeWindow.getElement('h1');
     assert(await element.isDisplayed());
     const hiddenElement = await driver.activeWindow.getElement('#hidden');
-    assert(!await hiddenElement.isDisplayed());
+    assert(!(await hiddenElement.isDisplayed()));
   });
 
   await test('get an attribute of an element', async () => {
@@ -575,7 +616,10 @@ async function run(driver: Driver, location: string) {
 
   await test('resize the active window', async () => {
     await driver.activeWindow.resize(500, 300);
-    assert.deepEqual(await driver.activeWindow.getSize(), {width: 500, height: 300});
+    assert.deepEqual(await driver.activeWindow.getSize(), {
+      width: 500,
+      height: 300,
+    });
   });
 
   await test('position the active window', async () => {
@@ -594,4 +638,3 @@ async function run(driver: Driver, location: string) {
 
 // TODO: sauce job info
 // TODO: test touch interface
-export default run;

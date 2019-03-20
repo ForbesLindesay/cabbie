@@ -18,6 +18,7 @@
     "@babel/core": "^7.3.4",
     "@types/babel__core": "^7.1.0",
     "@types/cross-spawn": "^6.0.0",
+    "@types/deep-equal": "^1.0.1",
     "@types/depd": "^1.1.32",
     "@types/dotenv": "^6.1.0",
     "@types/mkdirp": "^0.5.2",

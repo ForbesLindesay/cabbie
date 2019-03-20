@@ -6,7 +6,6 @@
     "@babel/node": "^7.2.2",
     "@babel/preset-env": "^7.4.1",
     "@babel/preset-flow": "^7.0.0",
-    "cabbie-async": "../../source/tarballs/cabbie-async-0.12.1.tgz",
     "cabbie-sync": "../../source/tarballs/cabbie-sync-0.12.1.tgz",
     "chromedriver": "^2.46.0",
     "flow-bin": "^0.95.1"

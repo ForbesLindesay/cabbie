@@ -997,39 +997,6 @@ bytes@3.0.0:
   resolved "https://registry.yarnpkg.com/bytes/-/bytes-3.0.0.tgz#d32815404d689699f85a4ea4fa8755dd13a96048"
   integrity sha1-0ygVQE1olpn4Wk6k+odV3ROpYEg=
 
-cabbie-async@../../source/tarballs/cabbie-async-0.12.1.tgz:
-  version "0.12.1"
-  resolved "../../source/tarballs/cabbie-async-0.12.1.tgz#67ff0fb846ce8424d135b46f70898c77f6169dc6"
-  dependencies:
-    "@types/node" "^10.1.2"
-    available-browsers "^1.0.3"
-    babel-runtime "^6.20.0"
-    chalk "^2.4.2"
-    cross-spawn "^6.0.5"
-    depd "^2.0.0"
-    dotenv "^7.0.0"
-    flow-runtime "0.6.0"
-    ms "^0.7.2"
-    taxi-rank "^2.1.0"
-    then-request "^6.0.0"
-
-cabbie-sync@../../source/tarballs/cabbie-sync-0.12.1.tgz:
-  version "0.12.1"
-  resolved "../../source/tarballs/cabbie-sync-0.12.1.tgz#df3adcdc08531f8410622a17ab542b5ed0b3adaf"
-  dependencies:
-    "@types/node" "^10.1.2"
-    available-browsers "^1.0.3"
-    babel-runtime "^6.20.0"
-    chalk "^2.4.2"
-    cross-spawn "^6.0.5"
-    depd "^2.0.0"
-    dotenv "^7.0.0"
-    flow-runtime "0.6.0"
-    ms "^0.7.2"
-    sync-request "^6.1.0"
-    taxi-rank "^2.1.0"
-    thread-sleep "^2.2.0"
-
 caniuse-lite@^1.0.30000949:
   version "1.0.30000951"
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000951.tgz#c7c2fd4d71080284c8677dd410368df8d83688fe"

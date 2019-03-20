@@ -22,3 +22,4 @@ node_modules
 /source/packages/cabbie-sync/src
 /source/packages/cabbie-sync/LICENSE
 /source/tarballs
+/build-scripts/lib

@@ -1,0 +1,9 @@
+{
+  "name": "cabbie-repo",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "postinstall": "cd build-scripts && yarn --frozen-lockfile && yarn build && cd ../source && yarn --frozen-lockfile && npx bolt",
+    "build": "cd source && yarn build && cd ../"
+  }
+}

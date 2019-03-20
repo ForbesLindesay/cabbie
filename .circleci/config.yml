@@ -12,17 +12,17 @@ refs:
   - &install
     run:
       name: Yarn Install
-      command: cd source && yarn install --frozen-lockfile && npx bolt
+      command: yarn --frozen-lockfile
   - &build
     run:
       name: Build
-      command: cd source && yarn build
+      command: yarn build
   - &test
     run:
       name: Test
-      command:
-        cd tests/cabbie-async-test && npm i && npm test -- chromedriver --replay ../snapshot.json &&\
-        cd ../cabbie-sync-test && npm i && npm test -- chromedriver --replay ../snapshot.json
+      command: |
+        cd tests/cabbie-async-test && yarn setup && yarn test:replay &&\
+        cd ../cabbie-sync-test && yarn setup && yarn test:replay
 
 jobs:
   all:

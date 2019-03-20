@@ -32,18 +32,11 @@
     "thread-sleep": "^2.2.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.3.4",
-    "@types/babel__core": "^7.1.0",
-    "@types/mkdirp": "^0.5.2",
-    "babel-plugin-remove-async": "^0.12.1",
     "flowgen2": "^2.2.0",
-    "lsr": "^2.0.0",
-    "mkdirp": "^0.5.1",
-    "ts-node": "^8.0.3",
     "typescript": "^3.3.4000"
   },
   "scripts": {
-    "prebuild": "cd scripts && ts-node prebuild",
+    "prebuild": "node ../../../build-scripts cabbie-sync/prebuild",
     "build": "tsc",
     "postbuild": "cd lib && flowgen \"**/*.d.ts\""
   }

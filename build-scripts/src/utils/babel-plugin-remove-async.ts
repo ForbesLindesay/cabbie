@@ -1,7 +1,7 @@
-module.exports = ({types: t}) => {
+module.exports = ({types: t}: any) => {
   return {
     visitor: {
-      StringLiteral(path) {
+      StringLiteral(path: any) {
         if (path.node.value === 'then-request') {
           path.replaceWith(t.stringLiteral('sync-request'));
         }
@@ -12,9 +12,9 @@ module.exports = ({types: t}) => {
           path.replaceWith(t.stringLiteral('cabbie-sync'));
         }
       },
-      Function(path) {
+      Function(path: any) {
         if (path.node.async) {
-          const newFn = {};
+          const newFn: any = {};
           for (var key in path.node) {
             newFn[key] = path.node[key];
           }
@@ -22,11 +22,11 @@ module.exports = ({types: t}) => {
           path.replaceWith(newFn);
         }
       },
-      AwaitExpression(path) {
+      AwaitExpression(path: any) {
         path.replaceWith(path.node.argument);
       },
       // flow Promise<T>
-      GenericTypeAnnotation(path) {
+      GenericTypeAnnotation(path: any) {
         if (t.isIdentifier(path.node.id, {name: 'Promise'})) {
           if (!path.node.typeParameters) {
             throw path.buildCodeFrameError(
@@ -43,7 +43,7 @@ module.exports = ({types: t}) => {
         }
       },
       // typescript Promise<T>
-      TSTypeReference(path) {
+      TSTypeReference(path: any) {
         if (t.isIdentifier(path.node.typeName, {name: 'Promise'})) {
           if (!path.node.typeParameters) {
             throw path.buildCodeFrameError(
@@ -59,7 +59,7 @@ module.exports = ({types: t}) => {
           path.replaceWith(path.node.typeParameters.params[0]);
         }
       },
-      CallExpression(path) {
+      CallExpression(path: any) {
         if (
           t.isMemberExpression(path.node.callee) &&
           t.isIdentifier(path.node.callee.object, {name: 'Promise'}) &&

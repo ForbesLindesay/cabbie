@@ -8,6 +8,9 @@
     "typescript": "^3.3.4000"
   },
   "scripts": {
-    "test": "ts-node src"
+    "setup": "yarn add ../../source/tarballs/cabbie-async-*.tgz",
+    "test": "ts-node src",
+    "test:record": "yarn test -- chromedriver --record ../snapshot.json",
+    "test:replay": "yarn test -- chromedriver --replay ../snapshot.json"
   }
 }

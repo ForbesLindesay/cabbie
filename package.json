@@ -4,6 +4,11 @@
   "version": "0.0.0",
   "scripts": {
     "postinstall": "cd build-scripts && yarn --frozen-lockfile && yarn build && cd ../source && yarn --frozen-lockfile && npx bolt",
-    "build": "cd source && yarn build && cd ../"
+    "build": "cd source && yarn build && cd ../",
+    "test": "yarn test:async:replay && yarn test:sync:replay",
+    "test:async": "cd tests/cabbie-async-test && yarn setup && yarn test",
+    "test:async:replay": "cd tests/cabbie-async-test && yarn setup && yarn test:replay",
+    "test:sync": "cd tests/cabbie-sync-test && yarn setup && yarn test",
+    "test:sync:replay": "cd tests/cabbie-sync-test && yarn setup && yarn test:replay"
   }
 }

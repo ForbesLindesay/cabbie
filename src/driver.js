@@ -289,7 +289,7 @@ class Driver {
 
     await autoRequest(
       'PUT',
-      'http://' + auth + '@saucelabs.com/rest/v1/' + auth.split(':')[0] + '/jobs/' + session.sessionID,
+      'https://' + auth + '@saucelabs.com/rest/v1/' + auth.split(':')[0] + '/jobs/' + session.sessionID,
       {json: body},
     );
 
